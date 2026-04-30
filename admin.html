@@ -134,6 +134,17 @@ else {
 }
 
 // ── DATA STORE ──
+const modelMap = {
+  'butter chicken': '3d-models/butter_chicken.glb',
+  'paneer tikka': '3d-models/biryani.glb',
+  'hyderabadi biryani': '3d-models/biryani.glb',
+  'chicken biryani': '3d-models/biryani.glb',
+  'gulab jamun': '3d-models/gulab_jamun.glb',
+  'masala dosa': '3d-models/dal_makhni.glb',
+  'dal makhani': '3d-models/dal_makhni.glb',
+  'mango lassi': '3d-models/lacchi.glb'
+};
+
 let dishes = [
   {name:'Butter Chicken',price:350,category:'Main Course',desc:'Creamy tomato-based curry with tender chicken',photo:'🍗',status:'active'},
   {name:'Paneer Tikka',price:280,category:'Starter',desc:'Grilled cottage cheese with spices',photo:'🧀',status:'active'},
@@ -168,7 +179,12 @@ function renderAll(){
 function renderTable(tbodyId){
   const tbody = document.getElementById(tbodyId);
   if(!tbody) return;
-  tbody.innerHTML = dishes.map((d,i)=>`
+  tbody.innerHTML = dishes.map((d,i)=>{
+    const modelPath = modelMap[d.name.toLowerCase()] || '';
+    const viewBtn = modelPath
+      ? `<button class="action-btn" style="background:rgba(204,0,0,.15);color:#CC0000;border-color:#CC0000" onclick="openViewer('${modelPath}')">View in 3D</button>`
+      : `<button class="action-btn" disabled style="opacity:.4;cursor:default">No 3D</button>`;
+    return `
     <tr>
       <td><div class="dish-img" style="display:flex;align-items:center;justify-content:center;font-size:22px">${d.photoData ? '<img src="'+d.photoData+'" class="dish-img" style="width:48px;height:48px">' : d.photo}</div></td>
       <td><strong>${d.name}</strong><br><span style="font-size:12px;color:var(--text-muted)">${d.desc||''}</span></td>
@@ -176,11 +192,16 @@ function renderTable(tbodyId){
       <td>${d.category}</td>
       <td><span class="badge badge-${d.status}">${d.status}</span></td>
       <td>
+        ${viewBtn}
         <button class="action-btn" onclick="editDish(${i})">Edit</button>
         <button class="action-btn delete" onclick="deleteDish(${i})">Delete</button>
       </td>
-    </tr>
-  `).join('');
+    </tr>`;
+  }).join('');
+}
+
+function openViewer(modelPath) {
+  window.open('viewer.html?model=' + encodeURIComponent(modelPath), '_blank');
 }
 
 // ── MODAL ──
