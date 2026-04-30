@@ -23,7 +23,7 @@ a{text-decoration:none;color:inherit}
 @media(max-width:768px){.nav-links{display:none}.nav{padding:14px 20px}}
 
 /* HERO */
-.hero{min-height:100vh;display:flex;align-items:center;justify-content:flex-start;text-align:center;position:relative;padding:120px 20px 80px;overflow:hidden;background-image:url('./hero-bg.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:flex-start;text-align:center;position:relative;padding:120px 20px 80px;overflow:hidden;background-image:url('hero-bg.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;}
 .hero-content{position:relative;z-index:10;max-width:750px;margin-left:12vw;}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;border-radius:50px;border:1px solid rgba(204,0,0,.25);background:rgba(204,0,0,.06);font-size:13px;color:var(--gold-light);font-weight:500;margin-bottom:28px;letter-spacing:.5px}
 .hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse-dot 2s infinite}
@@ -64,7 +64,7 @@ a{text-decoration:none;color:inherit}
 
 /* HOW IT WORKS */
 #how-it-works {
-  background-image: url('./how-bg.jpg');
+  background-image: url('how-bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -118,7 +118,7 @@ a{text-decoration:none;color:inherit}
 
 /* FEATURES */
 #features {
-  background-image: url('./features-bg.jpg');
+  background-image: url('features-bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -161,7 +161,7 @@ a{text-decoration:none;color:inherit}
 /* PRICING */
 /* PRICING */
 .pricing-section {
-  background-image: url('./pricing-bg.jpg');
+  background-image: url('pricing-bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -205,7 +205,7 @@ a{text-decoration:none;color:inherit}
 
 /* SIGNUP FORM */
 .signup-section {
-  background-image: url('./signup-bg.jpg');
+  background-image: url('signup-bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -247,7 +247,7 @@ select.form-input option{background:#111;color:#fff;padding:8px}
 
 /* ABOUT US */
 .about-section {
-  background-image: url('./about-bg.jpg');
+  background-image: url('about-bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
