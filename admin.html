@@ -127,7 +127,7 @@
 <script>
 // ── AUTH CHECK ──
 const session = JSON.parse(localStorage.getItem('arsmSession') || 'null');
-if(!session){ window.location.href='login.html'; }
+if(!session){ window.location.href='index.html'; }
 else {
   document.getElementById('sidebarName').textContent = session.restaurant || 'My Restaurant';
   document.getElementById('sidebarCity').textContent = session.city || '';
@@ -147,7 +147,7 @@ generateQR();
 
 function handleLogout(){
   localStorage.removeItem('arsmSession');
-  window.location.href='login.html';
+  window.location.href='index.html';
 }
 
 // ── NAVIGATION ──
