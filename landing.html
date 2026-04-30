@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZEN_X AR Menu — Let Customers See Food Before They Order</title>
+<meta name="description" content="ZEN_X AR Menu transforms restaurant dining. Customers scan a QR code and see dishes in stunning 3D right on their table. Sign up free today.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="landing.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+
+<!-- ═══════════════ NAVIGATION ═══════════════ -->
+<nav class="nav" id="main-nav">
+  <a href="#" class="nav-logo" style="display: flex; align-items: center; gap: 10px;"><img src="logo.png" alt="ZEN_X Logo" style="height: 50px;"> ZEN_X AR Menu</a>
+  <div class="nav-links">
+    <a href="#how-it-works">How It Works</a>
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <button class="nav-cta" onclick="openLeadModal()">Get Started</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero" id="hero">
+  <div class="floating-emojis" id="floating-emojis"></div>
+  <div class="hero-content">
+    <div class="hero-badge"><span class="dot"></span> Now Available for Restaurants Across India</div>
+    <h1><span class="zenx-glow">ZEN_X</span> — The Future of Restaurant Menus</h1>
+    <p class="hero-sub">Scan. See. Order. AR-powered menus for modern restaurants.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openLeadModal()">
+        <span>🚀</span> Get Started Free
+      </button>
+      <button class="btn-secondary" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})">
+        <span>▶</span> Watch Demo
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">500+</span><span class="stat-label">Restaurants Onboarded</span></div>
+      <div class="stat"><span class="stat-num">35%</span><span class="stat-label">Avg. Order Increase</span></div>
+      <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Customer Satisfaction</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+<section class="section" id="how-it-works">
+  <p class="section-label reveal">The Process</p>
+  <h2 class="section-title reveal">How It Works</h2>
+  <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span class="ornament-line"></span></div>
+  <p class="section-desc reveal">Four simple steps to transform your restaurant experience forever.</p>
+  <div class="steps-grid">
+    <div class="step-card reveal">
+      <div class="step-num">1</div>
+      <div class="step-icon">📝</div>
+      <h3>Sign Up</h3>
+      <p>Create your restaurant account in under 2 minutes. No credit card required.</p>
+    </div>
+    <div class="step-card reveal">
+      <div class="step-num">2</div>
+      <div class="step-icon">📸</div>
+      <h3>Add Your Dishes</h3>
+      <p>Upload dish names, photos, and prices. We handle the 3D magic for you.</p>
+    </div>
+    <div class="step-card reveal">
+      <div class="step-num">3</div>
+      <div class="step-icon">📱</div>
+      <h3>Get Your QR Code</h3>
+      <p>A unique QR code is generated automatically for each table in your restaurant.</p>
+    </div>
+    <div class="step-card reveal">
+      <div class="step-num">4</div>
+      <div class="step-icon">🥽</div>
+      <h3>Customers See Food in AR</h3>
+      <p>Guests scan the QR and instantly see realistic 3D dishes right on their table.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FEATURES ═══════════════ -->
+<section class="section" id="features">
+  <p class="section-label reveal">Why Choose Us</p>
+  <h2 class="section-title reveal">Powerful Features</h2>
+  <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span class="ornament-line"></span></div>
+  <p class="section-desc reveal">Everything you need to run a smarter, more profitable restaurant.</p>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon">🚫</div>
+      <div>
+        <h3>No Physical Menus Needed</h3>
+        <p>Eliminate printing costs and go fully digital. Update your menu in real-time from anywhere.</p>
+      </div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🍔</div>
+      <div>
+        <h3>3D Food Visualization</h3>
+        <p>Customers see photorealistic 3D models of your dishes before ordering — boosting confidence and sales.</p>
+      </div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🤖</div>
+      <div>
+        <h3>AI Dish Recommendations</h3>
+        <p>Smart AI suggests dishes based on customer preferences, time of day, and trending items.</p>
+      </div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📊</div>
+      <div>
+        <h3>Business Dashboard</h3>
+        <p>Track orders, popular dishes, customer analytics, and revenue — all in one beautiful dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PRICING ═══════════════ -->
+<section class="section pricing-section" id="pricing">
+  <p class="section-label reveal">Pricing</p>
+  <h2 class="section-title reveal">Simple, Flexible Pricing</h2>
+  <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span class="ornament-line"></span></div>
+  <p class="section-desc reveal">One flat maintenance fee. Pay only for the dishes you add.</p>
+  <div class="pricing-grid" style="grid-template-columns:repeat(2,1fr);max-width:800px">
+    <!-- Maintenance Plan -->
+    <div class="price-card reveal">
+      <p class="price-name">Maintenance Plan</p>
+      <p class="price-amount">₹1,200<span>/month</span></p>
+      <ul class="price-features">
+        <li>Full AR Menu System</li>
+        <li>QR Code for Each Table</li>
+        <li>Unlimited Dish Listings</li>
+        <li>Continuous Support & Updates</li>
+      </ul>
+      <button class="price-btn price-btn-fill" onclick="openLeadModal()">Start Setup</button>
+    </div>
+    <!-- Per Dish Pricing -->
+    <div class="price-card reveal">
+      <p class="price-name">Per Dish Pricing</p>
+      <p class="price-amount">₹100<span>per 3D dish</span></p>
+      <ul class="price-features">
+        <li>High-quality 3D Dish Model</li>
+        <li>Realistic AR Experience</li>
+        <li>One-time cost per dish</li>
+        <li>Pay only for dishes you add</li>
+      </ul>
+      <button class="price-btn price-btn-outline" onclick="openLeadModal()">Add Dishes</button>
+    </div>
+  </div>
+  <p class="reveal" style="text-align:center;color:#999;font-size:14px;margin-top:40px;max-width:700px;margin-left:auto;margin-right:auto;line-height:1.7">ZenX keeps pricing simple and flexible. You only pay a small monthly maintenance fee to keep your smart menu running, and a one-time cost for each 3D dish model we create. This ensures you only pay for what you actually use.</p>
+</section>
+
+<!-- ═══════════════ ABOUT US SECTION ═══════════════ -->
+<section class="section about-section" id="about-us">
+  <div class="about-content">
+    <p class="section-label reveal" style="color: #CC0000; font-weight: bold; font-size: 14px;">WHO WE ARE</p>
+    <h2 class="section-title reveal" style="color: #ffffff;">Built by Passionate Innovators</h2>
+    <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span class="ornament-line"></span></div>
+    <p class="section-desc reveal" style="color: #cccccc;">ZEN_X is a next-generation AR menu platform built by a team of young innovators from India. We believe every restaurant deserves world-class technology to showcase their food and delight their customers.</p>
+    
+    <div class="founders-grid reveal">
+      <div class="founder-card">
+        <h3>👑 Trinayan Mahanta</h3>
+        <p>Co-Founder & CEO</p>
+      </div>
+      <div class="founder-card">
+        <h3>💡 Snehangshu Das</h3>
+        <p>Co-Founder & Tech Lead</p>
+      </div>
+      <div class="founder-card">
+        <h3>✨ Mannat Sahu</h3>
+        <p>Co-Founder & Design Lead</p>
+      </div>
+    </div>
+    
+    <div class="about-social reveal">
+      <a href="https://www.instagram.com/zen_x_2026?igsh=MTc3ZmZhaTc1M3NuOA==" target="_blank" class="instagram-btn">📸 Follow us @zen_x_2026</a>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ═══════════════ LEAD CAPTURE MODAL ═══════════════ -->
+<div class="lead-modal-overlay" id="leadModal" onclick="if(event.target===this)closeLeadModal()">
+  <div class="lead-modal">
+    <button class="lead-modal-close" onclick="closeLeadModal()">✕</button>
+    <img src="logo.png" alt="ZEN_X" style="height:50px;margin:0 auto 12px;display:block">
+    <h2>Get Started with ZEN_X</h2>
+    <p class="lead-modal-sub">Enter your details and we'll set up your AR menu within 24 hours.</p>
+    <form id="lead-form" onsubmit="return handleLeadSubmit(event)">
+      <div class="form-group"><label class="form-label">Restaurant Name</label><input class="form-input" type="text" id="lead-name" placeholder="e.g. ZEN_X" required></div>
+      <div class="form-group"><label class="form-label">Owner Name</label><input class="form-input" type="text" id="lead-owner" placeholder="e.g. Rahul Sharma" required></div>
+      <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" type="tel" id="lead-phone" placeholder="+91 98765 43210" required></div>
+      <div class="form-group"><label class="form-label">City</label><input class="form-input" type="text" id="lead-city" placeholder="e.g. Mumbai" required></div>
+      <button class="submit-btn" type="submit" id="lead-submit-btn">🚀 Get Started Free</button>
+    </form>
+    <div class="success-msg" id="lead-success" style="display:none">
+      <div class="check">✓</div>
+      <h3>Thank You!</h3>
+      <p>Our team will set up your AR menu within 24 hours.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer">
+  <div class="footer-logo" style="display: flex; align-items: center; justify-content: center; gap: 10px;"><img src="logo.png" alt="ZEN_X Logo" style="height: 50px;"> ZEN_X AR Menu</div>
+  <p class="footer-tag">The future of restaurant dining — powered by Augmented Reality</p>
+  <div class="footer-links">
+    <a href="index.html">Menu Demo</a>
+    <a href="viewer.html">AR Demo</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#about-us">About Us</a>
+    <a href="#signup">Contact Us</a>
+    <a href="https://www.instagram.com/zen_x_2026" target="_blank" style="color: var(--gold);">Instagram</a>
+  </div>
+  <p class="footer-copy">© 2026 ZEN_X. Built with ❤️ by Team ZEN_X — Trinayan Mahanta, Snehangshu Das, Mannat Sahu</p>
+</footer>
+
+<!-- ═══════════════ SCRIPTS ═══════════════ -->
+<script>
+// --- Floating Food Emojis ---
+(function(){
+  const emojis = ['🍕','🍔','🍣','🌮','🍜','🍛','🥗','🍝','🍰','🧁','🥘','🍲','🍱','🥟','🫕','🍗','🥩','🍤'];
+  const container = document.getElementById('floating-emojis');
+  for(let i = 0; i < 20; i++){
+    const el = document.createElement('span');
+    el.className = 'float-emoji';
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    el.style.left = Math.random()*100 + '%';
+    el.style.fontSize = (20 + Math.random()*24) + 'px';
+    el.style.animationDuration = (12 + Math.random()*18) + 's';
+    el.style.animationDelay = (Math.random()*15) + 's';
+    container.appendChild(el);
+  }
+})();
+
+// --- Scroll Reveal ---
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); revealObserver.unobserve(e.target); }});
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// --- Navbar shadow on scroll ---
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('main-nav');
+  nav.style.boxShadow = window.scrollY > 40 ? '0 4px 30px rgba(0,0,0,.5)' : 'none';
+});
+
+
+
+// --- Lead Modal ---
+function openLeadModal(){
+  document.getElementById('leadModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeLeadModal(){
+  document.getElementById('leadModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+async function handleLeadSubmit(e){
+  e.preventDefault();
+  const btn = document.getElementById('lead-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  const data = {
+    name: document.getElementById('lead-name').value,
+    owner_name: document.getElementById('lead-owner').value,
+    phone: document.getElementById('lead-phone').value,
+    city: document.getElementById('lead-city').value,
+    status: 'pending'
+  };
+  await submitToSupabase(data);
+  document.getElementById('lead-form').style.display = 'none';
+  document.getElementById('lead-success').style.display = 'block';
+  return false;
+}
+
+// --- Supabase Integration ---
+const { createClient } = supabase;
+const supabaseClient = createClient(
+  'https://qjykkdmujwlkpcdyzeqa.supabase.co',
+  'sb_publishable_rUybvqyug25z0OIXaCs25Q_cTmKdC8h'
+);
+async function submitToSupabase(data){
+  try {
+    const { error } = await supabaseClient
+      .from('restaurants')
+      .insert([data]);
+    if(error){
+      console.error('Supabase error:', error);
+      alert('Error saving data. Please try again.');
+    }
+  } catch(err){
+    console.error('Submit error:', err);
+    alert('Connection error. Please try again.');
+  }
+}
+
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLeadModal(); });
+</script>
+</body>
+</html>

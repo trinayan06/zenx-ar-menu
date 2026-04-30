@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ZEN_X — Super Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#000;--surface:#0a0a0a;--card:#111;--red:#CC0000;--red-light:#FF0000;--red-dark:#990000;--text:#fff;--text-sec:#ccc;--text-muted:#888;--radius:12px}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--red-dark);border-radius:3px}
+
+/* LOGIN SCREEN */
+#login-screen{position:fixed;inset:0;z-index:9999;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px}
+#login-screen.hidden{display:none}
+.login-box{background:var(--card);border:1px solid var(--red);border-radius:16px;padding:48px 40px;width:100%;max-width:400px;text-align:center}
+.login-box img{height:60px;margin-bottom:16px}
+.login-box h1{font-family:'Playfair Display',serif;font-size:28px;margin-bottom:8px}
+.login-box p{color:var(--text-muted);font-size:14px;margin-bottom:32px}
+.login-box input{width:100%;padding:14px 18px;background:var(--bg);border:1px solid var(--red);border-radius:8px;color:#fff;font-size:15px;outline:none;margin-bottom:16px;font-family:'Inter'}
+.login-box input:focus{box-shadow:0 0 0 3px rgba(204,0,0,.2)}
+.login-box button{width:100%;padding:14px;background:var(--red);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;transition:all .3s}
+.login-box button:hover{background:var(--red-light);box-shadow:0 4px 20px rgba(204,0,0,.4)}
+.login-error{color:var(--red-light);font-size:13px;margin-top:8px;display:none}
+
+/* LAYOUT */
+#app{display:none}
+#app.visible{display:flex;min-height:100vh}
+.sidebar{width:240px;background:var(--surface);border-right:1px solid rgba(204,0,0,.15);display:flex;flex-direction:column;position:fixed;top:0;bottom:0;z-index:100;transition:transform .3s}
+.sidebar-header{padding:20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(204,0,0,.1)}
+.sidebar-header img{height:40px}
+.sidebar-header span{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--red)}
+.sidebar-nav{flex:1;padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;font-size:14px;font-weight:500;color:var(--text-sec);cursor:pointer;transition:all .2s}
+.nav-item:hover{background:rgba(204,0,0,.08);color:#fff}
+.nav-item.active{background:rgba(204,0,0,.15);color:var(--red-light);font-weight:600;border:1px solid rgba(204,0,0,.2)}
+.nav-item .icon{font-size:18px;width:24px;text-align:center}
+.sidebar-footer{padding:16px 12px;border-top:1px solid rgba(204,0,0,.1)}
+.logout-btn{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:10px;font-size:14px;color:var(--red);cursor:pointer;transition:all .2s;width:100%;border:1px solid rgba(204,0,0,.2);background:transparent;font-family:'Inter';font-weight:600}
+.logout-btn:hover{background:rgba(204,0,0,.1)}
+
+.main{margin-left:240px;flex:1;padding:32px;width:calc(100% - 240px)}
+.main-header{margin-bottom:32px}
+.main-header h2{font-family:'Playfair Display',serif;font-size:28px;font-weight:700}
+.main-header p{color:var(--text-muted);font-size:14px;margin-top:4px}
+.page{display:none}
+.page.active{display:block}
+
+/* STATS CARDS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px}
+.stat-card{background:var(--card);border:1px solid rgba(204,0,0,.12);border-radius:var(--radius);padding:24px;transition:all .3s}
+.stat-card:hover{border-color:var(--red);transform:translateY(-2px)}
+.stat-card .label{font-size:13px;color:var(--text-muted);margin-bottom:8px;font-weight:500}
+.stat-card .value{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--red)}
+.stat-card .sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* CARDS / PANELS */
+.panel{background:var(--card);border:1px solid rgba(204,0,0,.1);border-radius:var(--radius);padding:24px;margin-bottom:24px}
+.panel h3{font-size:16px;font-weight:700;margin-bottom:16px;color:var(--red)}
+.activity-item{padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:14px;color:var(--text-sec);display:flex;align-items:center;gap:10px}
+.activity-item:last-child{border:none}
+.activity-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0}
+
+/* BUTTONS */
+.btn{padding:10px 20px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all .3s;border:none;font-family:'Inter'}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red-light);box-shadow:0 4px 16px rgba(204,0,0,.3)}
+.btn-outline{background:transparent;border:1px solid var(--red);color:var(--red)}.btn-outline:hover{background:rgba(204,0,0,.1)}
+.btn-sm{padding:6px 14px;font-size:12px;border-radius:6px}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn-danger{background:#400;color:var(--red-light);border:1px solid rgba(204,0,0,.3)}.btn-danger:hover{background:rgba(204,0,0,.2)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:12px 16px;background:rgba(204,0,0,.06);color:var(--red);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(204,0,0,.15)}
+td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text-sec)}
+tr:hover td{background:rgba(204,0,0,.03)}
+.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-active{background:rgba(0,180,0,.12);color:#0f0;border:1px solid rgba(0,180,0,.2)}
+.badge-inactive{background:rgba(255,0,0,.1);color:var(--red-light);border:1px solid rgba(255,0,0,.2)}
+.badge-paid{background:rgba(0,180,0,.12);color:#0f0;border:1px solid rgba(0,180,0,.2)}
+.badge-pending{background:rgba(255,165,0,.12);color:#ffa500;border:1px solid rgba(255,165,0,.2)}
+.badge-basic{background:rgba(204,0,0,.1);color:var(--red-light)}
+.badge-standard{background:rgba(204,0,0,.15);color:#ff4444}
+.badge-premium{background:rgba(255,215,0,.1);color:#ffd700}
+
+/* SEARCH */
+.search-bar{width:100%;padding:12px 18px;background:var(--bg);border:1px solid rgba(204,0,0,.2);border-radius:8px;color:#fff;font-size:14px;outline:none;margin-bottom:20px;font-family:'Inter'}
+.search-bar:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(204,0,0,.1)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:none;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border:1px solid var(--red);border-radius:16px;padding:32px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:24px}
+.modal .form-group{margin-bottom:16px}
+.modal label{display:block;font-size:13px;font-weight:600;color:var(--text-sec);margin-bottom:6px}
+.modal input,.modal select{width:100%;padding:12px 16px;background:var(--bg);border:1px solid rgba(204,0,0,.3);border-radius:8px;color:#fff;font-size:14px;outline:none;font-family:'Inter'}
+.modal input:focus,.modal select:focus{border-color:var(--red)}
+.modal select{cursor:pointer}
+.modal select option{background:#111;color:#fff}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-btns{display:flex;gap:12px;margin-top:24px}
+
+/* CHARTS (CSS only) */
+.chart-container{display:flex;align-items:flex-end;gap:12px;height:200px;padding:16px 0}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
+.chart-bar{width:100%;background:linear-gradient(to top,var(--red-dark),var(--red));border-radius:6px 6px 0 0;transition:height .5s;min-height:4px;position:relative}
+.chart-bar:hover{background:linear-gradient(to top,var(--red),var(--red-light))}
+.chart-bar .tip{position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:700;color:var(--red-light)}
+.chart-label{font-size:11px;color:var(--text-muted);font-weight:500}
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+
+/* SETTINGS */
+.settings-card{background:var(--card);border:1px solid rgba(204,0,0,.1);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.settings-card h3{color:var(--red);margin-bottom:16px;font-size:16px}
+.settings-card .form-group{margin-bottom:16px}
+.settings-card label{display:block;font-size:13px;font-weight:600;color:var(--text-sec);margin-bottom:6px}
+.settings-card input{width:100%;padding:12px 16px;background:var(--bg);border:1px solid rgba(204,0,0,.3);border-radius:8px;color:#fff;font-size:14px;outline:none;font-family:'Inter'}
+.founder-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.founder-card2{background:var(--bg);border:1px solid rgba(204,0,0,.15);border-radius:10px;padding:20px;text-align:center}
+.founder-card2 .emoji{font-size:32px;margin-bottom:8px}
+.founder-card2 h4{font-size:15px;font-weight:700;margin-bottom:4px}
+.founder-card2 p{font-size:12px;color:var(--text-muted)}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--red);border-radius:10px;padding:14px 24px;font-size:14px;color:#fff;z-index:999;transform:translateY(100px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* TOGGLE */
+.toggle{width:40px;height:22px;background:#333;border-radius:12px;position:relative;cursor:pointer;transition:all .3s;border:none}
+.toggle.on{background:var(--red)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:all .3s}
+.toggle.on::after{left:21px}
+
+/* MOBILE */
+.menu-toggle{display:none;position:fixed;top:12px;left:12px;z-index:150;background:var(--card);border:1px solid var(--red);border-radius:8px;padding:8px 12px;cursor:pointer;color:#fff;font-size:20px}
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;width:100%;padding:20px;padding-top:56px}
+  .menu-toggle{display:block}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .chart-row,.form-row2,.founder-row{grid-template-columns:1fr}
+}
+@media(max-width:480px){.stats-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <img src="logo.png" alt="ZEN_X"><h1>Super Admin</h1><p>Enter the founder password to continue</p>
+    <input type="password" id="pwd-input" placeholder="Enter Password" onkeydown="if(event.key==='Enter')checkPwd()">
+    <button onclick="checkPwd()">🔐 Unlock Dashboard</button>
+    <p class="login-error" id="pwd-error">⛔ Access Denied — Wrong Password</p>
+  </div>
+</div>
+
+<!-- MOBILE TOGGLE -->
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<!-- APP -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="sidebar-header"><img src="logo.png" alt="ZEN_X"><span>ZEN_X</span></div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="switchPage('dashboard',this)"><span class="icon">📊</span>Dashboard</div>
+      <div class="nav-item" onclick="switchPage('restaurants',this)"><span class="icon">🏪</span>Restaurants</div>
+      <div class="nav-item" onclick="switchPage('subscriptions',this)"><span class="icon">📋</span>Subscriptions</div>
+      <div class="nav-item" onclick="switchPage('analytics',this)"><span class="icon">📈</span>Analytics</div>
+      <div class="nav-item" onclick="switchPage('settings',this)"><span class="icon">⚙️</span>Settings</div>
+    </nav>
+    <div class="sidebar-footer"><button class="logout-btn" onclick="logout()">🚪 Logout</button></div>
+  </aside>
+
+  <main class="main">
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="main-header"><h2>Dashboard</h2><p>Welcome back, Founder 👑</p></div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="label">Total Restaurants</div><div class="value" id="s-total">—</div></div>
+        <div class="stat-card"><div class="label">Active Subscriptions</div><div class="value" id="s-active">—</div></div>
+        <div class="stat-card"><div class="label">Monthly Revenue</div><div class="value" id="s-revenue">—</div></div>
+        <div class="stat-card"><div class="label">New Signups This Week</div><div class="value" id="s-signups">—</div></div>
+      </div>
+      <div class="panel"><h3>📌 Recent Activity</h3>
+        <div id="activity-feed">
+          <div class="activity-item"><span class="activity-dot"></span>Loading...</div>
+        </div>
+      </div>
+      <div class="panel"><h3>⚡ Quick Actions</h3><div class="btn-row">
+        <button class="btn btn-red" onclick="switchPage('restaurants',document.querySelectorAll('.nav-item')[1]);openModal()">➕ Add New Restaurant</button>
+        <button class="btn btn-outline" onclick="loadAllData()">🔄 Refresh Data</button>
+        <button class="btn btn-outline" onclick="switchPage('subscriptions',document.querySelectorAll('.nav-item')[2])">📋 View All Subscriptions</button>
+      </div></div>
+    </div>
+
+    <!-- RESTAURANTS -->
+    <div class="page" id="page-restaurants">
+      <div class="main-header"><h2>Restaurants</h2><p>Manage all registered restaurants</p></div>
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+        <input class="search-bar" style="flex:1;margin:0;min-width:200px" placeholder="🔍 Search restaurants..." oninput="filterRestaurants(this.value)">
+        <button class="btn btn-red" onclick="openModal()">➕ Add Restaurant</button>
+      </div>
+      <div class="panel"><div class="table-wrap"><table>
+        <thead><tr><th>Restaurant</th><th>Owner</th><th>Phone</th><th>City</th><th>Status</th><th>Join Date</th><th>Actions</th></tr></thead>
+        <tbody id="rest-table"></tbody>
+      </table></div></div>
+    </div>
+
+    <!-- SUBSCRIPTIONS -->
+    <div class="page" id="page-subscriptions">
+      <div class="main-header"><h2>Subscriptions</h2><p>Track all subscription payments</p></div>
+      <div class="stats-row"><div class="stat-card"><div class="label">Total Monthly Revenue</div><div class="value" id="sub-revenue">₹8,000</div></div></div>
+      <div class="panel"><div class="table-wrap"><table>
+        <thead><tr><th>Restaurant</th><th>Monthly Fee</th><th>Start Date</th><th>Next Payment</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="sub-table"></tbody>
+      </table></div></div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div class="page" id="page-analytics">
+      <div class="main-header"><h2>Analytics</h2><p>Platform performance insights</p></div>
+      <div class="chart-row">
+        <div class="panel"><h3>📊 Restaurant Status</h3><div class="chart-container" id="scan-chart"></div></div>
+        <div class="panel"><h3>📅 Signups by Day</h3><div class="chart-container" id="dish-chart"></div></div>
+      </div>
+      <div class="chart-row">
+        <div class="panel"><h3>💰 Revenue Overview</h3><div class="chart-container" id="plan-chart"></div></div>
+        <div class="panel"><h3>🏙️ Top Cities</h3><div class="chart-container" id="city-chart"></div></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page" id="page-settings">
+      <div class="main-header"><h2>Settings</h2><p>Platform configuration</p></div>
+      <div class="settings-card"><h3>👑 Founders</h3><div class="founder-row">
+        <div class="founder-card2"><div class="emoji">👑</div><h4>Trinayan Mahanta</h4><p>CEO</p></div>
+        <div class="founder-card2"><div class="emoji">💡</div><h4>Snehangshu Das</h4><p>Tech Lead</p></div>
+        <div class="founder-card2"><div class="emoji">✨</div><h4>Mannat Sahu</h4><p>Design Lead</p></div>
+      </div></div>
+      <div class="settings-card"><h3>⚙️ Platform Settings</h3>
+        <div class="form-group"><label>Platform Name</label><input id="set-name" value="ZEN_X"></div>
+        <div class="form-group"><label>Admin Password</label><input id="set-pwd" type="password" value="zenx2026"></div>
+        <div class="form-group"><label>Instagram Link</label><input id="set-ig" value="https://www.instagram.com/zen_x_2026"></div>
+        <div class="form-group"><label>Support Email</label><input id="set-email" value="support@zenx.in"></div>
+        <button class="btn btn-red" onclick="saveSettings()">💾 Save Settings</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ADD RESTAURANT MODAL -->
+<div class="modal-overlay" id="modal-add">
+  <div class="modal">
+    <h3>➕ Add New Restaurant</h3>
+    <div class="form-row2">
+      <div class="form-group"><label>Restaurant Name</label><input id="m-name"></div>
+      <div class="form-group"><label>Owner Name</label><input id="m-owner"></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-group"><label>Phone</label><input id="m-phone"></div>
+      <div class="form-group"><label>Email</label><input id="m-email"></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-group"><label>City</label><input id="m-city"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-red" onclick="addRestaurant()">✅ Submit</button>
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script src="superadmin.js"></script>
+</body>
+</html>

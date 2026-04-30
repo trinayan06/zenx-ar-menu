@@ -1,0 +1,11 @@
+{
+  "name": "ar-smart-menu",
+  "version": "1.0.0",
+  "description": "AR Smart Menu System",
+  "scripts": {
+    "dev": "vite"
+  },
+  "devDependencies": {
+    "vite": "^8.0.10"
+  }
+}

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZEN_X | ZEN_X AR Menu</title>
+<meta name="description" content="Experience ZEN_X's premium AR Smart Menu. Browse exquisite Indian cuisine with immersive 3D views.">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#000000;--surface:#111111;--card:#111111;--card-hover:#1a1a1a;
+  --gold:#CC0000;--gold-light:#FF0000;--gold-dark:#990000;
+  --text:#FFFFFF;--text-secondary:#cccccc;--text-muted:#999999;
+  --accent:#c9953c;--danger:#e74c3c;
+  --radius:16px;--radius-sm:10px;
+  --shadow:0 8px 32px rgba(0,0,0,.6);
+  --glow:0 0 20px rgba(212,168,83,.15);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;padding-bottom:100px}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px}
+
+/* Header */
+.header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg,rgba(10,10,10,.98) 0%,rgba(10,10,10,.92) 100%);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);padding:20px 16px 0;border-bottom:1px solid rgba(212,168,83,.1)}
+.brand{text-align:center;margin-bottom:18px}
+.brand-sub{font-family:'Inter';font-size:10px;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:4px;font-weight:500}
+.brand h1{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.brand-tagline{font-size:11px;color:var(--text-muted);letter-spacing:2px;margin-top:4px;font-weight:300}
+
+/* Ornament */
+.ornament{display:flex;align-items:center;justify-content:center;gap:10px;margin:10px 0 16px}
+.ornament-line{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold-dark),transparent)}
+.ornament-diamond{width:6px;height:6px;background:var(--gold);transform:rotate(45deg)}
+
+/* Category Filters */
+.filters{display:flex;gap:8px;overflow-x:auto;padding:0 4px 16px;scrollbar-width:none;-ms-overflow-style:none}
+.filters::-webkit-scrollbar{display:none}
+.filter-btn{flex-shrink:0;padding:10px 22px;border:1px solid rgba(212,168,83,.25);border-radius:50px;background:transparent;color:var(--text-secondary);font-family:'Inter';font-size:13px;font-weight:500;cursor:pointer;transition:all .35s cubic-bezier(.4,0,.2,1);white-space:nowrap;letter-spacing:.3px}
+.filter-btn:hover{border-color:var(--gold);color:var(--gold)}
+.filter-btn.active{background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:#FFFFFF;border-color:transparent;box-shadow:0 4px 20px rgba(212,168,83,.3);font-weight:600}
+
+/* Menu Grid */
+.menu-container{padding:20px 16px}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+
+/* Food Card */
+.food-card{background:var(--card);border-radius:var(--radius);overflow:hidden;border:1px solid rgba(255,255,255,.04);transition:all .4s cubic-bezier(.4,0,.2,1);position:relative;opacity:0;transform:translateY(30px);will-change:transform,opacity}
+.food-card.visible{opacity:1;transform:translateY(0)}
+.food-card:hover{transform:translateY(-6px);border-color:rgba(212,168,83,.2);box-shadow:var(--glow)}
+.card-img-wrap{position:relative;width:100%;height:220px;overflow:hidden}
+.card-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.food-card:hover .card-img-wrap img{transform:scale(1.08)}
+.card-img-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,10,10,.7) 0%,transparent 50%)}
+.card-badge{position:absolute;top:12px;right:12px;background:rgba(10,10,10,.7);backdrop-filter:blur(10px);padding:5px 12px;border-radius:50px;font-size:11px;color:var(--gold-light);border:1px solid rgba(212,168,83,.2);letter-spacing:.5px}
+.card-body{padding:18px 20px 20px}
+.card-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--text);margin-bottom:4px}
+.card-desc{font-size:13px;color:var(--text-muted);line-height:1.5;margin-bottom:14px;font-weight:300}
+.card-price{font-size:22px;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif}
+.card-price span{font-size:14px;font-weight:400;font-family:'Inter'}
+.card-actions{display:flex;gap:10px;margin-top:16px}
+.btn-3d{flex:1;padding:12px 0;border-radius:var(--radius-sm);font-family:'Inter';font-size:13px;font-weight:600;cursor:pointer;transition:all .3s ease;border:none;letter-spacing:.3px;display:flex;align-items:center;justify-content:center;gap:6px;background:transparent;border:1px solid rgba(212,168,83,.3);color:var(--gold)}
+.btn-3d:hover{background:rgba(212,168,83,.1);border-color:var(--gold)}
+
+
+
+/* Sparkle float */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.float-anim{animation:float 3s ease-in-out infinite}
+
+/* Responsive */
+@media(max-width:640px){
+  .menu-grid{grid-template-columns:1fr}
+  .brand h1{font-size:24px}
+  .card-img-wrap{height:200px}
+  .cart-float{min-width:260px;padding:14px 24px;bottom:20px}
+}
+@media(min-width:641px) and (max-width:900px){
+  .menu-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+/* QR Nav Button */
+.qr-nav-btn{position:absolute;top:0;right:0;display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:50px;border:1px solid rgba(212,168,83,.25);color:var(--gold);font-family:'Inter';font-size:12px;font-weight:500;text-decoration:none;transition:all .3s;white-space:nowrap}
+.qr-nav-btn:hover{background:rgba(212,168,83,.1);border-color:var(--gold)}
+@media(max-width:640px){.qr-nav-btn{position:static;margin:0 auto 10px;display:inline-flex}}
+</style>
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="brand" style="position:relative; display:flex; flex-direction:column; align-items:center;">
+    <a href="qr.html" class="qr-nav-btn" id="qrManagerLink" title="QR Code Manager">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><circle cx="17.5" cy="17.5" r="3.5"/></svg>
+      QR Manager
+    </a>
+    <img src="logo.png" alt="ZEN_X Logo" style="height: 50px; margin-bottom: 10px;">
+    <div class="brand-sub">★ Premium Dining ★</div>
+    <h1>ZEN_X</h1>
+    <div class="brand-tagline">Where Tradition Meets Innovation</div>
+  </div>
+  <div class="ornament"><span class="ornament-line"></span><span class="ornament-diamond"></span><span class="ornament-line"></span></div>
+  <div class="filters" id="filters"></div>
+</header>
+
+<main class="menu-container">
+  <div class="menu-grid" id="menuGrid"></div>
+</main>
+
+
+
+<script>
+const dishes = [
+  {id:1,name:"Butter Chicken",category:"Main Course",price:449,desc:"Tender chicken in rich, creamy tomato-butter gravy with aromatic spices.",img:"images/butter_chicken.png",badge:"Chef's Special",glb:"3d-models/butter_chicken.glb"},
+  {id:2,name:"Paneer Tikka",category:"Starters",price:349,desc:"Chargrilled cottage cheese marinated in smoky tandoori spices.",img:"images/paneer_tikka.png",badge:"Bestseller",glb:""},
+  {id:3,name:"Chicken Biryani",category:"Biryani",price:399,desc:"Fragrant basmati rice layered with succulent chicken and saffron.",img:"images/chicken_biryani.png",badge:"Must Try",glb:"3d-models/biryani.glb"},
+  {id:4,name:"Dal Makhani",category:"Main Course",price:299,desc:"Slow-cooked black lentils in velvety butter and cream sauce.",img:"images/dal_makhani.png",badge:"Veg",glb:"3d-models/dal_makhni.glb"},
+  {id:5,name:"Gulab Jamun",category:"Desserts",price:199,desc:"Golden milk dumplings soaked in rose-scented cardamom syrup.",img:"images/gulab_jamun.png",badge:"Sweet",glb:"3d-models/gulab_jamun.glb"},
+  {id:6,name:"Mango Lassi",category:"Drinks",price:149,desc:"Chilled creamy yogurt blended with Alphonso mango and saffron.",img:"images/mango_lassi.png",badge:"Refreshing",glb:"3d-models/lacchi.glb"}
+];
+
+const categories = ["All","Starters","Main Course","Biryani","Desserts","Drinks"];
+let activeCategory = "All";
+
+// Render filters
+const filtersEl = document.getElementById("filters");
+categories.forEach(cat => {
+  const btn = document.createElement("button");
+  btn.className = "filter-btn" + (cat === "All" ? " active" : "");
+  btn.textContent = cat;
+  btn.id = "filter-" + cat.replace(/\s/g, "");
+  btn.onclick = () => filterMenu(cat, btn);
+  filtersEl.appendChild(btn);
+});
+
+function filterMenu(cat, btn) {
+  activeCategory = cat;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderMenu();
+}
+
+function renderMenu() {
+  const grid = document.getElementById("menuGrid");
+  const filtered = activeCategory === "All" ? dishes : dishes.filter(d => d.category === activeCategory);
+  grid.innerHTML = "";
+  filtered.forEach((dish, i) => {
+    const card = document.createElement("div");
+    card.className = "food-card";
+    card.id = "card-" + dish.id;
+    const has3D = dish.glb && dish.glb.length > 0;
+    card.innerHTML = `
+      <div class="card-img-wrap">
+        <img src="${dish.img}" alt="${dish.name}" loading="lazy">
+        <div class="card-img-overlay"></div>
+        <span class="card-badge">${dish.badge}</span>
+      </div>
+      <div class="card-body">
+        <h3 class="card-name">${dish.name}</h3>
+        <p class="card-desc">${dish.desc}</p>
+        <div class="card-price">₹${dish.price} <span>/ plate</span></div>
+        <div class="card-actions">
+          ${has3D ? `<button class="btn-3d" id="btn3d-${dish.id}" onclick="openViewer(${dish.id})">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            View in 3D
+          </button>` : `<button class="btn-3d" style="opacity:.5;cursor:default" disabled>3D Coming Soon</button>`}
+        </div>
+      </div>`;
+    grid.appendChild(card);
+    setTimeout(() => card.classList.add("visible"), 60 * i);
+  });
+}
+
+function openViewer(id) {
+  const dish = dishes.find(d => d.id === id);
+  let url = 'viewer.html?id=' + id;
+  if (dish && dish.glb) {
+    url += '&model=' + encodeURIComponent(dish.glb);
+  }
+  window.location.href = url;
+}
+
+renderMenu();
+</script>
+</body>
+</html>

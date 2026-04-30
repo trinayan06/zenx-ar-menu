@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ZEN_X AR Menu — Restaurant Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+
+
+<!-- ══════ DASHBOARD ══════ -->
+<div class="dashboard" id="dashboard" style="display:block">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo" style="display:flex; flex-direction:column; align-items:center; gap: 10px;"><img src="logo.png" alt="ZEN_X Logo" style="height: 50px;"> ZEN_X AR Menu</div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="showPanel('overview',this)"><span>📊</span><span>Overview</span></div>
+      <div class="nav-item" onclick="showPanel('dishes',this)"><span>🍽️</span><span>My Dishes</span></div>
+      <div class="nav-item" onclick="showPanel('qr',this)"><span>📱</span><span>QR Code</span></div>
+    </nav>
+    <div class="sidebar-user">
+      <strong id="sidebarName">ZEN_X</strong>
+      <span id="sidebarCity">Mumbai</span>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main">
+    <!-- ── OVERVIEW PANEL ── -->
+    <div class="panel active" id="panel-overview">
+      <div class="topbar">
+        <h1>Dashboard</h1>
+        <div class="topbar-actions">
+          <button class="btn-gold" onclick="openModal()">➕ Add Dish</button>
+          <button class="btn-outline" onclick="handleLogout()">Logout</button>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="icon">🍽️</div><div class="value" id="statDishes">0</div><div class="label">Total Dishes</div></div>
+        <div class="stat-card"><div class="icon">📷</div><div class="value" id="statPhotos">0</div><div class="label">Photos Uploaded</div></div>
+        <div class="stat-card"><div class="icon">👁️</div><div class="value" id="statViews">1,247</div><div class="label">Menu Views</div></div>
+        <div class="stat-card"><div class="icon">📱</div><div class="value" id="statScans">386</div><div class="label">QR Scans</div></div>
+      </div>
+      <div class="table-card">
+        <div class="table-header"><h2>Recent Dishes</h2><button class="btn-gold" onclick="openModal()">➕ Add New</button></div>
+        <table><thead><tr><th>Photo</th><th>Dish Name</th><th>Price</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="dishTableBody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ── DISHES PANEL ── -->
+    <div class="panel" id="panel-dishes">
+      <div class="topbar"><h1>My Dishes</h1><div class="topbar-actions"><button class="btn-gold" onclick="openModal()">➕ Add Dish</button></div></div>
+      <div class="table-card">
+        <div class="table-header"><h2>All Dishes</h2></div>
+        <table><thead><tr><th>Photo</th><th>Dish Name</th><th>Price</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="dishTableBodyFull"></tbody></table>
+      </div>
+    </div>
+
+    <!-- ── QR PANEL ── -->
+    <div class="panel" id="panel-qr">
+      <div class="topbar"><h1>Your QR Code</h1></div>
+      <div class="table-card">
+        <div class="qr-section">
+          <p class="qr-info">This QR code links directly to your restaurant's AR menu.<br>Print it and place on each table for customers to scan.</p>
+          <div class="qr-box"><canvas id="qrCanvas" width="200" height="200"></canvas></div>
+          <br>
+          <button class="btn-gold" onclick="downloadQR()">⬇ Download QR Code</button>
+          <span style="display:inline-block;width:12px"></span>
+          <button class="btn-outline" onclick="printQR()">🖨️ Print</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ ADD/EDIT DISH MODAL ══════ -->
+<div class="modal-overlay" id="dishModal">
+  <div class="modal">
+    <h2><span id="modalTitle">Add New Dish</span><button class="close" onclick="closeModal()">✕</button></h2>
+    <form onsubmit="return saveDish(event)">
+      <div class="form-group">
+        <label class="form-label">Dish Name</label>
+        <input class="form-input" id="dishName" placeholder="e.g. Butter Chicken" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Price (₹)</label>
+          <input class="form-input" id="dishPrice" type="number" placeholder="e.g. 350" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-input" id="dishCategory">
+            <option value="Main Course">Main Course</option>
+            <option value="Starter">Starter</option>
+            <option value="Dessert">Dessert</option>
+            <option value="Beverage">Beverage</option>
+            <option value="Biryani">Biryani</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-input" id="dishDesc" placeholder="Short description of the dish"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Dish Photo</label>
+        <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+          <div class="icon">📸</div>
+          <p>Click to upload photo</p>
+          <div class="filename" id="fileName"></div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFile(this)">
+      </div>
+      <input type="hidden" id="editIndex" value="-1">
+      <button class="login-btn" type="submit" id="modalBtn">Add Dish</button>
+    </form>
+  </div>
+</div>
+
+<script>
+// ── AUTH CHECK ──
+const session = JSON.parse(localStorage.getItem('arsmSession') || 'null');
+if(!session){ window.location.href='login.html'; }
+else {
+  document.getElementById('sidebarName').textContent = session.restaurant || 'My Restaurant';
+  document.getElementById('sidebarCity').textContent = session.city || '';
+}
+
+// ── DATA STORE ──
+let dishes = [
+  {name:'Butter Chicken',price:350,category:'Main Course',desc:'Creamy tomato-based curry with tender chicken',photo:'🍗',status:'active'},
+  {name:'Paneer Tikka',price:280,category:'Starter',desc:'Grilled cottage cheese with spices',photo:'🧀',status:'active'},
+  {name:'Hyderabadi Biryani',price:320,category:'Biryani',desc:'Aromatic basmati rice with slow-cooked spices',photo:'🍚',status:'active'},
+  {name:'Gulab Jamun',price:120,category:'Dessert',desc:'Deep-fried milk balls in sugar syrup',photo:'🍩',status:'draft'},
+  {name:'Masala Dosa',price:150,category:'Main Course',desc:'Crispy crepe filled with spiced potato',photo:'🥞',status:'active'},
+];
+let uploadedFile = null;
+renderAll();
+generateQR();
+
+function handleLogout(){
+  localStorage.removeItem('arsmSession');
+  window.location.href='login.html';
+}
+
+// ── NAVIGATION ──
+function showPanel(id, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ── RENDER TABLES ──
+function renderAll(){
+  renderTable('dishTableBody');
+  renderTable('dishTableBodyFull');
+  document.getElementById('statDishes').textContent = dishes.length;
+  document.getElementById('statPhotos').textContent = dishes.filter(d=>d.photo).length;
+}
+function renderTable(tbodyId){
+  const tbody = document.getElementById(tbodyId);
+  if(!tbody) return;
+  tbody.innerHTML = dishes.map((d,i)=>`
+    <tr>
+      <td><div class="dish-img" style="display:flex;align-items:center;justify-content:center;font-size:22px">${d.photoData ? '<img src="'+d.photoData+'" class="dish-img" style="width:48px;height:48px">' : d.photo}</div></td>
+      <td><strong>${d.name}</strong><br><span style="font-size:12px;color:var(--text-muted)">${d.desc||''}</span></td>
+      <td style="color:var(--gold);font-weight:600">₹${d.price}</td>
+      <td>${d.category}</td>
+      <td><span class="badge badge-${d.status}">${d.status}</span></td>
+      <td>
+        <button class="action-btn" onclick="editDish(${i})">Edit</button>
+        <button class="action-btn delete" onclick="deleteDish(${i})">Delete</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// ── MODAL ──
+function openModal(){
+  document.getElementById('dishModal').classList.add('show');
+  document.getElementById('modalTitle').textContent='Add New Dish';
+  document.getElementById('modalBtn').textContent='Add Dish';
+  document.getElementById('editIndex').value='-1';
+  document.getElementById('dishName').value='';
+  document.getElementById('dishPrice').value='';
+  document.getElementById('dishDesc').value='';
+  document.getElementById('dishCategory').value='Main Course';
+  document.getElementById('fileName').style.display='none';
+  uploadedFile=null;
+}
+function closeModal(){document.getElementById('dishModal').classList.remove('show')}
+function editDish(i){
+  const d=dishes[i];
+  document.getElementById('dishModal').classList.add('show');
+  document.getElementById('modalTitle').textContent='Edit Dish';
+  document.getElementById('modalBtn').textContent='Save Changes';
+  document.getElementById('editIndex').value=i;
+  document.getElementById('dishName').value=d.name;
+  document.getElementById('dishPrice').value=d.price;
+  document.getElementById('dishDesc').value=d.desc||'';
+  document.getElementById('dishCategory').value=d.category;
+}
+function deleteDish(i){
+  if(confirm('Delete "'+dishes[i].name+'"?')){dishes.splice(i,1);renderAll();}
+}
+function saveDish(e){
+  e.preventDefault();
+  const idx=parseInt(document.getElementById('editIndex').value);
+  const dish={
+    name:document.getElementById('dishName').value,
+    price:parseInt(document.getElementById('dishPrice').value),
+    category:document.getElementById('dishCategory').value,
+    desc:document.getElementById('dishDesc').value,
+    photo:['🍗','🍕','🥗','🍜','🍰'][Math.floor(Math.random()*5)],
+    status:'active',
+    photoData: uploadedFile || (idx>=0 ? dishes[idx].photoData : null)
+  };
+  if(idx>=0){dishes[idx]=dish}else{dishes.push(dish)}
+  renderAll(); closeModal();
+  return false;
+}
+
+// ── FILE UPLOAD ──
+function handleFile(input){
+  const file=input.files[0];
+  if(!file) return;
+  document.getElementById('fileName').textContent=file.name;
+  document.getElementById('fileName').style.display='block';
+  const reader=new FileReader();
+  reader.onload=function(e){uploadedFile=e.target.result};
+  reader.readAsDataURL(file);
+}
+
+// ── QR CODE (simple generator) ──
+function generateQR(){
+  const canvas=document.getElementById('qrCanvas');
+  const ctx=canvas.getContext('2d');
+  const size=200;
+  ctx.fillStyle='#ffffff';
+  ctx.fillRect(0,0,size,size);
+  // Generate a pattern that looks like a QR code
+  const cellSize=5;
+  const grid=size/cellSize;
+  ctx.fillStyle='#000000';
+  // Position detection patterns (top-left, top-right, bottom-left)
+  drawFinderPattern(ctx,0,0,cellSize);
+  drawFinderPattern(ctx,(grid-7)*cellSize,0,cellSize);
+  drawFinderPattern(ctx,0,(grid-7)*cellSize,cellSize);
+  // Data pattern
+  const url='http://localhost:8080/viewer.html';
+  let seed=0;
+  for(let i=0;i<url.length;i++) seed+=url.charCodeAt(i);
+  for(let y=0;y<grid;y++){
+    for(let x=0;x<grid;x++){
+      if(isFinderArea(x,y,grid)) continue;
+      seed=(seed*1103515245+12345)&0x7fffffff;
+      if(seed%3===0){ctx.fillRect(x*cellSize,y*cellSize,cellSize,cellSize)}
+    }
+  }
+  // Center logo
+  ctx.fillStyle='#d4a853';
+  ctx.fillRect(size/2-15,size/2-15,30,30);
+  ctx.fillStyle='#000';
+  ctx.font='bold 14px Inter';
+  ctx.textAlign='center';
+  ctx.fillText('AR',size/2,size/2+5);
+}
+function drawFinderPattern(ctx,x,y,cell){
+  ctx.fillStyle='#000';ctx.fillRect(x,y,7*cell,7*cell);
+  ctx.fillStyle='#fff';ctx.fillRect(x+cell,y+cell,5*cell,5*cell);
+  ctx.fillStyle='#000';ctx.fillRect(x+2*cell,y+2*cell,3*cell,3*cell);
+}
+function isFinderArea(x,y,grid){
+  return (x<8&&y<8)||(x>=grid-8&&y<8)||(x<8&&y>=grid-8);
+}
+function downloadQR(){
+  const canvas=document.getElementById('qrCanvas');
+  const link=document.createElement('a');
+  link.download='ar-smart-menu-qr.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+function printQR(){window.print()}
+
+// Close modal on overlay click
+document.getElementById('dishModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+</script>
+</body>
+</html>
