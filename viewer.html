@@ -59,13 +59,43 @@ model-viewer{width:100%;height:100%;--poster-color:transparent}
 
 .dish-name{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;color:var(--text);margin-bottom:8px}
 .dish-price{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--gold);margin-bottom:20px}
-.dish-desc{font-size:15px;line-height:1.6;color:var(--text-secondary);margin-bottom:32px;flex:1}
+.dish-desc{font-size:15px;line-height:1.6;color:var(--text-secondary);margin-bottom:24px;flex:1}
 
-/* Add to Order Button */
-.add-to-order-container{margin-top:auto;position:sticky;bottom:0;background:var(--card);padding:20px 0 0}
-.btn-add{width:100%;padding:16px;border-radius:var(--radius-sm);background:transparent;border:1px solid rgba(212,168,83,.5);color:var(--gold);font-family:'Inter';font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .3s}
-.btn-add:hover{background:rgba(212,168,83,.1);transform:translateY(-2px)}
-.btn-add.added{background:linear-gradient(135deg,#2d7d46,#34a853);color:#fff;border-color:transparent}
+/* Dish Detail Tags */
+.dish-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.dish-tag{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:50px;background:rgba(204,0,0,.06);border:1px solid rgba(204,0,0,.15);font-size:12px;color:var(--text-secondary);font-weight:500;letter-spacing:.2px;transition:all .3s}
+.dish-tag:hover{border-color:var(--gold);color:var(--gold);background:rgba(204,0,0,.1)}
+.dish-tag .tag-icon{font-size:14px}
+.dish-tag .tag-label{color:var(--text-muted);font-weight:400;margin-right:2px}
+
+/* Divider */
+.section-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(204,0,0,.2),transparent);margin:4px 0 20px}
+
+/* Action Buttons Row */
+.action-row{display:flex;gap:10px;margin-bottom:16px}
+.action-btn-icon{flex:0 0 48px;height:48px;border-radius:14px;border:1px solid rgba(204,0,0,.2);background:rgba(204,0,0,.04);color:var(--text-muted);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .35s cubic-bezier(.4,0,.2,1);font-size:20px;position:relative;overflow:hidden}
+.action-btn-icon::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(204,0,0,.15),transparent);opacity:0;transition:opacity .3s}
+.action-btn-icon:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 6px 20px rgba(204,0,0,.15)}
+.action-btn-icon:hover::before{opacity:1}
+.action-btn-icon.fav-active{background:rgba(204,0,0,.15);border-color:var(--gold);color:var(--gold)}
+.action-btn-icon.fav-active .heart-fill{display:block}
+.action-btn-icon.fav-active .heart-outline{display:none}
+.heart-fill{display:none}
+@keyframes heartPop{0%{transform:scale(1)}30%{transform:scale(1.35)}60%{transform:scale(.9)}100%{transform:scale(1)}}
+.heart-pop{animation:heartPop .45s cubic-bezier(.4,0,.2,1)}
+
+/* Share Toast */
+.share-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(17,17,17,.95);backdrop-filter:blur(16px);border:1px solid rgba(204,0,0,.3);border-radius:14px;padding:14px 24px;font-size:14px;font-weight:500;color:var(--gold);display:flex;align-items:center;gap:10px;z-index:200;opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1);pointer-events:none;box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.share-toast.visible{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* Browse More CTA */
+.browse-cta-container{margin-top:auto;position:sticky;bottom:0;background:linear-gradient(0deg,var(--card) 80%,transparent);padding:24px 0 0}
+.btn-browse{width:100%;padding:16px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--gold-dark),var(--gold));border:none;color:#fff;font-family:'Inter';font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .35s cubic-bezier(.4,0,.2,1);letter-spacing:.3px;position:relative;overflow:hidden}
+.btn-browse::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transition:left .6s}
+.btn-browse:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(204,0,0,.35)}
+.btn-browse:hover::before{left:100%}
+.btn-browse svg{transition:transform .3s}
+.btn-browse:hover svg{transform:translateX(4px)}
 
 /* Instructions */
 .instructions{display:flex;align-items:center;justify-content:center;gap:20px;padding:12px;background:rgba(212,168,83,.05);border-radius:12px;border:1px solid rgba(212,168,83,.15);margin-bottom:24px}
@@ -134,10 +164,35 @@ model-viewer{width:100%;height:100%;--poster-color:transparent}
     <div class="dish-price" id="dishPrice">₹0</div>
     <p class="dish-desc" id="dishDesc">Please wait while the 3D model loads...</p>
     
-    <div class="add-to-order-container">
-      <button class="btn-add" id="addBtn" onclick="addToOrder()">
-        + Add to Order
+    <!-- Dish Detail Tags -->
+    <div class="dish-tags" id="dishTags">
+      <div class="dish-tag"><span class="tag-icon">🌶️</span><span class="tag-label">Spice:</span> Medium</div>
+      <div class="dish-tag"><span class="tag-icon">⏱️</span><span class="tag-label">Prep:</span> 25 min</div>
+      <div class="dish-tag"><span class="tag-icon">👥</span><span class="tag-label">Serves:</span> 1-2</div>
+      <div class="dish-tag"><span class="tag-icon">⭐</span> Chef's Pick</div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- Action Buttons -->
+    <div class="action-row">
+      <button class="action-btn-icon" id="favBtn" onclick="toggleFavorite()" title="Save to favorites">
+        <span class="heart-outline">🤍</span>
+        <span class="heart-fill">❤️</span>
       </button>
+      <button class="action-btn-icon" id="shareBtn" onclick="shareDish()" title="Share this dish">
+        📤
+      </button>
+    </div>
+
+    <!-- Browse More CTA -->
+    <div class="browse-cta-container">
+      <a href="menu.html" style="text-decoration:none">
+        <button class="btn-browse" id="browseBtn">
+          🍽️ Explore More Dishes
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+        </button>
+      </a>
     </div>
   </div>
 </main>
@@ -176,7 +231,8 @@ function loadDishData() {
     viewer.src = currentDish.glb;
   }
   
-  checkCartStatus();
+  loadFavoriteState();
+  loadDishTags();
 }
 
 function resetView() {
@@ -186,36 +242,87 @@ function resetView() {
   viewer.fieldOfView = "auto";
 }
 
-function addToOrder() {
+// --- Dish Tags Data ---
+const dishMeta = {
+  1: {spice:'Hot 🔥',prep:'30 min',serves:'2',badge:'Chef\'s Special'},
+  2: {spice:'Medium',prep:'20 min',serves:'2-3',badge:'Bestseller'},
+  3: {spice:'Medium',prep:'45 min',serves:'2',badge:'Must Try'},
+  4: {spice:'Mild',prep:'40 min',serves:'2-3',badge:'Veg Delight'},
+  5: {spice:'None',prep:'25 min',serves:'4',badge:'Sweet Treat'},
+  6: {spice:'None',prep:'5 min',serves:'1',badge:'Refreshing'}
+};
+function loadDishTags() {
   if(!currentDish) return;
-  
-  // Update local cart object (we use localStorage to sync with index.html)
-  let cartStr = localStorage.getItem('spicecraft_cart');
-  let cart = cartStr ? JSON.parse(cartStr) : {};
-  
-  cart[currentDish.id] = (cart[currentDish.id] || 0) + 1;
-  localStorage.setItem('spicecraft_cart', JSON.stringify(cart));
-  
-  // Visual feedback
-  const btn = document.getElementById('addBtn');
-  btn.classList.add('added', 'pulse');
-  btn.textContent = `✓ Added (${cart[currentDish.id]})`;
-  
-  setTimeout(() => btn.classList.remove('pulse'), 500);
+  const meta = dishMeta[currentDish.id] || {spice:'Medium',prep:'25 min',serves:'1-2',badge:'Chef\'s Pick'};
+  document.getElementById('dishTags').innerHTML = `
+    <div class="dish-tag"><span class="tag-icon">🌶️</span><span class="tag-label">Spice:</span> ${meta.spice}</div>
+    <div class="dish-tag"><span class="tag-icon">⏱️</span><span class="tag-label">Prep:</span> ${meta.prep}</div>
+    <div class="dish-tag"><span class="tag-icon">👥</span><span class="tag-label">Serves:</span> ${meta.serves}</div>
+    <div class="dish-tag"><span class="tag-icon">⭐</span> ${meta.badge}</div>
+  `;
 }
 
-function checkCartStatus() {
+// --- Favorites ---
+function getFavorites() {
+  try { return JSON.parse(localStorage.getItem('zenx_favorites') || '[]'); } catch { return []; }
+}
+function loadFavoriteState() {
   if(!currentDish) return;
-  
-  let cartStr = localStorage.getItem('spicecraft_cart');
-  if(cartStr) {
-    let cart = JSON.parse(cartStr);
-    if(cart[currentDish.id] > 0) {
-      const btn = document.getElementById('addBtn');
-      btn.classList.add('added');
-      btn.textContent = `✓ Added (${cart[currentDish.id]})`;
-    }
+  const favs = getFavorites();
+  if(favs.includes(currentDish.id)) {
+    document.getElementById('favBtn').classList.add('fav-active');
   }
+}
+function toggleFavorite() {
+  if(!currentDish) return;
+  const btn = document.getElementById('favBtn');
+  let favs = getFavorites();
+  const idx = favs.indexOf(currentDish.id);
+  if(idx > -1) {
+    favs.splice(idx, 1);
+    btn.classList.remove('fav-active');
+    showToast('💔 Removed from favorites');
+  } else {
+    favs.push(currentDish.id);
+    btn.classList.add('fav-active');
+    btn.classList.add('heart-pop');
+    setTimeout(() => btn.classList.remove('heart-pop'), 500);
+    showToast('❤️ Saved to favorites!');
+  }
+  localStorage.setItem('zenx_favorites', JSON.stringify(favs));
+}
+
+// --- Share ---
+function shareDish() {
+  if(!currentDish) return;
+  const shareData = {
+    title: currentDish.name + ' — ZEN_X AR Menu',
+    text: `Check out ${currentDish.name} in 3D AR! ₹${currentDish.price} — ${currentDish.desc}`,
+    url: window.location.href
+  };
+  if(navigator.share) {
+    navigator.share(shareData).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      showToast('🔗 Link copied to clipboard!');
+    }).catch(() => {
+      showToast('🔗 ' + window.location.href);
+    });
+  }
+}
+
+// --- Toast ---
+function showToast(msg) {
+  let toast = document.querySelector('.share-toast');
+  if(!toast) {
+    toast = document.createElement('div');
+    toast.className = 'share-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.classList.add('visible');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('visible'), 2500);
 }
 
 // Initialize
