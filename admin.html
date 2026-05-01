@@ -276,7 +276,7 @@ function generateQR(){
   drawFinderPattern(ctx,(grid-7)*cellSize,0,cellSize);
   drawFinderPattern(ctx,0,(grid-7)*cellSize,cellSize);
   // Data pattern
-  const url='http://localhost:8080/viewer.html';
+  const url='viewer.html';
   let seed=0;
   for(let i=0;i<url.length;i++) seed+=url.charCodeAt(i);
   for(let y=0;y<grid;y++){
