@@ -1,0 +1,116 @@
+/* interactions.css */
+
+/* 1. Card Glow & Smooth Transitions */
+.step-card, .feature-card, .price-card, .founder-card, .signup-card {
+  transition: transform 0.5s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.step-card:hover, .feature-card:hover, .price-card:hover, .founder-card:hover, .signup-card:hover {
+  box-shadow: 0 15px 45px rgba(204, 0, 0, 0.4), inset 0 0 20px rgba(204, 0, 0, 0.1);
+  border-color: #FF0000;
+}
+
+/* 2 & 5. Button Enhancements (Glow, Lift, Scale) */
+.btn-primary, .btn-secondary, .price-btn, .submit-btn, .nav-cta, .instagram-btn {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, background 0.3s ease !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover, .price-btn-fill:hover, .submit-btn:hover, .nav-cta:hover, .instagram-btn:hover {
+  transform: translateY(-4px) scale(1.03) !important;
+  box-shadow: 0 12px 35px rgba(204, 0, 0, 0.6), 0 0 15px rgba(255, 0, 0, 0.4) !important;
+}
+
+.btn-secondary:hover, .price-btn-outline:hover {
+  transform: translateY(-4px) scale(1.03) !important;
+  box-shadow: 0 8px 25px rgba(204, 0, 0, 0.3), inset 0 0 10px rgba(204, 0, 0, 0.2) !important;
+}
+
+/* Button ripple/shine effect on hover */
+.btn-primary::after, .price-btn-fill::after, .submit-btn::after, .nav-cta::after, .instagram-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-25deg);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::after, .price-btn-fill:hover::after, .submit-btn:hover::after, .nav-cta:hover::after, .instagram-btn:hover::after {
+  left: 150%;
+  transition: left 0.7s ease-out;
+}
+
+/* 3. Subtle Floating Animation */
+.float-anim {
+  animation: smoothFloat 6s ease-in-out infinite;
+  display: inline-block;
+}
+
+.float-anim-delayed {
+  animation: smoothFloat 6s ease-in-out 3s infinite;
+  display: inline-block;
+}
+
+@keyframes smoothFloat {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Hero Text Animation for Full Sentence */
+.hero-split-text span {
+  display: inline-block;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), text-shadow 0.4s ease, color 0.4s ease;
+  /* Subtle Idle pulse animation */
+  animation: idle-pulse 4s ease-in-out infinite alternate;
+  animation-delay: calc(0.1s * var(--i));
+}
+
+@keyframes idle-pulse {
+  0% { text-shadow: 0 0 10px rgba(204, 0, 0, 0.2), 0 0 20px rgba(204, 0, 0, 0.1); }
+  100% { text-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 0 0 30px rgba(204, 0, 0, 0.3); }
+}
+
+.hero-split-text:hover span {
+  animation-play-state: paused;
+  transform: translateY(-5px) scale(1.05);
+  color: #FFFFFF;
+  text-shadow: 0 0 15px rgba(255, 0, 0, 0.9), 0 0 30px rgba(204, 0, 0, 0.7), 0 0 45px rgba(255, 0, 0, 0.4);
+  /* Hover wave effect delay across the entire sentence */
+  transition-delay: calc(0.03s * var(--i));
+}
+
+/* 7. Animated Logo Text */
+.animated-logo-text {
+  display: inline-flex;
+  background: linear-gradient(to right, #FF0000 20%, #FF9999 40%, #FF9999 60%, #FF0000 80%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: logo-shine 4s linear infinite;
+}
+
+@keyframes logo-shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.animated-logo-text span {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), text-shadow 0.3s ease, -webkit-text-fill-color 0.3s ease;
+}
+
+.animated-logo-text:hover span {
+  transform: translateY(-4px) scale(1.05);
+  -webkit-text-fill-color: #FF3333;
+  text-shadow: 0 0 12px rgba(255, 0, 0, 0.8), 0 0 24px rgba(204, 0, 0, 0.5);
+  transition-delay: calc(0.03s * var(--i));
+}

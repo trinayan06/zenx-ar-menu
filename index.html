@@ -9,13 +9,23 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="interactions.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 <body>
 
 <!-- ═══════════════ NAVIGATION ═══════════════ -->
 <nav class="nav" id="main-nav">
-  <a href="#" class="nav-logo" style="display: flex; align-items: center; gap: 10px;"><img src="logo.png" alt="ZEN_X Logo" style="height: 50px;"> ZEN_X AR Menu</a>
+  <a href="#" class="nav-logo" style="display: flex; align-items: center; gap: 10px;">
+    <img src="logo.png" alt="ZEN_X Logo" style="height: 50px;"> 
+    <span class="animated-logo-text">
+      <span style="--i:1">Z</span><span style="--i:2">E</span><span style="--i:3">N</span><span style="--i:4">_</span><span style="--i:5">X</span>
+      <span style="--i:6">&nbsp;</span>
+      <span style="--i:7">A</span><span style="--i:8">R</span>
+      <span style="--i:9">&nbsp;</span>
+      <span style="--i:10">M</span><span style="--i:11">e</span><span style="--i:12">n</span><span style="--i:13">u</span>
+    </span>
+  </a>
   <div class="nav-links">
     <a href="#how-it-works">How It Works</a>
     <a href="#features">Features</a>
@@ -28,8 +38,8 @@
 <section class="hero" id="hero">
   <div class="floating-emojis" id="floating-emojis"></div>
   <div class="hero-content">
-    <div class="hero-badge"><span class="dot"></span> Now Available for Restaurants Across India</div>
-    <h1><span class="zenx-glow">ZEN_X</span> — The Future of Restaurant Menus</h1>
+    <div class="hero-badge float-anim"><span class="dot"></span> Now Available for Restaurants Across India</div>
+    <h1 class="hero-split-text">ZEN_X — The Future of Restaurant Menus</h1>
     <p class="hero-sub">Scan. See. Order. AR-powered menus for modern restaurants.</p>
     <div class="hero-btns">
       <button class="btn-primary" onclick="openLeadModal()">
@@ -56,25 +66,25 @@
   <div class="steps-grid">
     <div class="step-card reveal">
       <div class="step-num">1</div>
-      <div class="step-icon">📝</div>
+      <div class="step-icon float-anim">📝</div>
       <h3>Sign Up</h3>
       <p>Create your restaurant account in under 2 minutes. No credit card required.</p>
     </div>
     <div class="step-card reveal">
       <div class="step-num">2</div>
-      <div class="step-icon">📸</div>
+      <div class="step-icon float-anim-delayed">📸</div>
       <h3>Add Your Dishes</h3>
       <p>Upload dish names, photos, and prices. We handle the 3D magic for you.</p>
     </div>
     <div class="step-card reveal">
       <div class="step-num">3</div>
-      <div class="step-icon">📱</div>
+      <div class="step-icon float-anim">📱</div>
       <h3>Get Your QR Code</h3>
       <p>A unique QR code is generated automatically for each table in your restaurant.</p>
     </div>
     <div class="step-card reveal">
       <div class="step-num">4</div>
-      <div class="step-icon">🥽</div>
+      <div class="step-icon float-anim-delayed">🥽</div>
       <h3>Customers See Food in AR</h3>
       <p>Guests scan the QR and instantly see realistic 3D dishes right on their table.</p>
     </div>
@@ -305,5 +315,6 @@ async function submitToSupabase(data){
 
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLeadModal(); });
 </script>
+<script src="interactions.js"></script>
 </body>
 </html>
