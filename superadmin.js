@@ -9,26 +9,73 @@ const supabaseClient = createClient(
 let allRestaurants = [];
 const MONTHLY_FEE = 1200;
 
-// ========== PASSWORD ==========
-const CORRECT_PWD = 'zenx2026';
-function checkPwd(){
-  const v = document.getElementById('pwd-input').value;
-  if(v === (localStorage.getItem('zenx_pwd') || CORRECT_PWD)){
-    document.getElementById('login-screen').classList.add('hidden');
-    document.getElementById('app').classList.add('visible');
-    document.getElementById('pwd-error').style.display='none';
-    loadAllData();
-  } else {
-    document.getElementById('pwd-error').style.display='block';
-    document.getElementById('pwd-input').style.borderColor='#ff0000';
+// ========== AUTHENTICATION (Supabase) ==========
+async function checkPwd(){
+  const email = document.getElementById('email-input').value.trim();
+  const password = document.getElementById('pwd-input').value;
+
+  if(!email || !password){
+    document.getElementById('pwd-error').textContent = '⛔ Please enter both email and password';
+    document.getElementById('pwd-error').style.display = 'block';
+    return;
   }
+
+  // Disable button to prevent double-clicks
+  const btn = document.querySelector('#login-screen button');
+  btn.disabled = true;
+  btn.textContent = '🔄 Signing in...';
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: email,
+    password: password
+  });
+
+  btn.disabled = false;
+  btn.textContent = '🔐 Unlock Dashboard';
+
+  if(error){
+    document.getElementById('pwd-error').textContent = '⛔ Access Denied — ' + error.message;
+    document.getElementById('pwd-error').style.display = 'block';
+    document.getElementById('pwd-input').style.borderColor = '#ff0000';
+    return;
+  }
+
+  // Success — show dashboard
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('app').classList.add('visible');
+  document.getElementById('pwd-error').style.display = 'none';
+  loadAllData();
 }
-function logout(){
+
+async function logout(){
+  await supabaseClient.auth.signOut();
   document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('app').classList.remove('visible');
-  document.getElementById('pwd-input').value='';
+  document.getElementById('pwd-input').value = '';
+  document.getElementById('email-input').value = '';
   document.querySelector('.sidebar').classList.remove('open');
 }
+
+// ========== SESSION PERSISTENCE ==========
+async function checkSession(){
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(session){
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app').classList.add('visible');
+    loadAllData();
+  } else {
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('app').classList.remove('visible');
+  }
+}
+
+// Listen for auth state changes (e.g. token refresh, sign out from another tab)
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if(event === 'SIGNED_OUT'){
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('app').classList.remove('visible');
+  }
+});
 
 // ========== PAGE SWITCHING ==========
 function switchPage(id, navEl){
@@ -263,17 +310,16 @@ function renderBarChart(containerId, data, maxVal){
 // ========== SETTINGS ==========
 function saveSettings(){
   localStorage.setItem('zenx_platform_name', document.getElementById('set-name').value);
-  localStorage.setItem('zenx_pwd', document.getElementById('set-pwd').value);
   localStorage.setItem('zenx_ig', document.getElementById('set-ig').value);
   localStorage.setItem('zenx_email', document.getElementById('set-email').value);
   showToast('Settings saved successfully!');
 }
 function loadSettings(){
   const n=localStorage.getItem('zenx_platform_name'); if(n) document.getElementById('set-name').value=n;
-  const p=localStorage.getItem('zenx_pwd'); if(p) document.getElementById('set-pwd').value=p;
   const ig=localStorage.getItem('zenx_ig'); if(ig) document.getElementById('set-ig').value=ig;
   const em=localStorage.getItem('zenx_email'); if(em) document.getElementById('set-email').value=em;
 }
 
 // ========== INIT ==========
 loadSettings();
+checkSession();

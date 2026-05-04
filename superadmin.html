@@ -156,8 +156,9 @@ tr:hover td{background:rgba(204,0,0,.03)}
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <img src="logo.png" alt="ZEN_X"><h1>Super Admin</h1><p>Enter the founder password to continue</p>
-    <input type="password" id="pwd-input" placeholder="Enter Password" onkeydown="if(event.key==='Enter')checkPwd()">
+    <img src="logo.png" alt="ZEN_X"><h1>Super Admin</h1><p>Sign in with your admin credentials</p>
+    <input type="email" id="email-input" placeholder="Admin Email" onkeydown="if(event.key==='Enter')document.getElementById('pwd-input').focus()">
+    <input type="password" id="pwd-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPwd()">
     <button onclick="checkPwd()">🔐 Unlock Dashboard</button>
     <p class="login-error" id="pwd-error">⛔ Access Denied — Wrong Password</p>
   </div>
@@ -248,7 +249,7 @@ tr:hover td{background:rgba(204,0,0,.03)}
       </div></div>
       <div class="settings-card"><h3>⚙️ Platform Settings</h3>
         <div class="form-group"><label>Platform Name</label><input id="set-name" value="ZEN_X"></div>
-        <div class="form-group"><label>Admin Password</label><input id="set-pwd" type="password" value="zenx2026"></div>
+
         <div class="form-group"><label>Instagram Link</label><input id="set-ig" value="https://www.instagram.com/zen_x_2026"></div>
         <div class="form-group"><label>Support Email</label><input id="set-email" value="support@zenx.in"></div>
         <button class="btn btn-red" onclick="saveSettings()">💾 Save Settings</button>
