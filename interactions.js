@@ -1,7 +1,7 @@
 // interactions.js
 document.addEventListener("DOMContentLoaded", () => {
   // 1. 3D Tilt Effect for Cards
-  const cards = document.querySelectorAll('.step-card, .feature-card, .price-card, .founder-card, .signup-card');
+  const cards = document.querySelectorAll('.step-card, .feature-card, .price-card, .founder-card, .signup-card, .service-card, .why-card');
   
   cards.forEach(card => {
     card.addEventListener('mousemove', handleTilt);
