@@ -12,9 +12,9 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=4">
-  <link rel="stylesheet" href="interactions.css?v=4">
-<link rel="stylesheet" href="new-sections.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="interactions.css?v=5">
+<link rel="stylesheet" href="new-sections.css?v=5">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 
@@ -61,6 +61,9 @@
     <div class="hero-glow-orb hero-glow-2"></div>
     <div class="hero-content">
       <div class="hero-badge float-anim"><span class="dot"></span> Helping local businesses grow faster 🚀</div>
+      <a href="https://www.instagram.com/zen_x_2026" target="_blank" class="insta-badge" style="display:inline-flex; align-items:center; gap:6px; padding:6px 16px; border-radius:50px; border:1px solid #CC0000; background:rgba(0,0,0,0.5); color:#fff; font-size:12px; font-weight:600; text-decoration:none; margin-bottom:28px; transition:all 0.3s;">
+        📸 Follow @zen_x_2026
+      </a>
       <h1 class="hero-split-text">ZEN_X — Your Digital Growth Partner</h1>
       <p class="hero-sub">We help businesses grow online with <strong>Instagram handling</strong>,
         <strong>websites</strong>, and <strong>smart automation solutions</strong>.
@@ -74,8 +77,8 @@
         </button>
       </div>
       <div class="hero-stats">
-        <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Businesses Served</span></div>
-        <div class="stat"><span class="stat-num">3x</span><span class="stat-label">Avg. Growth Rate</span></div>
+        <div class="stat"><span class="stat-num">10+</span><span class="stat-label">Businesses Served</span></div>
+        <div class="stat"><span class="stat-num">2x</span><span class="stat-label">Avg. Growth Rate</span></div>
         <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Client Satisfaction</span></div>
       </div>
     </div>
@@ -103,7 +106,7 @@
           <li>Community management</li>
         </ul>
         <button class="service-cta"
-          onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">View Plans →</button>
+          onclick="document.getElementById('final-cta').scrollIntoView({behavior:'smooth'})">Get Quote →</button>
       </div>
 
       <div class="service-card reveal">
@@ -118,7 +121,7 @@
           <li>Boost orders by 35%</li>
         </ul>
         <button class="service-cta"
-          onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">View Plans →</button>
+          onclick="document.getElementById('final-cta').scrollIntoView({behavior:'smooth'})">Get Quote →</button>
       </div>
 
       <div class="service-card reveal">
@@ -132,7 +135,7 @@
           <li>Mobile responsive design</li>
           <li>SEO optimized</li>
         </ul>
-        <button class="service-cta" onclick="openLeadModal()">Get Quote →</button>
+        <button class="service-cta" onclick="document.getElementById('final-cta').scrollIntoView({behavior:'smooth'})">Get Quote →</button>
       </div>
 
       <div class="service-card reveal">
@@ -146,7 +149,7 @@
           <li>Competitor analysis</li>
           <li>Performance tracking</li>
         </ul>
-        <button class="service-cta" onclick="openLeadModal()">Get Quote →</button>
+        <button class="service-cta" onclick="document.getElementById('final-cta').scrollIntoView({behavior:'smooth'})">Get Quote →</button>
       </div>
 
     </div>
@@ -284,6 +287,34 @@
     </div>
   </section>
 
+  <!-- ═══════════════ PORTFOLIO / OUR WORK ═══════════════ -->
+  <section class="section" id="portfolio">
+    <p class="section-label reveal">Our Work</p>
+    <h2 class="section-title reveal">See What We Build</h2>
+    <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span class="ornament-line"></span></div>
+    
+    <div class="portfolio-grid reveal" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px; max-width:1000px; margin:0 auto;">
+      <div class="portfolio-card" style="background:rgba(0,0,0,0.6); border:1px solid #CC0000; border-radius:16px; padding:30px; text-align:center; transition:transform 0.3s; box-shadow:0 4px 20px rgba(204,0,0,0.1);">
+        <div style="font-size:32px; margin-bottom:16px;">🔥</div>
+        <h3 style="color:#fff; font-size:18px; margin-bottom:8px;">VIP Cafe</h3>
+        <p style="color:var(--gold); font-size:14px; font-weight:600;">Instagram Management</p>
+        <p style="color:#aaa; font-size:13px; margin-top:8px;">Starting Soon</p>
+      </div>
+      <div class="portfolio-card" style="background:rgba(0,0,0,0.6); border:1px solid #CC0000; border-radius:16px; padding:30px; text-align:center; transition:transform 0.3s; box-shadow:0 4px 20px rgba(204,0,0,0.1);">
+        <div style="font-size:32px; margin-bottom:16px;">🥽</div>
+        <h3 style="color:#fff; font-size:18px; margin-bottom:8px;">Restaurant AR Menu</h3>
+        <p style="color:var(--gold); font-size:14px; font-weight:600;">Live Demo Available</p>
+        <p style="color:#aaa; font-size:13px; margin-top:8px;">Scan & See 3D Food</p>
+      </div>
+      <div class="portfolio-card" style="background:rgba(0,0,0,0.6); border:1px solid #CC0000; border-radius:16px; padding:30px; text-align:center; transition:transform 0.3s; box-shadow:0 4px 20px rgba(204,0,0,0.1);">
+        <div style="font-size:32px; margin-bottom:16px;">🚀</div>
+        <h3 style="color:#fff; font-size:18px; margin-bottom:8px;">Your Business</h3>
+        <p style="color:var(--gold); font-size:14px; font-weight:600;">Let's Work Together!</p>
+        <p style="color:#aaa; font-size:13px; margin-top:8px;">Websites & Growth</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ═══════════════ WHY CHOOSE US ═══════════════ -->
   <section class="section" id="why-us">
     <p class="section-label reveal">The ZEN_X Difference</p>
@@ -322,9 +353,9 @@
       <h2 class="cta-title">Let's Grow Your Business 🚀</h2>
       <p class="cta-desc">Join businesses that are already scaling with ZEN_X digital solutions.</p>
       <button class="btn-primary btn-primary--large" onclick="openLeadModal()">
-        <span>🚀</span> Start Your Free Trial
+        <span>🚀</span> Get Started — First 15 Days FREE
       </button>
-      <p class="cta-note">No credit card required · Cancel anytime · 15 days free</p>
+      <p class="cta-note">✓ No credit card  ·  ✓ Cancel anytime  ·  ✓ Response within 24hrs</p>
     </div>
   </section>
 
@@ -411,9 +442,16 @@
       <a href="#about-us">About Us</a>
       <a href="menu.html">AR Demo</a>
       <a href="https://www.instagram.com/zen_x_2026" target="_blank" style="color: var(--gold);">Instagram</a>
+      <a href="tel:+919864119506" style="color: var(--gold);">📱 +91 9864119506</a>
     </div>
     <p class="footer-copy">© 2026 ZEN_X. Built with ❤️ by Team ZEN_X — Trinayan Mahanta, Snehangshu Das, Mannat Sahu</p>
   </footer>
+
+  <!-- ═══════════════ FLOATING BUTTONS ═══════════════ -->
+  <a href="https://wa.me/919864119506?text=Hi ZEN_X! I want to know more about your services" target="_blank" id="whatsapp-btn">
+    💬 WhatsApp Us
+  </a>
+  <button id="scroll-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
 
   <!-- ═══════════════ SCRIPTS ═══════════════ -->
   <script>
@@ -507,6 +545,14 @@
     }
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLeadModal(); });
+    
+    // --- Scroll to Top Button Visibility ---
+    window.addEventListener('scroll', () => {
+      const scrollBtn = document.getElementById('scroll-top-btn');
+      if (scrollBtn) {
+        scrollBtn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+      }
+    });
   </script>
   <script src="interactions.js"></script>
 </body>
