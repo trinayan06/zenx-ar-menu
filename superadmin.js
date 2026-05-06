@@ -124,6 +124,7 @@ async function loadAllData(){
   renderARProjects();
   renderWebProjects();
   renderSubscriptions();
+  seedVipCafe();
 }
 
 // ========== DASHBOARD STATS ==========
@@ -259,7 +260,8 @@ function renderClients(filter=''){
       <td>${getBadge(status)}</td>
       <td>${date}</td>
       <td><div class="btn-row">
-        <button class="btn btn-outline btn-sm" onclick="toggleClientStatus('${c.id}','${status}')">${status==='active'?'Deactivate':'Activate'}</button>
+        <button class="btn btn-outline btn-sm" onclick="viewClient('${c.id}')">View</button>
+        <button class="btn btn-outline btn-sm" onclick="editClient('${c.id}')">Edit</button>
         <button class="btn btn-danger btn-sm" onclick="deleteClient('${c.id}')">Delete</button>
       </div></td>
     </tr>`;
@@ -285,7 +287,7 @@ async function deleteClient(id){
   await loadAllData();
 }
 
-function viewProject(id){ showToast('📋 Project ID: ' + id); }
+// viewProject is now handled by viewClient/viewInsta etc.
 
 // ========== ADD CLIENT ==========
 function openModal(){ document.getElementById('modal-add').classList.add('show'); }
@@ -342,6 +344,7 @@ function renderInstaProjects(){
       <td>${statusBadge}</td>
       <td>${fee}</td>
       <td>${nextDue}</td>
+      <td><div class="btn-row"><button class="btn btn-outline btn-sm" onclick="viewInsta('${p.id}')">View</button><button class="btn btn-outline btn-sm" onclick="editInsta('${p.id}')">Edit</button></div></td>
     </tr>`;
   }).join('');
 }
@@ -423,7 +426,9 @@ function renderSubscriptions(){
 
 async function toggleSubStatus(id, currentStatus){
   const newStatus = (currentStatus === 'paid' || currentStatus === 'active') ? 'pending' : 'paid';
-  const { error } = await supabaseClient.from('subscriptions').update({ status: newStatus }).eq('id', id);
+  const updateData = { status: newStatus };
+  if(newStatus === 'paid') updateData.paid_date = new Date().toISOString();
+  const { error } = await supabaseClient.from('subscriptions').update(updateData).eq('id', id);
   if(error){ showToast('❌ Error updating subscription', true); return; }
   showToast('✅ Subscription updated to ' + newStatus);
   await loadAllData();
@@ -492,6 +497,188 @@ function loadSettings(){
   const n=localStorage.getItem('zenx_platform_name'); if(n) document.getElementById('set-name').value=n;
   const ig=localStorage.getItem('zenx_ig'); if(ig) document.getElementById('set-ig').value=ig;
   const em=localStorage.getItem('zenx_email'); if(em) document.getElementById('set-email').value=em;
+}
+
+// ========== VIEW CLIENT ==========
+async function viewClient(id){
+  const modal = document.getElementById('modal-view-client');
+  const content = document.getElementById('view-client-content');
+  content.innerHTML = '<p style="color:var(--red)">Loading...</p>';
+  modal.classList.add('show');
+  const { data, error } = await supabaseClient.from('clients').select('*').eq('id', id).single();
+  if(error||!data){ content.innerHTML = '<p style="color:#f00">❌ Error loading client</p>'; return; }
+  const date = data.created_at ? new Date(data.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+  content.innerHTML = `
+    <div style="display:grid;gap:12px">
+      <div><strong style="color:var(--red)">Name:</strong> ${data.name||'—'}</div>
+      <div><strong style="color:var(--red)">Owner:</strong> ${data.owner_name||'—'}</div>
+      <div><strong style="color:var(--red)">Phone:</strong> ${data.phone||'—'}</div>
+      <div><strong style="color:var(--red)">Email:</strong> ${data.email||'—'}</div>
+      <div><strong style="color:var(--red)">City:</strong> ${data.city||'—'}</div>
+      <div><strong style="color:var(--red)">Business Type:</strong> ${data.business_type||'—'}</div>
+      <div><strong style="color:var(--red)">Service:</strong> ${data.service_type||'—'}</div>
+      <div><strong style="color:var(--red)">Status:</strong> ${getBadge(data.status)}</div>
+      <div><strong style="color:var(--red)">Joined:</strong> ${date}</div>
+    </div>`;
+}
+
+// ========== EDIT CLIENT ==========
+async function editClient(id){
+  const { data, error } = await supabaseClient.from('clients').select('*').eq('id', id).single();
+  if(error||!data){ showToast('❌ Error loading client', true); return; }
+  document.getElementById('ec-id').value = data.id;
+  document.getElementById('ec-name').value = data.name || '';
+  document.getElementById('ec-owner').value = data.owner_name || '';
+  document.getElementById('ec-phone').value = data.phone || '';
+  document.getElementById('ec-email').value = data.email || '';
+  document.getElementById('ec-city').value = data.city || '';
+  document.getElementById('ec-type').value = data.business_type || 'Other';
+  document.getElementById('ec-status').value = data.status || 'active';
+  document.getElementById('modal-edit-client').classList.add('show');
+}
+async function saveEditClient(){
+  const id = document.getElementById('ec-id').value;
+  const { error } = await supabaseClient.from('clients').update({
+    name: document.getElementById('ec-name').value.trim(),
+    owner_name: document.getElementById('ec-owner').value.trim() || null,
+    phone: document.getElementById('ec-phone').value.trim() || null,
+    email: document.getElementById('ec-email').value.trim() || null,
+    city: document.getElementById('ec-city').value.trim() || null,
+    business_type: document.getElementById('ec-type').value,
+    status: document.getElementById('ec-status').value
+  }).eq('id', id);
+  if(error){ showToast('❌ Error saving — ' + error.message, true); return; }
+  document.getElementById('modal-edit-client').classList.remove('show');
+  showToast('✅ Client updated successfully!');
+  await loadAllData();
+}
+
+// ========== VIEW INSTAGRAM PROJECT ==========
+async function viewInsta(id){
+  const modal = document.getElementById('modal-view-insta');
+  const content = document.getElementById('view-insta-content');
+  content.innerHTML = '<p style="color:var(--red)">Loading...</p>';
+  modal.classList.add('show');
+  const { data, error } = await supabaseClient.from('instagram_projects').select('*, clients(name, phone, city)').eq('id', id).single();
+  if(error||!data){ content.innerHTML = '<p style="color:#f00">❌ Error loading project</p>'; return; }
+  const startDate = data.start_date ? new Date(data.start_date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+  content.innerHTML = `
+    <div style="display:grid;gap:12px">
+      <div><strong style="color:var(--red)">Client:</strong> ${data.clients?.name||'—'}</div>
+      <div><strong style="color:var(--red)">Instagram Handle:</strong> ${data.instagram_handle||'—'}</div>
+      <div><strong style="color:var(--red)">Package:</strong> <span class="badge badge-${(data.package||'standard').toLowerCase()}">${data.package||'Standard'}</span></div>
+      <div><strong style="color:var(--red)">Posts/Month:</strong> ${data.posts_per_month||0}</div>
+      <div><strong style="color:var(--red)">Reels/Month:</strong> ${data.reels_per_month||0}</div>
+      <div><strong style="color:var(--red)">Monthly Fee:</strong> ₹${(data.monthly_fee||0).toLocaleString()}</div>
+      <div><strong style="color:var(--red)">Status:</strong> ${getBadge(data.status)}</div>
+      <div><strong style="color:var(--red)">Start Date:</strong> ${startDate}</div>
+      <div><strong style="color:var(--red)">Notes:</strong> ${data.notes||'—'}</div>
+      <div><strong style="color:var(--red)">Login Username:</strong> ${data.login_username||'—'}</div>
+    </div>`;
+}
+
+// ========== EDIT INSTAGRAM PROJECT ==========
+async function editInsta(id){
+  const { data, error } = await supabaseClient.from('instagram_projects').select('*, clients(name)').eq('id', id).single();
+  if(error||!data){ showToast('❌ Error loading project', true); return; }
+  document.getElementById('ei-id').value = data.id;
+  document.getElementById('ei-client').value = data.clients?.name || '—';
+  document.getElementById('ei-handle').value = data.instagram_handle || '';
+  document.getElementById('ei-package').value = data.package || 'standard';
+  document.getElementById('ei-posts').value = data.posts_per_month || 0;
+  document.getElementById('ei-reels').value = data.reels_per_month || 0;
+  document.getElementById('ei-fee').value = data.monthly_fee || 0;
+  document.getElementById('ei-status').value = data.status || 'in_progress';
+  document.getElementById('ei-next-due').value = data.next_post_due || '';
+  document.getElementById('ei-login-user').value = data.login_username || '';
+  document.getElementById('ei-login-pass').value = data.login_password || '';
+  document.getElementById('ei-notes').value = data.notes || '';
+  document.getElementById('modal-edit-insta').classList.add('show');
+}
+async function saveEditInsta(){
+  const id = document.getElementById('ei-id').value;
+  const { error } = await supabaseClient.from('instagram_projects').update({
+    instagram_handle: document.getElementById('ei-handle').value.trim() || null,
+    package: document.getElementById('ei-package').value,
+    posts_per_month: parseInt(document.getElementById('ei-posts').value) || 0,
+    reels_per_month: parseInt(document.getElementById('ei-reels').value) || 0,
+    monthly_fee: parseInt(document.getElementById('ei-fee').value) || 0,
+    status: document.getElementById('ei-status').value,
+    next_post_due: document.getElementById('ei-next-due').value || null,
+    login_username: document.getElementById('ei-login-user').value.trim() || null,
+    login_password: document.getElementById('ei-login-pass').value.trim() || null,
+    notes: document.getElementById('ei-notes').value.trim() || null
+  }).eq('id', id);
+  if(error){ showToast('❌ Error saving — ' + error.message, true); return; }
+  document.getElementById('modal-edit-insta').classList.remove('show');
+  showToast('✅ Instagram project updated!');
+  await loadAllData();
+}
+
+// ========== NEW INSTAGRAM PROJECT ==========
+function openNewInstaModal(){
+  const sel = document.getElementById('ni-client');
+  sel.innerHTML = allClients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  if(allClients.length === 0) sel.innerHTML = '<option value="">No clients — add one first</option>';
+  document.getElementById('ni-start').value = new Date().toISOString().slice(0,10);
+  document.getElementById('modal-new-insta').classList.add('show');
+}
+async function saveNewInstaProject(){
+  const clientId = document.getElementById('ni-client').value;
+  if(!clientId){ showToast('❌ Please select a client', true); return; }
+  const handle = document.getElementById('ni-handle').value.trim();
+  const pkg = document.getElementById('ni-package').value;
+  const posts = parseInt(document.getElementById('ni-posts').value) || 0;
+  const reels = parseInt(document.getElementById('ni-reels').value) || 0;
+  const fee = parseInt(document.getElementById('ni-fee').value) || 0;
+  const startDate = document.getElementById('ni-start').value;
+  const loginUser = document.getElementById('ni-login-user').value.trim();
+  const loginPass = document.getElementById('ni-login-pass').value.trim();
+  const notes = document.getElementById('ni-notes').value.trim();
+
+  // Insert into projects table
+  const { data: project, error: e1 } = await supabaseClient.from('projects').insert({
+    client_id: clientId, service_type: 'instagram', package: pkg,
+    monthly_fee: fee, status: 'in_progress', start_date: startDate
+  }).select().single();
+  if(e1){ showToast('❌ Error creating project — ' + e1.message, true); return; }
+
+  // Insert into instagram_projects table
+  const { error: e2 } = await supabaseClient.from('instagram_projects').insert({
+    project_id: project?.id || null, client_id: clientId, instagram_handle: handle,
+    posts_per_month: posts, reels_per_month: reels, monthly_fee: fee,
+    package: pkg, status: 'in_progress', start_date: startDate,
+    login_username: loginUser || null, login_password: loginPass || null,
+    notes: notes || null
+  });
+  if(e2){ showToast('❌ Error creating Instagram project — ' + e2.message, true); return; }
+
+  document.getElementById('modal-new-insta').classList.remove('show');
+  ['ni-handle','ni-login-user','ni-login-pass','ni-notes'].forEach(id => document.getElementById(id).value='');
+  showToast('✅ Instagram project created!');
+  await loadAllData();
+}
+
+// ========== SEED VIP CAFE ==========
+async function seedVipCafe(){
+  try {
+    const { data: vipClient } = await supabaseClient.from('clients').select('id').eq('name', 'VIP Cafe').single();
+    if(vipClient){
+      const { data: existing } = await supabaseClient.from('instagram_projects').select('id').eq('client_id', vipClient.id).single();
+      if(!existing){
+        await supabaseClient.from('projects').insert({
+          client_id: vipClient.id, service_type: 'instagram', package: 'standard',
+          monthly_fee: 5000, status: 'in_progress', start_date: '2026-05-08'
+        });
+        await supabaseClient.from('instagram_projects').insert({
+          client_id: vipClient.id, instagram_handle: '@vipcafe', package: 'standard',
+          posts_per_month: 20, reels_per_month: 4, monthly_fee: 5000,
+          status: 'in_progress', start_date: '2026-05-08'
+        });
+        console.log('VIP Cafe seeded into instagram_projects');
+      }
+    }
+  } catch(e){ console.log('Seed check:', e.message); }
 }
 
 // ========== INIT ==========
