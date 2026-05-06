@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ZEN_X — Super Admin</title>
+<title>ZEN_X Digital Solutions — Super Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -123,11 +123,19 @@ tr:hover td{background:rgba(204,0,0,.03)}
 .settings-card .form-group{margin-bottom:16px}
 .settings-card label{display:block;font-size:13px;font-weight:600;color:var(--text-sec);margin-bottom:6px}
 .settings-card input{width:100%;padding:12px 16px;background:var(--bg);border:1px solid rgba(204,0,0,.3);border-radius:8px;color:#fff;font-size:14px;outline:none;font-family:'Inter'}
-.founder-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.founder-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
 .founder-card2{background:var(--bg);border:1px solid rgba(204,0,0,.15);border-radius:10px;padding:20px;text-align:center}
 .founder-card2 .emoji{font-size:32px;margin-bottom:8px}
 .founder-card2 h4{font-size:15px;font-weight:700;margin-bottom:4px}
 .founder-card2 p{font-size:12px;color:var(--text-muted)}
+.services-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:24px}
+.service-card{background:var(--card);border:1px solid rgba(204,0,0,.12);border-radius:var(--radius);padding:24px;text-align:center;transition:all .3s}
+.service-card:hover{border-color:var(--red);transform:translateY(-2px)}
+.service-card .svc-icon{font-size:36px;margin-bottom:12px}
+.service-card h4{font-size:15px;margin-bottom:6px}
+.service-card .svc-stat{font-size:13px;color:var(--text-muted)}
+.service-card .svc-rev{font-size:20px;font-weight:700;color:var(--red);margin-top:8px}
+.badge-progress{background:rgba(255,165,0,.12);color:#ffa500;border:1px solid rgba(255,165,0,.2)}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--red);border-radius:10px;padding:14px 24px;font-size:14px;color:#fff;z-index:999;transform:translateY(100px);opacity:0;transition:all .3s}
 .toast.show{transform:translateY(0);opacity:1}
 
@@ -156,7 +164,7 @@ tr:hover td{background:rgba(204,0,0,.03)}
 <!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
-    <img src="logo.png" alt="ZEN_X"><h1>Super Admin</h1><p>Sign in with your admin credentials</p>
+    <img src="logo.png" alt="ZEN_X"><h1>Super Admin</h1><p>ZEN_X Digital Solutions — Founder Access Only</p>
     <input type="email" id="email-input" placeholder="Admin Email" onkeydown="if(event.key==='Enter')document.getElementById('pwd-input').focus()">
     <input type="password" id="pwd-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPwd()">
     <button onclick="checkPwd()">🔐 Unlock Dashboard</button>
@@ -173,7 +181,10 @@ tr:hover td{background:rgba(204,0,0,.03)}
     <div class="sidebar-header"><img src="logo.png" alt="ZEN_X"><span>ZEN_X</span></div>
     <nav class="sidebar-nav">
       <div class="nav-item active" onclick="switchPage('dashboard',this)"><span class="icon">📊</span>Dashboard</div>
-      <div class="nav-item" onclick="switchPage('restaurants',this)"><span class="icon">🏪</span>Restaurants</div>
+      <div class="nav-item" onclick="switchPage('clients',this)"><span class="icon">🏪</span>Clients</div>
+      <div class="nav-item" onclick="switchPage('instagram',this)"><span class="icon">📸</span>Instagram Projects</div>
+      <div class="nav-item" onclick="switchPage('armenu',this)"><span class="icon">🥽</span>AR Menu Projects</div>
+      <div class="nav-item" onclick="switchPage('websites',this)"><span class="icon">💻</span>Website Projects</div>
       <div class="nav-item" onclick="switchPage('subscriptions',this)"><span class="icon">📋</span>Subscriptions</div>
       <div class="nav-item" onclick="switchPage('analytics',this)"><span class="icon">📈</span>Analytics</div>
       <div class="nav-item" onclick="switchPage('settings',this)"><span class="icon">⚙️</span>Settings</div>
@@ -186,33 +197,86 @@ tr:hover td{background:rgba(204,0,0,.03)}
     <div class="page active" id="page-dashboard">
       <div class="main-header"><h2>Dashboard</h2><p>Welcome back, Founder 👑</p></div>
       <div class="stats-row">
-        <div class="stat-card"><div class="label">Total Restaurants</div><div class="value" id="s-total">—</div></div>
-        <div class="stat-card"><div class="label">Active Subscriptions</div><div class="value" id="s-active">—</div></div>
-        <div class="stat-card"><div class="label">Monthly Revenue</div><div class="value" id="s-revenue">—</div></div>
-        <div class="stat-card"><div class="label">New Signups This Week</div><div class="value" id="s-signups">—</div></div>
+        <div class="stat-card"><div class="label">Total Clients</div><div class="value">1</div><div class="sub">VIP Cafe</div></div>
+        <div class="stat-card"><div class="label">Active Subscriptions</div><div class="value">1</div></div>
+        <div class="stat-card"><div class="label">Monthly Revenue</div><div class="value">₹5,000</div></div>
+        <div class="stat-card"><div class="label">Instagram Projects</div><div class="value">1</div></div>
+        <div class="stat-card"><div class="label">AR Menu Projects</div><div class="value">0</div></div>
+        <div class="stat-card"><div class="label">New Signups This Week</div><div class="value">1</div></div>
       </div>
       <div class="panel"><h3>📌 Recent Activity</h3>
         <div id="activity-feed">
-          <div class="activity-item"><span class="activity-dot"></span>Loading...</div>
+          <div class="activity-item"><span class="activity-dot"></span>🔥 VIP Cafe — Instagram Management deal in progress — 8 May 2026</div>
+          <div class="activity-item"><span class="activity-dot"></span>📱 ZEN_X website updated with 4 services</div>
+          <div class="activity-item"><span class="activity-dot"></span>🚀 ZEN_X launched on Vercel — zenx-ar-menu.vercel.app</div>
+          <div class="activity-item"><span class="activity-dot"></span>👥 Team ZEN_X — 4 founders onboarded</div>
         </div>
       </div>
       <div class="panel"><h3>⚡ Quick Actions</h3><div class="btn-row">
-        <button class="btn btn-red" onclick="switchPage('restaurants',document.querySelectorAll('.nav-item')[1]);openModal()">➕ Add New Restaurant</button>
-        <button class="btn btn-outline" onclick="loadAllData()">🔄 Refresh Data</button>
-        <button class="btn btn-outline" onclick="switchPage('subscriptions',document.querySelectorAll('.nav-item')[2])">📋 View All Subscriptions</button>
+        <button class="btn btn-red" onclick="switchPage('clients',document.querySelectorAll('.nav-item')[1]);openModal()">+ Add New Client</button>
+        <button class="btn btn-outline" onclick="switchPage('instagram',document.querySelectorAll('.nav-item')[2])">📸 New Instagram Project</button>
+        <button class="btn btn-outline" onclick="switchPage('armenu',document.querySelectorAll('.nav-item')[3])">🥽 New AR Menu Project</button>
+        <button class="btn btn-outline" onclick="switchPage('websites',document.querySelectorAll('.nav-item')[4])">💻 New Website Project</button>
+      </div></div>
+
+      <!-- Active Projects Table -->
+      <div class="panel"><h3>📂 Active Projects</h3><div class="table-wrap"><table>
+        <thead><tr><th>Client Name</th><th>Service</th><th>Status</th><th>Start Date</th><th>Monthly Fee</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr><td><strong>VIP Cafe</strong></td><td>Instagram Management</td><td><span class="badge badge-progress">🟡 In Progress</span></td><td>May 2026</td><td>₹5,000</td><td><div class="btn-row"><button class="btn btn-outline btn-sm">View</button><button class="btn btn-outline btn-sm">Edit</button></div></td></tr>
+        </tbody>
+      </table></div></div>
+
+      <!-- Services Overview -->
+      <div class="panel"><h3>🛠️ Services Overview</h3><div class="services-row">
+        <div class="service-card"><div class="svc-icon">📸</div><h4>Instagram Management</h4><div class="svc-stat">1 active project</div><div class="svc-rev">₹5,000/mo</div></div>
+        <div class="service-card"><div class="svc-icon">🥽</div><h4>AR Menu</h4><div class="svc-stat">0 active</div><div class="svc-rev">₹0/mo</div></div>
+        <div class="service-card"><div class="svc-icon">💻</div><h4>Websites</h4><div class="svc-stat">0 active</div><div class="svc-rev">₹0/mo</div></div>
+        <div class="service-card"><div class="svc-icon">📈</div><h4>Digital Growth</h4><div class="svc-stat">0 active</div><div class="svc-rev">₹0/mo</div></div>
       </div></div>
     </div>
 
-    <!-- RESTAURANTS -->
-    <div class="page" id="page-restaurants">
-      <div class="main-header"><h2>Restaurants</h2><p>Manage all registered restaurants</p></div>
+    <!-- CLIENTS -->
+    <div class="page" id="page-clients">
+      <div class="main-header"><h2>Clients</h2><p>Manage all registered clients</p></div>
       <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
-        <input class="search-bar" style="flex:1;margin:0;min-width:200px" placeholder="🔍 Search restaurants..." oninput="filterRestaurants(this.value)">
-        <button class="btn btn-red" onclick="openModal()">➕ Add Restaurant</button>
+        <input class="search-bar" style="flex:1;margin:0;min-width:200px" placeholder="🔍 Search clients..." oninput="filterRestaurants(this.value)">
+        <button class="btn btn-red" onclick="openModal()">+ Add Client</button>
       </div>
       <div class="panel"><div class="table-wrap"><table>
-        <thead><tr><th>Restaurant</th><th>Owner</th><th>Phone</th><th>City</th><th>Status</th><th>Join Date</th><th>Actions</th></tr></thead>
-        <tbody id="rest-table"></tbody>
+        <thead><tr><th>Client</th><th>Type</th><th>Service</th><th>Owner</th><th>Phone</th><th>City</th><th>Status</th><th>Join Date</th><th>Actions</th></tr></thead>
+        <tbody id="rest-table">
+          <tr><td><strong>VIP Cafe</strong></td><td>Cafe</td><td>Instagram Management</td><td>—</td><td>—</td><td>—</td><td><span class="badge badge-progress">🟡 In Progress</span></td><td>May 2026</td><td><div class="btn-row"><button class="btn btn-outline btn-sm">View</button><button class="btn btn-outline btn-sm">Edit</button></div></td></tr>
+        </tbody>
+      </table></div></div>
+    </div>
+
+    <!-- INSTAGRAM PROJECTS -->
+    <div class="page" id="page-instagram">
+      <div class="main-header"><h2>Instagram Projects</h2><p>Manage all Instagram management projects</p></div>
+      <div class="panel"><div class="table-wrap"><table>
+        <thead><tr><th>Client Name</th><th>Package</th><th>Posts/Month</th><th>Reels/Month</th><th>Status</th><th>Monthly Fee</th><th>Next Post Due</th></tr></thead>
+        <tbody>
+          <tr><td><strong>VIP Cafe</strong></td><td><span class="badge badge-standard">Standard</span></td><td>20 posts</td><td>4 reels</td><td><span class="badge badge-progress">🟡 In Progress</span></td><td>₹5,000</td><td>Tomorrow</td></tr>
+        </tbody>
+      </table></div></div>
+    </div>
+
+    <!-- AR MENU PROJECTS -->
+    <div class="page" id="page-armenu">
+      <div class="main-header"><h2>AR Menu Projects</h2><p>Manage all AR menu projects</p></div>
+      <div class="panel"><div class="table-wrap"><table>
+        <thead><tr><th>Client Name</th><th>Package</th><th>3D Models</th><th>Status</th><th>Monthly Fee</th><th>Actions</th></tr></thead>
+        <tbody><tr><td colspan="6" style="text-align:center;padding:40px;color:#888">No AR Menu projects yet</td></tr></tbody>
+      </table></div></div>
+    </div>
+
+    <!-- WEBSITE PROJECTS -->
+    <div class="page" id="page-websites">
+      <div class="main-header"><h2>Website Projects</h2><p>Manage all website development projects</p></div>
+      <div class="panel"><div class="table-wrap"><table>
+        <thead><tr><th>Client Name</th><th>Type</th><th>Tech Stack</th><th>Status</th><th>Fee</th><th>Actions</th></tr></thead>
+        <tbody><tr><td colspan="6" style="text-align:center;padding:40px;color:#888">No website projects yet</td></tr></tbody>
       </table></div></div>
     </div>
 
@@ -221,8 +285,10 @@ tr:hover td{background:rgba(204,0,0,.03)}
       <div class="main-header"><h2>Subscriptions</h2><p>Track all subscription payments</p></div>
       <div class="stats-row"><div class="stat-card"><div class="label">Total Monthly Revenue</div><div class="value" id="sub-revenue">₹8,000</div></div></div>
       <div class="panel"><div class="table-wrap"><table>
-        <thead><tr><th>Restaurant</th><th>Monthly Fee</th><th>Start Date</th><th>Next Payment</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody id="sub-table"></tbody>
+        <thead><tr><th>Client</th><th>Service</th><th>Monthly Fee</th><th>Start Date</th><th>Next Payment</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="sub-table">
+          <tr><td><strong>VIP Cafe</strong></td><td>Instagram Management</td><td>₹5,000</td><td>May 2026</td><td>Jun 2026</td><td><span class="badge badge-paid">Paid</span></td><td><button class="btn btn-outline btn-sm">✓ Paid</button></td></tr>
+        </tbody>
       </table></div></div>
     </div>
 
@@ -230,8 +296,8 @@ tr:hover td{background:rgba(204,0,0,.03)}
     <div class="page" id="page-analytics">
       <div class="main-header"><h2>Analytics</h2><p>Platform performance insights</p></div>
       <div class="chart-row">
-        <div class="panel"><h3>📊 Restaurant Status</h3><div class="chart-container" id="scan-chart"></div></div>
-        <div class="panel"><h3>📅 Signups by Day</h3><div class="chart-container" id="dish-chart"></div></div>
+        <div class="panel"><h3>📊 Projects by Service</h3><div class="chart-container" id="scan-chart"></div></div>
+        <div class="panel"><h3>📅 Client Signups</h3><div class="chart-container" id="dish-chart"></div></div>
       </div>
       <div class="chart-row">
         <div class="panel"><h3>💰 Revenue Overview</h3><div class="chart-container" id="plan-chart"></div></div>
@@ -246,10 +312,11 @@ tr:hover td{background:rgba(204,0,0,.03)}
         <div class="founder-card2"><div class="emoji">👑</div><h4>Trinayan Mahanta</h4><p>CEO</p></div>
         <div class="founder-card2"><div class="emoji">💡</div><h4>Snehangshu Das</h4><p>Tech Lead</p></div>
         <div class="founder-card2"><div class="emoji">✨</div><h4>Mannat Sahu</h4><p>Design Lead</p></div>
+        <div class="founder-card2"><div class="emoji">🚀</div><h4>Aditya Pargyan</h4><p>Co-Founder & Marketing Lead</p></div>
       </div></div>
       <div class="settings-card"><h3>⚙️ Platform Settings</h3>
-        <div class="form-group"><label>Platform Name</label><input id="set-name" value="ZEN_X"></div>
-
+        <div class="form-group"><label>Platform Name</label><input id="set-name" value="ZEN_X Digital Solutions"></div>
+        <div class="form-group"><label>Tagline</label><input id="set-tagline" value="Instagram · AR Menu · Websites · Digital Growth" readonly style="color:var(--text-muted)"></div>
         <div class="form-group"><label>Instagram Link</label><input id="set-ig" value="https://www.instagram.com/zen_x_2026"></div>
         <div class="form-group"><label>Support Email</label><input id="set-email" value="support@zenx.in"></div>
         <button class="btn btn-red" onclick="saveSettings()">💾 Save Settings</button>
@@ -258,13 +325,17 @@ tr:hover td{background:rgba(204,0,0,.03)}
   </main>
 </div>
 
-<!-- ADD RESTAURANT MODAL -->
+<!-- ADD CLIENT MODAL -->
 <div class="modal-overlay" id="modal-add">
   <div class="modal">
-    <h3>➕ Add New Restaurant</h3>
+    <h3>➕ Add New Client</h3>
     <div class="form-row2">
-      <div class="form-group"><label>Restaurant Name</label><input id="m-name"></div>
+      <div class="form-group"><label>Client Name</label><input id="m-name"></div>
       <div class="form-group"><label>Owner Name</label><input id="m-owner"></div>
+    </div>
+    <div class="form-row2">
+      <div class="form-group"><label>Client Type</label><select id="m-type"><option>Restaurant</option><option>Cafe</option><option>Shop</option><option>Other</option></select></div>
+      <div class="form-group"><label>Service Type</label><select id="m-service"><option>Instagram</option><option>AR Menu</option><option>Website</option><option>Bundle</option></select></div>
     </div>
     <div class="form-row2">
       <div class="form-group"><label>Phone</label><input id="m-phone"></div>
@@ -272,6 +343,7 @@ tr:hover td{background:rgba(204,0,0,.03)}
     </div>
     <div class="form-row2">
       <div class="form-group"><label>City</label><input id="m-city"></div>
+      <div class="form-group"><label>Monthly Fee (₹)</label><input id="m-fee" type="number" value="5000"></div>
     </div>
     <div class="modal-btns">
       <button class="btn btn-red" onclick="addRestaurant()">✅ Submit</button>
