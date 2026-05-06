@@ -744,25 +744,46 @@ async function saveInstaProject(instaId, projectId) {
   const nextPost = document.getElementById('ei-nextpost').value;
   const notes = document.getElementById('ei-notes').value;
 
-  await supabaseClient.from('instagram_projects').update({
-    posts_per_month: posts,
-    reels_per_month: reels,
-    instagram_handle: handle,
-    next_post_due: nextPost || null,
-    notes: notes
-  }).eq('id', instaId);
+  console.log('Saving status:', status);
+  console.log('Project ID:', projectId);
 
-  if (projectId) {
-    await supabaseClient.from('projects').update({
+  const { error: instaError } = await supabaseClient
+    .from('instagram_projects')
+    .update({
+      posts_per_month: posts,
+      reels_per_month: reels,
+      instagram_handle: handle,
+      next_post_due: nextPost || null,
+      content_notes: notes
+    })
+    .eq('id', instaId);
+
+  if(instaError) {
+    console.error('Instagram update error:', instaError);
+    showToast('❌ Error updating instagram project', 'red');
+    return;
+  }
+
+  const { error: projectError } = await supabaseClient
+    .from('projects')
+    .update({
       package: pkg,
       monthly_fee: fee,
       status: status
-    }).eq('id', projectId);
+    })
+    .eq('id', projectId);
+
+  if(projectError) {
+    console.error('Project update error:', projectError);
+    showToast('❌ Error updating project status', 'red');
+    return;
   }
 
-  showToast('✅ Instagram project updated!', 'green');
-  document.getElementById('edit-insta-modal')?.remove();
-  await loadAllData();
+  showToast('✅ Instagram project updated successfully!', 'green');
+  document.getElementById('edit-insta-modal').remove();
+  await renderInstaProjects();
+  await renderActiveProjects();
+  await updateDashboardStats();
 }
 
 async function deleteInstaProject(instaId, projectId) {
