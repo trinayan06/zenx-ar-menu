@@ -322,6 +322,18 @@ async function viewProject(id){
 
 function editProject(id, service, pkg, fee, status, notes){
   document.getElementById('edit-project-modal')?.remove();
+  const s = (service || '').toLowerCase();
+  const p = (pkg || 'standard').toLowerCase();
+  const st = (status || 'in_progress').toLowerCase();
+
+  const getOpt = (val, label, current) => `<option value="${val}" ${current===val?'selected':''}>${label}</option>`;
+  
+  // If service doesn't match standard types, add it so we don't lose the data
+  let sOpts = getOpt('instagram','Instagram',s) + getOpt('ar_menu','AR Menu',s) + getOpt('website','Website',s) + getOpt('bundle','Bundle',s);
+  if(s && !['instagram','ar_menu','website','bundle'].includes(s)){
+    sOpts += getOpt(service, service, s);
+  }
+
   const modal = document.createElement('div');
   modal.id = 'edit-project-modal';
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center';
@@ -330,13 +342,13 @@ function editProject(id, service, pkg, fee, status, notes){
   modal.innerHTML = `<div style="background:#111;border:1px solid #CC0000;border-radius:12px;padding:30px;width:450px;max-width:90%;max-height:90vh;overflow-y:auto">
     <h3 style="color:#CC0000;margin-bottom:20px">✏️ Edit Project</h3>
     <label style="color:white;font-size:13px;font-weight:600">Service Type</label>
-    <select id="ep-service" style="${inp}"><option value="instagram" ${service==='instagram'?'selected':''}>Instagram</option><option value="ar_menu" ${service==='ar_menu'?'selected':''}>AR Menu</option><option value="website" ${service==='website'?'selected':''}>Website</option><option value="bundle" ${service==='bundle'?'selected':''}>Bundle</option></select>
+    <select id="ep-service" style="${inp}">${sOpts}</select>
     <label style="color:white;font-size:13px;font-weight:600">Package</label>
-    <select id="ep-package" style="${inp}"><option value="basic" ${pkg==='basic'?'selected':''}>Basic</option><option value="standard" ${pkg==='standard'?'selected':''}>Standard</option><option value="premium" ${pkg==='premium'?'selected':''}>Premium</option></select>
+    <select id="ep-package" style="${inp}">${getOpt('basic','Basic',p)}${getOpt('standard','Standard',p)}${getOpt('premium','Premium',p)}</select>
     <label style="color:white;font-size:13px;font-weight:600">Monthly Fee (₹)</label>
     <input id="ep-fee" type="number" value="${fee}" style="${inp}"/>
     <label style="color:white;font-size:13px;font-weight:600">Status</label>
-    <select id="ep-status" style="${inp}"><option value="in_progress" ${status==='in_progress'?'selected':''}>In Progress</option><option value="active" ${status==='active'?'selected':''}>Active</option><option value="completed" ${status==='completed'?'selected':''}>Completed</option><option value="paused" ${status==='paused'?'selected':''}>Paused</option></select>
+    <select id="ep-status" style="${inp}">${getOpt('in_progress','In Progress',st)}${getOpt('active','Active',st)}${getOpt('completed','Completed',st)}${getOpt('paused','Paused',st)}</select>
     <label style="color:white;font-size:13px;font-weight:600">Notes</label>
     <textarea id="ep-notes" style="${inp}height:80px;resize:vertical">${notes||''}</textarea>
     <div style="display:flex;gap:10px;margin-top:8px">
