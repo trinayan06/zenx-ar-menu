@@ -197,12 +197,12 @@ tr:hover td{background:rgba(204,0,0,.03)}
     <div class="page active" id="page-dashboard">
       <div class="main-header"><h2>Dashboard</h2><p>Welcome back, Founder 👑</p></div>
       <div class="stats-row">
-        <div class="stat-card"><div class="label">Total Clients</div><div class="value">1</div><div class="sub">VIP Cafe</div></div>
-        <div class="stat-card"><div class="label">Active Subscriptions</div><div class="value">1</div></div>
-        <div class="stat-card"><div class="label">Monthly Revenue</div><div class="value">₹5,000</div></div>
-        <div class="stat-card"><div class="label">Instagram Projects</div><div class="value">1</div></div>
-        <div class="stat-card"><div class="label">AR Menu Projects</div><div class="value">0</div></div>
-        <div class="stat-card"><div class="label">New Signups This Week</div><div class="value">1</div></div>
+        <div class="stat-card"><div class="label">Total Clients</div><div class="value" id="s-total">—</div><div class="sub" id="s-total-sub"></div></div>
+        <div class="stat-card"><div class="label">Active Subscriptions</div><div class="value" id="s-active">—</div></div>
+        <div class="stat-card"><div class="label">Monthly Revenue</div><div class="value" id="s-revenue">—</div></div>
+        <div class="stat-card"><div class="label">Instagram Projects</div><div class="value" id="s-insta">—</div></div>
+        <div class="stat-card"><div class="label">AR Menu Projects</div><div class="value" id="s-ar">—</div></div>
+        <div class="stat-card"><div class="label">New Signups This Week</div><div class="value" id="s-signups">—</div></div>
       </div>
       <div class="panel"><h3>📌 Recent Activity</h3>
         <div id="activity-feed">
@@ -222,17 +222,15 @@ tr:hover td{background:rgba(204,0,0,.03)}
       <!-- Active Projects Table -->
       <div class="panel"><h3>📂 Active Projects</h3><div class="table-wrap"><table>
         <thead><tr><th>Client Name</th><th>Service</th><th>Status</th><th>Start Date</th><th>Monthly Fee</th><th>Actions</th></tr></thead>
-        <tbody>
-          <tr><td><strong>VIP Cafe</strong></td><td>Instagram Management</td><td><span class="badge badge-progress">🟡 In Progress</span></td><td>May 2026</td><td>₹5,000</td><td><div class="btn-row"><button class="btn btn-outline btn-sm">View</button><button class="btn btn-outline btn-sm">Edit</button></div></td></tr>
-        </tbody>
+        <tbody id="active-projects-table"><tr><td colspan="6" style="text-align:center;padding:20px;color:var(--red)">Loading...</td></tr></tbody>
       </table></div></div>
 
       <!-- Services Overview -->
-      <div class="panel"><h3>🛠️ Services Overview</h3><div class="services-row">
-        <div class="service-card"><div class="svc-icon">📸</div><h4>Instagram Management</h4><div class="svc-stat">1 active project</div><div class="svc-rev">₹5,000/mo</div></div>
-        <div class="service-card"><div class="svc-icon">🥽</div><h4>AR Menu</h4><div class="svc-stat">0 active</div><div class="svc-rev">₹0/mo</div></div>
-        <div class="service-card"><div class="svc-icon">💻</div><h4>Websites</h4><div class="svc-stat">0 active</div><div class="svc-rev">₹0/mo</div></div>
-        <div class="service-card"><div class="svc-icon">📈</div><h4>Digital Growth</h4><div class="svc-stat">0 active</div><div class="svc-rev">₹0/mo</div></div>
+      <div class="panel"><h3>🛠️ Services Overview</h3><div class="services-row" id="services-overview">
+        <div class="service-card"><div class="svc-icon">📸</div><h4>Instagram Management</h4><div class="svc-stat" id="svc-insta-stat">— active</div><div class="svc-rev" id="svc-insta-rev">—</div></div>
+        <div class="service-card"><div class="svc-icon">🥽</div><h4>AR Menu</h4><div class="svc-stat" id="svc-ar-stat">— active</div><div class="svc-rev" id="svc-ar-rev">—</div></div>
+        <div class="service-card"><div class="svc-icon">💻</div><h4>Websites</h4><div class="svc-stat" id="svc-web-stat">— active</div><div class="svc-rev" id="svc-web-rev">—</div></div>
+        <div class="service-card"><div class="svc-icon">📈</div><h4>Digital Growth</h4><div class="svc-stat" id="svc-growth-stat">— active</div><div class="svc-rev" id="svc-growth-rev">—</div></div>
       </div></div>
     </div>
 
@@ -245,9 +243,7 @@ tr:hover td{background:rgba(204,0,0,.03)}
       </div>
       <div class="panel"><div class="table-wrap"><table>
         <thead><tr><th>Client</th><th>Type</th><th>Service</th><th>Owner</th><th>Phone</th><th>City</th><th>Status</th><th>Join Date</th><th>Actions</th></tr></thead>
-        <tbody id="rest-table">
-          <tr><td><strong>VIP Cafe</strong></td><td>Cafe</td><td>Instagram Management</td><td>—</td><td>—</td><td>—</td><td><span class="badge badge-progress">🟡 In Progress</span></td><td>May 2026</td><td><div class="btn-row"><button class="btn btn-outline btn-sm">View</button><button class="btn btn-outline btn-sm">Edit</button></div></td></tr>
-        </tbody>
+        <tbody id="rest-table"><tr><td colspan="9" style="text-align:center;padding:20px;color:var(--red)">Loading...</td></tr></tbody>
       </table></div></div>
     </div>
 
@@ -256,9 +252,7 @@ tr:hover td{background:rgba(204,0,0,.03)}
       <div class="main-header"><h2>Instagram Projects</h2><p>Manage all Instagram management projects</p></div>
       <div class="panel"><div class="table-wrap"><table>
         <thead><tr><th>Client Name</th><th>Package</th><th>Posts/Month</th><th>Reels/Month</th><th>Status</th><th>Monthly Fee</th><th>Next Post Due</th></tr></thead>
-        <tbody>
-          <tr><td><strong>VIP Cafe</strong></td><td><span class="badge badge-standard">Standard</span></td><td>20 posts</td><td>4 reels</td><td><span class="badge badge-progress">🟡 In Progress</span></td><td>₹5,000</td><td>Tomorrow</td></tr>
-        </tbody>
+        <tbody id="insta-table"><tr><td colspan="7" style="text-align:center;padding:20px;color:var(--red)">Loading...</td></tr></tbody>
       </table></div></div>
     </div>
 
@@ -267,7 +261,7 @@ tr:hover td{background:rgba(204,0,0,.03)}
       <div class="main-header"><h2>AR Menu Projects</h2><p>Manage all AR menu projects</p></div>
       <div class="panel"><div class="table-wrap"><table>
         <thead><tr><th>Client Name</th><th>Package</th><th>3D Models</th><th>Status</th><th>Monthly Fee</th><th>Actions</th></tr></thead>
-        <tbody><tr><td colspan="6" style="text-align:center;padding:40px;color:#888">No AR Menu projects yet</td></tr></tbody>
+        <tbody id="ar-table"><tr><td colspan="6" style="text-align:center;padding:20px;color:var(--red)">Loading...</td></tr></tbody>
       </table></div></div>
     </div>
 
@@ -276,7 +270,7 @@ tr:hover td{background:rgba(204,0,0,.03)}
       <div class="main-header"><h2>Website Projects</h2><p>Manage all website development projects</p></div>
       <div class="panel"><div class="table-wrap"><table>
         <thead><tr><th>Client Name</th><th>Type</th><th>Tech Stack</th><th>Status</th><th>Fee</th><th>Actions</th></tr></thead>
-        <tbody><tr><td colspan="6" style="text-align:center;padding:40px;color:#888">No website projects yet</td></tr></tbody>
+        <tbody id="web-table"><tr><td colspan="6" style="text-align:center;padding:20px;color:var(--red)">Loading...</td></tr></tbody>
       </table></div></div>
     </div>
 
@@ -286,9 +280,7 @@ tr:hover td{background:rgba(204,0,0,.03)}
       <div class="stats-row"><div class="stat-card"><div class="label">Total Monthly Revenue</div><div class="value" id="sub-revenue">₹8,000</div></div></div>
       <div class="panel"><div class="table-wrap"><table>
         <thead><tr><th>Client</th><th>Service</th><th>Monthly Fee</th><th>Start Date</th><th>Next Payment</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody id="sub-table">
-          <tr><td><strong>VIP Cafe</strong></td><td>Instagram Management</td><td>₹5,000</td><td>May 2026</td><td>Jun 2026</td><td><span class="badge badge-paid">Paid</span></td><td><button class="btn btn-outline btn-sm">✓ Paid</button></td></tr>
-        </tbody>
+        <tbody id="sub-table"><tr><td colspan="7" style="text-align:center;padding:20px;color:var(--red)">Loading...</td></tr></tbody>
       </table></div></div>
     </div>
 
