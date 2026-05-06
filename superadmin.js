@@ -122,12 +122,12 @@ async function loadAllData(){
   }
 
   // Render all sections
-  updateDashboardStats();
+  await updateDashboardStats();
   renderRecentActivity();
-  renderActiveProjects();
+  await renderActiveProjects();
   renderServicesOverview();
   renderClients();
-  renderInstaProjects();
+  await renderInstaProjects();
   renderARProjects();
   renderWebProjects();
   renderSubscriptions();
@@ -135,36 +135,25 @@ async function loadAllData(){
 }
 
 // ========== DASHBOARD STATS ==========
-function updateDashboardStats(){
+async function updateDashboardStats(){
+  const { count: totalClients } = await supabaseClient.from('clients').select('*', {count:'exact'});
+  const { count: activeSubs } = await supabaseClient.from('subscriptions').select('*', {count:'exact'}).eq('status','paid');
+  const { data: revenue } = await supabaseClient.from('subscriptions').select('amount').eq('status','paid');
+  const totalRev = revenue?.reduce((sum, r) => sum + (r.amount || 0), 0) || 0;
+  const { count: instaProjects } = await supabaseClient.from('instagram_projects').select('*', {count:'exact'});
+  const { count: arProjects } = await supabaseClient.from('projects').select('*', {count:'exact'}).eq('service_type', 'ar_menu');
+
   const el = (id) => document.getElementById(id);
+  if(el('s-total')) el('s-total').textContent = totalClients || 0;
+  if(el('s-total-sub') && allClients.length > 0) el('s-total-sub').textContent = allClients.map(c=>c.name).slice(0,3).join(', ');
+  if(el('s-active')) el('s-active').textContent = activeSubs || 0;
+  if(el('s-revenue')) el('s-revenue').textContent = '₹' + totalRev.toLocaleString();
+  if(el('s-insta')) el('s-insta').textContent = instaProjects || 0;
+  if(el('s-ar')) el('s-ar').textContent = arProjects || 0;
 
-  // Total clients
-  el('s-total').textContent = allClients.length;
-  if(allClients.length > 0){
-    el('s-total-sub').textContent = allClients.map(c=>c.name).slice(0,3).join(', ');
-  }
-
-  // Active subscriptions
-  const activeSubs = allSubscriptions.filter(s => s.status === 'paid' || s.status === 'active');
-  el('s-active').textContent = activeSubs.length;
-
-  // Monthly revenue
-  const totalRev = allSubscriptions
-    .filter(s => s.status === 'paid' || s.status === 'active')
-    .reduce((sum, s) => sum + (s.amount || 0), 0);
-  el('s-revenue').textContent = '₹' + totalRev.toLocaleString();
-
-  // Instagram projects
-  el('s-insta').textContent = allInstaProjects.length;
-
-  // AR Menu projects
-  const arCount = allProjects.filter(p => p.service_type === 'ar_menu').length;
-  el('s-ar').textContent = arCount;
-
-  // New signups this week
   const oneWeekAgo = new Date(); oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
   const newSignups = allClients.filter(c => c.created_at && new Date(c.created_at) >= oneWeekAgo).length;
-  el('s-signups').textContent = newSignups;
+  if(el('s-signups')) el('s-signups').textContent = newSignups;
 }
 
 // ========== RECENT ACTIVITY ==========
@@ -193,14 +182,23 @@ function renderRecentActivity(){
 }
 
 // ========== ACTIVE PROJECTS TABLE ==========
-function renderActiveProjects(){
+async function renderActiveProjects(){
+  const { data: projects, error } = await supabaseClient
+    .from('projects')
+    .select('*, clients(name)')
+    .order('created_at', { ascending: false });
+  if(error) { console.error(error); return; }
+
   const tb = document.getElementById('active-projects-table');
   if(!tb) return;
-  const active = allProjects.filter(p => p.status !== 'completed');
+  tb.innerHTML = '';
+  
+  const active = projects ? projects.filter(p => p.status !== 'completed') : [];
   if(active.length === 0){
     tb.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:#888">No active projects</td></tr>';
     return;
   }
+  
   tb.innerHTML = active.map(p => {
     const clientName = p.clients?.name || 'Unknown';
     const statusBadge = getBadge(p.status);
@@ -216,6 +214,7 @@ function renderActiveProjects(){
       <td><div class="btn-row">
         <button class="btn btn-outline btn-sm" onclick="viewProject('${p.id}')">View</button>
         <button class="btn btn-outline btn-sm" onclick="editProject('${p.id}','${p.service_type||''}','${p.package||'standard'}',${p.monthly_fee||0},'${p.status||''}','${notesEsc}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteProject('${p.id}')">Delete</button>
       </div></td>
     </tr>`;
   }).join('');
@@ -361,6 +360,16 @@ async function saveProject(id){
   await loadAllData();
 }
 
+async function deleteProject(id){
+  if(!confirm('Delete this project? This cannot be undone.')) return;
+  await supabaseClient.from('instagram_projects').delete().eq('project_id', id);
+  await supabaseClient.from('subscriptions').delete().eq('project_id', id);
+  const { error } = await supabaseClient.from('projects').delete().eq('id', id);
+  if(error){ showToast('❌ Error deleting project','red'); return; }
+  showToast('✅ Project deleted!','green');
+  await loadAllData();
+}
+
 // ========== ADD CLIENT ==========
 function openModal(){ document.getElementById('modal-add').classList.add('show'); }
 function closeModal(){ document.getElementById('modal-add').classList.remove('show'); }
@@ -395,18 +404,25 @@ async function addRestaurant(){
 }
 
 // ========== INSTAGRAM PROJECTS ==========
-function renderInstaProjects(){
+async function renderInstaProjects(){
+  const { data, error } = await supabaseClient
+    .from('instagram_projects')
+    .select('*, clients(name), projects(monthly_fee, status, package, id)')
+    .order('created_at', { ascending: false });
+  if(error) { console.error(error); return; }
+  
   const tb = document.getElementById('insta-table');
   if(!tb) return;
-  if(allInstaProjects.length === 0){
-    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#888">No Instagram projects yet</td></tr>';
+  tb.innerHTML = '';
+  if(!data || data.length === 0) {
+    tb.innerHTML = '<tr><td colspan="8" style="color:#888;text-align:center;padding:20px">No Instagram projects yet</td></tr>';
     return;
   }
-  tb.innerHTML = allInstaProjects.map(p => {
+  tb.innerHTML = data.map(p => {
     const clientName = p.clients?.name || 'Unknown';
-    const pkg = p.package || 'Standard';
-    const statusBadge = getBadge(p.status);
-    const fee = p.monthly_fee ? '₹'+Number(p.monthly_fee).toLocaleString() : '—';
+    const pkg = p.projects?.package || 'standard';
+    const statusBadge = getBadge(p.projects?.status || p.status || 'in_progress');
+    const fee = p.projects?.monthly_fee ? '₹'+Number(p.projects.monthly_fee).toLocaleString() : '—';
     const nextDue = p.next_post_due ? new Date(p.next_post_due).toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '—';
     return `<tr>
       <td><strong>${clientName}</strong></td>
@@ -416,7 +432,11 @@ function renderInstaProjects(){
       <td>${statusBadge}</td>
       <td>${fee}</td>
       <td>${nextDue}</td>
-      <td><div class="btn-row"><button class="btn btn-outline btn-sm" onclick="viewInsta('${p.id}')">View</button><button class="btn btn-outline btn-sm" onclick="editInsta('${p.id}')">Edit</button></div></td>
+      <td><div class="btn-row">
+        <button class="btn btn-outline btn-sm" onclick="viewInsta('${p.id}')">View</button>
+        <button class="btn btn-outline btn-sm" onclick="editInstaProject('${p.id}','${p.projects?.id || p.project_id || ''}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteInstaProject('${p.id}','${p.projects?.id || p.project_id || ''}')">Delete</button>
+      </div></td>
     </tr>`;
   }).join('');
 }
@@ -673,42 +693,92 @@ async function viewInsta(id){
 }
 
 // ========== EDIT INSTAGRAM PROJECT ==========
-async function editInsta(id){
-  const { data, error } = await supabaseClient.from('instagram_projects').select('*, clients(name)').eq('id', id).single();
-  if(error||!data){ showToast('❌ Error loading project', true); return; }
-  document.getElementById('ei-id').value = data.id;
-  document.getElementById('ei-client').value = data.clients?.name || '—';
-  document.getElementById('ei-handle').value = data.instagram_handle || '';
-  document.getElementById('ei-package').value = data.package || 'standard';
-  document.getElementById('ei-posts').value = data.posts_per_month || 0;
-  document.getElementById('ei-reels').value = data.reels_per_month || 0;
-  document.getElementById('ei-fee').value = data.monthly_fee || 0;
-  document.getElementById('ei-status').value = data.status || 'in_progress';
-  document.getElementById('ei-next-due').value = data.next_post_due || '';
-  document.getElementById('ei-login-user').value = data.login_username || '';
-  document.getElementById('ei-login-pass').value = data.login_password || '';
-  document.getElementById('ei-notes').value = data.notes || '';
-  document.getElementById('modal-edit-insta').classList.add('show');
+async function editInstaProject(instaId, projectId) {
+  const { data: ip } = await supabaseClient.from('instagram_projects').select('*, projects(monthly_fee, status, package)').eq('id', instaId).single();
+  const modal = document.createElement('div');
+  modal.id = 'edit-insta-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;display:flex;align-items:center;justify-content:center;overflow-y:auto';
+  modal.innerHTML = `
+    <div style="background:#111;border:1px solid #CC0000;border-radius:12px;padding:30px;width:480px;max-width:95%;margin:20px;max-height:90vh;overflow-y:auto">
+      <h3 style="color:#CC0000;margin-bottom:20px">✏️ Edit Instagram Project</h3>
+      <label style="color:#aaa;font-size:12px">PACKAGE</label>
+      <select id="ei-package" style="width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:12px;margin-top:4px">
+        <option value="basic" ${ip?.projects?.package==='basic'?'selected':''}>Basic — ₹3,000</option>
+        <option value="standard" ${ip?.projects?.package==='standard'?'selected':''}>Standard — ₹5,000</option>
+        <option value="premium" ${ip?.projects?.package==='premium'?'selected':''}>Premium — ₹8,000</option>
+      </select>
+      <label style="color:#aaa;font-size:12px">MONTHLY FEE (₹)</label>
+      <input id="ei-fee" type="number" value="${ip?.projects?.monthly_fee||5000}" style="width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:12px;margin-top:4px"/>
+      <label style="color:#aaa;font-size:12px">POSTS PER MONTH</label>
+      <input id="ei-posts" type="number" value="${ip?.posts_per_month||20}" style="width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:12px;margin-top:4px"/>
+      <label style="color:#aaa;font-size:12px">REELS PER MONTH</label>
+      <input id="ei-reels" type="number" value="${ip?.reels_per_month||4}" style="width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:12px;margin-top:4px"/>
+      <label style="color:#aaa;font-size:12px">INSTAGRAM HANDLE</label>
+      <input id="ei-handle" value="${ip?.instagram_handle||''}" placeholder="@username" style="width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:12px;margin-top:4px"/>
+      <label style="color:#aaa;font-size:12px">STATUS</label>
+      <select id="ei-status" style="width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:12px;margin-top:4px">
+        <option value="in_progress" ${ip?.projects?.status==='in_progress'?'selected':''}>In Progress</option>
+        <option value="active" ${ip?.projects?.status==='active'?'selected':''}>Active</option>
+        <option value="completed" ${ip?.projects?.status==='completed'?'selected':''}>Completed</option>
+        <option value="paused" ${ip?.projects?.status==='paused'?'selected':''}>Paused</option>
+      </select>
+      <label style="color:#aaa;font-size:12px">NEXT POST DUE</label>
+      <input id="ei-nextpost" type="date" value="${ip?.next_post_due||''}" style="width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:12px;margin-top:4px"/>
+      <label style="color:#aaa;font-size:12px">NOTES</label>
+      <textarea id="ei-notes" style="width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:20px;margin-top:4px;height:80px">${ip?.notes||''}</textarea>
+      <div style="display:flex;gap:10px">
+        <button onclick="saveInstaProject('${instaId}','${projectId}')" style="flex:1;padding:12px;background:#CC0000;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">💾 Save Changes</button>
+        <button onclick="document.getElementById('edit-insta-modal').remove()" style="flex:1;padding:12px;background:#333;color:white;border:none;border-radius:8px;cursor:pointer">Cancel</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
 }
-async function saveEditInsta(){
-  const id = document.getElementById('ei-id').value;
-  const { error } = await supabaseClient.from('instagram_projects').update({
-    instagram_handle: document.getElementById('ei-handle').value.trim() || null,
-    package: document.getElementById('ei-package').value,
-    posts_per_month: parseInt(document.getElementById('ei-posts').value) || 0,
-    reels_per_month: parseInt(document.getElementById('ei-reels').value) || 0,
-    monthly_fee: parseInt(document.getElementById('ei-fee').value) || 0,
-    status: document.getElementById('ei-status').value,
-    next_post_due: document.getElementById('ei-next-due').value || null,
-    login_username: document.getElementById('ei-login-user').value.trim() || null,
-    login_password: document.getElementById('ei-login-pass').value.trim() || null,
-    notes: document.getElementById('ei-notes').value.trim() || null
-  }).eq('id', id);
-  if(error){ showToast('❌ Error saving — ' + error.message, true); return; }
-  document.getElementById('modal-edit-insta').classList.remove('show');
-  showToast('✅ Instagram project updated!');
+
+async function saveInstaProject(instaId, projectId) {
+  const pkg = document.getElementById('ei-package').value;
+  const fee = parseFloat(document.getElementById('ei-fee').value);
+  const posts = parseInt(document.getElementById('ei-posts').value);
+  const reels = parseInt(document.getElementById('ei-reels').value);
+  const handle = document.getElementById('ei-handle').value;
+  const status = document.getElementById('ei-status').value;
+  const nextPost = document.getElementById('ei-nextpost').value;
+  const notes = document.getElementById('ei-notes').value;
+
+  await supabaseClient.from('instagram_projects').update({
+    posts_per_month: posts,
+    reels_per_month: reels,
+    instagram_handle: handle,
+    next_post_due: nextPost || null,
+    notes: notes
+  }).eq('id', instaId);
+
+  if (projectId) {
+    await supabaseClient.from('projects').update({
+      package: pkg,
+      monthly_fee: fee,
+      status: status
+    }).eq('id', projectId);
+  }
+
+  showToast('✅ Instagram project updated!', 'green');
+  document.getElementById('edit-insta-modal')?.remove();
   await loadAllData();
 }
+
+async function deleteInstaProject(instaId, projectId) {
+  if(!confirm('Delete this Instagram project?')) return;
+  await supabaseClient.from('instagram_projects').delete().eq('id', instaId);
+  if (projectId) {
+    await supabaseClient.from('subscriptions').delete().eq('project_id', projectId);
+    await supabaseClient.from('projects').delete().eq('id', projectId);
+  }
+  showToast('✅ Deleted!', 'green');
+  await loadAllData();
+}
+
+// Keep old function names around if called from elsewhere
+async function editInsta(id) { editInstaProject(id, null); }
+async function saveEditInsta() { }
 
 // ========== NEW INSTAGRAM PROJECT ==========
 function openNewInstaModal(){
