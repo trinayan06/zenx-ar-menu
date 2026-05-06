@@ -524,7 +524,7 @@ function renderSubscriptions(){
       <td><span class="badge badge-${isPaid?'paid':'pending'}">${isPaid?'Paid':'Pending'}</span></td>
       <td><div class="btn-row">
         <button class="btn btn-sm ${isPaid?'btn-outline':'btn-red'}" onclick="toggleSubStatus('${s.id}','${s.status}')">${isPaid?'✓ Paid':'Mark Paid'}</button>
-        <button class="btn btn-outline btn-sm" onclick="editSub('${s.id}', ${s.amount||0}, '${s.due_date||''}')">Edit</button>
+        <button class="btn btn-outline btn-sm" onclick="editSub('${s.id}')">Edit</button>
         <button class="btn btn-danger btn-sm" onclick="deleteSub('${s.id}')">Delete</button>
       </div></td>
     </tr>`;
@@ -542,19 +542,52 @@ async function toggleSubStatus(id, currentStatus){
   await loadAllData();
 }
 
-function editSub(id, amount, dueDate){
+async function editSub(id){
   document.getElementById('edit-sub-modal')?.remove();
+  const { data: s, error } = await supabaseClient.from('subscriptions').select('*').eq('id', id).single();
+  if(error||!s){ showToast('❌ Error loading subscription', 'red'); return; }
+
   const modal = document.createElement('div');
   modal.id = 'edit-sub-modal';
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center';
   modal.onclick = (e)=>{if(e.target===modal)modal.remove();};
   const inp = 'width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:12px;font-family:Inter,sans-serif';
+  
+  const getOpt = (val, label, current) => `<option value="${val}" ${current===val?'selected':''}>${label}</option>`;
+  const st = (s.status || 'pending').toLowerCase();
+  
   modal.innerHTML = `<div style="background:#111;border:1px solid #CC0000;border-radius:12px;padding:30px;width:450px;max-width:90%">
     <h3 style="color:#CC0000;margin-bottom:20px">✏️ Edit Subscription</h3>
-    <label style="color:white;font-size:13px;font-weight:600">Monthly Fee (₹)</label>
-    <input id="es-amount" type="number" value="${amount}" style="${inp}"/>
-    <label style="color:white;font-size:13px;font-weight:600">Next Payment Due</label>
-    <input id="es-due" type="date" value="${dueDate?dueDate.slice(0,10):''}" style="${inp}"/>
+    
+    <label style="color:white;font-size:13px;font-weight:600">Service Type</label>
+    <input id="es-service" type="text" value="${s.service_type||''}" style="${inp}" placeholder="e.g. instagram, ar_menu"/>
+    
+    <div style="display:flex;gap:10px">
+      <div style="flex:1">
+        <label style="color:white;font-size:13px;font-weight:600">Monthly Fee (₹)</label>
+        <input id="es-amount" type="number" value="${s.amount||0}" style="${inp}"/>
+      </div>
+      <div style="flex:1">
+        <label style="color:white;font-size:13px;font-weight:600">Status</label>
+        <select id="es-status" style="${inp}">
+          ${getOpt('pending','Pending',st)}
+          ${getOpt('paid','Paid',st)}
+          ${getOpt('overdue','Overdue',st)}
+        </select>
+      </div>
+    </div>
+    
+    <div style="display:flex;gap:10px">
+      <div style="flex:1">
+        <label style="color:white;font-size:13px;font-weight:600">Start Date</label>
+        <input id="es-start" type="date" value="${s.start_date?s.start_date.slice(0,10):''}" style="${inp}"/>
+      </div>
+      <div style="flex:1">
+        <label style="color:white;font-size:13px;font-weight:600">Next Payment Due</label>
+        <input id="es-due" type="date" value="${s.due_date?s.due_date.slice(0,10):''}" style="${inp}"/>
+      </div>
+    </div>
+
     <div style="display:flex;gap:10px;margin-top:8px">
       <button onclick="saveSub('${id}')" style="flex:1;padding:12px;background:#CC0000;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">💾 Save Changes</button>
       <button onclick="document.getElementById('edit-sub-modal').remove()" style="flex:1;padding:12px;background:#333;color:white;border:none;border-radius:8px;cursor:pointer">Cancel</button>
@@ -564,7 +597,10 @@ function editSub(id, amount, dueDate){
 
 async function saveSub(id){
   const { error } = await supabaseClient.from('subscriptions').update({
+    service_type: document.getElementById('es-service').value.trim() || null,
     amount: parseFloat(document.getElementById('es-amount').value) || 0,
+    status: document.getElementById('es-status').value,
+    start_date: document.getElementById('es-start').value || null,
     due_date: document.getElementById('es-due').value || null
   }).eq('id', id);
   if(error){ showToast('❌ Error saving subscription', 'red'); return; }
