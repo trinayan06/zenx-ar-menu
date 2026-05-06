@@ -75,12 +75,19 @@ function switchPage(id, navEl){
 }
 
 // ========== TOAST ==========
-function showToast(msg, isError=false){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.borderColor = isError ? '#ff0000' : '#00cc00';
-  t.classList.add('show');
-  setTimeout(()=> t.classList.remove('show'), 3000);
+function showToast(msg, color){
+  // Remove any existing dynamic toasts
+  document.querySelectorAll('.dynamic-toast').forEach(t=>t.remove());
+  const isError = color === 'red' || color === true;
+  const borderColor = isError ? '#CC0000' : '#00CC00';
+  const bgColor = isError ? '#4a1a1a' : '#1a4a1a';
+  const toast = document.createElement('div');
+  toast.className = 'dynamic-toast';
+  toast.style.cssText = `position:fixed;top:20px;right:20px;z-index:99999;background:${bgColor};color:white;padding:14px 20px;border-radius:10px;border:1px solid ${borderColor};font-weight:600;font-size:14px;font-family:'Inter',sans-serif;transform:translateY(-20px);opacity:0;transition:all .3s`;
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  requestAnimationFrame(()=>{toast.style.transform='translateY(0)';toast.style.opacity='1';});
+  setTimeout(()=>{toast.style.opacity='0';toast.style.transform='translateY(-20px)';setTimeout(()=>toast.remove(),300);},3000);
 }
 
 // ========== LOAD ALL DATA ==========
@@ -197,15 +204,19 @@ function renderActiveProjects(){
   tb.innerHTML = active.map(p => {
     const clientName = p.clients?.name || 'Unknown';
     const statusBadge = getBadge(p.status);
-    const date = p.created_at ? new Date(p.created_at).toLocaleDateString('en-IN',{month:'short',year:'numeric'}) : '—';
+    const date = p.start_date ? new Date(p.start_date).toLocaleDateString('en-IN',{month:'short',year:'numeric'}) : (p.created_at ? new Date(p.created_at).toLocaleDateString('en-IN',{month:'short',year:'numeric'}) : '—');
     const fee = p.monthly_fee ? '₹'+Number(p.monthly_fee).toLocaleString() : '—';
+    const notesEsc = (p.notes||'').replace(/'/g,"\\'")
     return `<tr>
       <td><strong>${clientName}</strong></td>
       <td>${p.service_type||'—'}</td>
       <td>${statusBadge}</td>
       <td>${date}</td>
       <td>${fee}</td>
-      <td><div class="btn-row"><button class="btn btn-outline btn-sm" onclick="viewProject('${p.id}')">View</button></div></td>
+      <td><div class="btn-row">
+        <button class="btn btn-outline btn-sm" onclick="viewProject('${p.id}')">View</button>
+        <button class="btn btn-outline btn-sm" onclick="editProject('${p.id}','${p.service_type||''}','${p.package||'standard'}',${p.monthly_fee||0},'${p.status||''}','${notesEsc}')">Edit</button>
+      </div></td>
     </tr>`;
   }).join('');
 }
@@ -287,7 +298,68 @@ async function deleteClient(id){
   await loadAllData();
 }
 
-// viewProject is now handled by viewClient/viewInsta etc.
+// ========== VIEW/EDIT PROJECT ==========
+async function viewProject(id){
+  const { data: p, error } = await supabaseClient.from('projects').select('*, clients(name)').eq('id', id).single();
+  if(error||!p){ showToast('❌ Error loading project','red'); return; }
+  const modal = document.createElement('div');
+  modal.id = 'view-project-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center';
+  modal.onclick = (e)=>{if(e.target===modal)modal.remove();};
+  const startDate = p.start_date ? new Date(p.start_date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+  modal.innerHTML = `<div style="background:#111;border:1px solid #CC0000;border-radius:12px;padding:30px;width:450px;max-width:90%">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h3 style="color:#CC0000;margin:0">📂 Project Details</h3><button onclick="this.closest('[id=view-project-modal]').remove()" style="background:#333;border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer">✕</button></div>
+    <div style="display:grid;gap:10px;color:#ccc">
+      <div><strong style="color:#CC0000">Client:</strong> ${p.clients?.name||'—'}</div>
+      <div><strong style="color:#CC0000">Service:</strong> ${p.service_type||'—'}</div>
+      <div><strong style="color:#CC0000">Package:</strong> ${p.package||'—'}</div>
+      <div><strong style="color:#CC0000">Fee:</strong> ₹${(p.monthly_fee||0).toLocaleString()}</div>
+      <div><strong style="color:#CC0000">Status:</strong> ${p.status||'—'}</div>
+      <div><strong style="color:#CC0000">Start Date:</strong> ${startDate}</div>
+      <div><strong style="color:#CC0000">Notes:</strong> ${p.notes||'—'}</div>
+    </div></div>`;
+  document.body.appendChild(modal);
+}
+
+function editProject(id, service, pkg, fee, status, notes){
+  document.getElementById('edit-project-modal')?.remove();
+  const modal = document.createElement('div');
+  modal.id = 'edit-project-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center';
+  modal.onclick = (e)=>{if(e.target===modal)modal.remove();};
+  const inp = 'width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:12px;font-family:Inter,sans-serif';
+  modal.innerHTML = `<div style="background:#111;border:1px solid #CC0000;border-radius:12px;padding:30px;width:450px;max-width:90%;max-height:90vh;overflow-y:auto">
+    <h3 style="color:#CC0000;margin-bottom:20px">✏️ Edit Project</h3>
+    <label style="color:white;font-size:13px;font-weight:600">Service Type</label>
+    <select id="ep-service" style="${inp}"><option value="instagram" ${service==='instagram'?'selected':''}>Instagram</option><option value="ar_menu" ${service==='ar_menu'?'selected':''}>AR Menu</option><option value="website" ${service==='website'?'selected':''}>Website</option><option value="bundle" ${service==='bundle'?'selected':''}>Bundle</option></select>
+    <label style="color:white;font-size:13px;font-weight:600">Package</label>
+    <select id="ep-package" style="${inp}"><option value="basic" ${pkg==='basic'?'selected':''}>Basic</option><option value="standard" ${pkg==='standard'?'selected':''}>Standard</option><option value="premium" ${pkg==='premium'?'selected':''}>Premium</option></select>
+    <label style="color:white;font-size:13px;font-weight:600">Monthly Fee (₹)</label>
+    <input id="ep-fee" type="number" value="${fee}" style="${inp}"/>
+    <label style="color:white;font-size:13px;font-weight:600">Status</label>
+    <select id="ep-status" style="${inp}"><option value="in_progress" ${status==='in_progress'?'selected':''}>In Progress</option><option value="active" ${status==='active'?'selected':''}>Active</option><option value="completed" ${status==='completed'?'selected':''}>Completed</option><option value="paused" ${status==='paused'?'selected':''}>Paused</option></select>
+    <label style="color:white;font-size:13px;font-weight:600">Notes</label>
+    <textarea id="ep-notes" style="${inp}height:80px;resize:vertical">${notes||''}</textarea>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button onclick="saveProject('${id}')" style="flex:1;padding:12px;background:#CC0000;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">💾 Save Changes</button>
+      <button onclick="document.getElementById('edit-project-modal').remove()" style="flex:1;padding:12px;background:#333;color:white;border:none;border-radius:8px;cursor:pointer">Cancel</button>
+    </div></div>`;
+  document.body.appendChild(modal);
+}
+
+async function saveProject(id){
+  const { error } = await supabaseClient.from('projects').update({
+    service_type: document.getElementById('ep-service').value,
+    package: document.getElementById('ep-package').value,
+    monthly_fee: parseFloat(document.getElementById('ep-fee').value) || 0,
+    status: document.getElementById('ep-status').value,
+    notes: document.getElementById('ep-notes').value.trim() || null
+  }).eq('id', id);
+  if(error){ showToast('❌ Error saving — '+error.message,'red'); return; }
+  showToast('✅ Project updated successfully!','green');
+  document.getElementById('edit-project-modal')?.remove();
+  await loadAllData();
+}
 
 // ========== ADD CLIENT ==========
 function openModal(){ document.getElementById('modal-add').classList.add('show'); }
@@ -501,43 +573,64 @@ function loadSettings(){
 
 // ========== VIEW CLIENT ==========
 async function viewClient(id){
-  const modal = document.getElementById('modal-view-client');
-  const content = document.getElementById('view-client-content');
-  content.innerHTML = '<p style="color:var(--red)">Loading...</p>';
-  modal.classList.add('show');
+  document.getElementById('view-project-modal')?.remove();
   const { data, error } = await supabaseClient.from('clients').select('*').eq('id', id).single();
-  if(error||!data){ content.innerHTML = '<p style="color:#f00">❌ Error loading client</p>'; return; }
+  if(error||!data){ showToast('❌ Error loading client','red'); return; }
+  const modal = document.createElement('div');
+  modal.id = 'view-project-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center';
+  modal.onclick = (e)=>{if(e.target===modal)modal.remove();};
   const date = data.created_at ? new Date(data.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
-  content.innerHTML = `
-    <div style="display:grid;gap:12px">
-      <div><strong style="color:var(--red)">Name:</strong> ${data.name||'—'}</div>
-      <div><strong style="color:var(--red)">Owner:</strong> ${data.owner_name||'—'}</div>
-      <div><strong style="color:var(--red)">Phone:</strong> ${data.phone||'—'}</div>
-      <div><strong style="color:var(--red)">Email:</strong> ${data.email||'—'}</div>
-      <div><strong style="color:var(--red)">City:</strong> ${data.city||'—'}</div>
-      <div><strong style="color:var(--red)">Business Type:</strong> ${data.business_type||'—'}</div>
-      <div><strong style="color:var(--red)">Service:</strong> ${data.service_type||'—'}</div>
-      <div><strong style="color:var(--red)">Status:</strong> ${getBadge(data.status)}</div>
-      <div><strong style="color:var(--red)">Joined:</strong> ${date}</div>
-    </div>`;
+  modal.innerHTML = `<div style="background:#111;border:1px solid #CC0000;border-radius:12px;padding:30px;width:450px;max-width:90%">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h3 style="color:#CC0000;margin:0">👤 Client Details</h3><button onclick="this.closest('[id=view-project-modal]').remove()" style="background:#333;border:none;color:white;padding:6px 12px;border-radius:6px;cursor:pointer">✕</button></div>
+    <div style="display:grid;gap:10px;color:#ccc">
+      <div><strong style="color:#CC0000">Name:</strong> ${data.name||'—'}</div>
+      <div><strong style="color:#CC0000">Owner:</strong> ${data.owner_name||'—'}</div>
+      <div><strong style="color:#CC0000">Phone:</strong> ${data.phone||'—'}</div>
+      <div><strong style="color:#CC0000">Email:</strong> ${data.email||'—'}</div>
+      <div><strong style="color:#CC0000">City:</strong> ${data.city||'—'}</div>
+      <div><strong style="color:#CC0000">Business Type:</strong> ${data.business_type||'—'}</div>
+      <div><strong style="color:#CC0000">Service:</strong> ${data.service_type||'—'}</div>
+      <div><strong style="color:#CC0000">Status:</strong> ${getBadge(data.status)}</div>
+      <div><strong style="color:#CC0000">Joined:</strong> ${date}</div>
+    </div></div>`;
+  document.body.appendChild(modal);
 }
 
 // ========== EDIT CLIENT ==========
 async function editClient(id){
-  const { data, error } = await supabaseClient.from('clients').select('*').eq('id', id).single();
-  if(error||!data){ showToast('❌ Error loading client', true); return; }
-  document.getElementById('ec-id').value = data.id;
-  document.getElementById('ec-name').value = data.name || '';
-  document.getElementById('ec-owner').value = data.owner_name || '';
-  document.getElementById('ec-phone').value = data.phone || '';
-  document.getElementById('ec-email').value = data.email || '';
-  document.getElementById('ec-city').value = data.city || '';
-  document.getElementById('ec-type').value = data.business_type || 'Other';
-  document.getElementById('ec-status').value = data.status || 'active';
-  document.getElementById('modal-edit-client').classList.add('show');
+  document.getElementById('edit-client-modal')?.remove();
+  const { data: c, error } = await supabaseClient.from('clients').select('*').eq('id', id).single();
+  if(error||!c){ showToast('❌ Error loading client','red'); return; }
+  const modal = document.createElement('div');
+  modal.id = 'edit-client-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center';
+  modal.onclick = (e)=>{if(e.target===modal)modal.remove();};
+  const inp = 'width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:12px;font-family:Inter,sans-serif';
+  const sel = (field, val, opts) => opts.map(o=>`<option value="${o}" ${val===o?'selected':''}>${o.charAt(0).toUpperCase()+o.slice(1)}</option>`).join('');
+  modal.innerHTML = `<div style="background:#111;border:1px solid #CC0000;border-radius:12px;padding:30px;width:450px;max-width:90%;max-height:90vh;overflow-y:auto">
+    <h3 style="color:#CC0000;margin-bottom:20px">✏️ Edit Client</h3>
+    <label style="color:white;font-size:13px;font-weight:600">Client Name</label>
+    <input id="ec-name" value="${c.name||''}" style="${inp}"/>
+    <label style="color:white;font-size:13px;font-weight:600">Owner Name</label>
+    <input id="ec-owner" value="${c.owner_name||''}" style="${inp}"/>
+    <label style="color:white;font-size:13px;font-weight:600">Phone</label>
+    <input id="ec-phone" value="${c.phone||''}" style="${inp}"/>
+    <label style="color:white;font-size:13px;font-weight:600">Email</label>
+    <input id="ec-email" value="${c.email||''}" style="${inp}"/>
+    <label style="color:white;font-size:13px;font-weight:600">City</label>
+    <input id="ec-city" value="${c.city||''}" style="${inp}"/>
+    <label style="color:white;font-size:13px;font-weight:600">Business Type</label>
+    <select id="ec-type" style="${inp}">${sel('type',c.business_type||'other',['cafe','restaurant','shop','other'])}</select>
+    <label style="color:white;font-size:13px;font-weight:600">Status</label>
+    <select id="ec-status" style="${inp}">${sel('status',c.status||'active',['active','pending','inactive'])}</select>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button onclick="saveClient('${id}')" style="flex:1;padding:12px;background:#CC0000;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">💾 Save Changes</button>
+      <button onclick="document.getElementById('edit-client-modal').remove()" style="flex:1;padding:12px;background:#333;color:white;border:none;border-radius:8px;cursor:pointer">Cancel</button>
+    </div></div>`;
+  document.body.appendChild(modal);
 }
-async function saveEditClient(){
-  const id = document.getElementById('ec-id').value;
+async function saveClient(id){
   const { error } = await supabaseClient.from('clients').update({
     name: document.getElementById('ec-name').value.trim(),
     owner_name: document.getElementById('ec-owner').value.trim() || null,
@@ -547,11 +640,13 @@ async function saveEditClient(){
     business_type: document.getElementById('ec-type').value,
     status: document.getElementById('ec-status').value
   }).eq('id', id);
-  if(error){ showToast('❌ Error saving — ' + error.message, true); return; }
-  document.getElementById('modal-edit-client').classList.remove('show');
-  showToast('✅ Client updated successfully!');
+  if(error){ showToast('❌ Error — '+error.message,'red'); return; }
+  showToast('✅ Client updated!','green');
+  document.getElementById('edit-client-modal')?.remove();
   await loadAllData();
 }
+// Keep old function name working
+async function saveEditClient(){ /* handled by saveClient now */ }
 
 // ========== VIEW INSTAGRAM PROJECT ==========
 async function viewInsta(id){
