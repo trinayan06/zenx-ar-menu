@@ -522,7 +522,11 @@ function renderSubscriptions(){
       <td>${startDate}</td>
       <td>${dueDate}</td>
       <td><span class="badge badge-${isPaid?'paid':'pending'}">${isPaid?'Paid':'Pending'}</span></td>
-      <td><button class="btn btn-sm ${isPaid?'btn-outline':'btn-red'}" onclick="toggleSubStatus('${s.id}','${s.status}')">${isPaid?'✓ Paid':'Mark Paid'}</button></td>
+      <td><div class="btn-row">
+        <button class="btn btn-sm ${isPaid?'btn-outline':'btn-red'}" onclick="toggleSubStatus('${s.id}','${s.status}')">${isPaid?'✓ Paid':'Mark Paid'}</button>
+        <button class="btn btn-outline btn-sm" onclick="editSub('${s.id}', ${s.amount||0}, '${s.due_date||''}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteSub('${s.id}')">Delete</button>
+      </div></td>
     </tr>`;
   }).join('');
   document.getElementById('sub-revenue').textContent = '₹' + totalRev.toLocaleString();
@@ -535,6 +539,45 @@ async function toggleSubStatus(id, currentStatus){
   const { error } = await supabaseClient.from('subscriptions').update(updateData).eq('id', id);
   if(error){ showToast('❌ Error updating subscription', true); return; }
   showToast('✅ Subscription updated to ' + newStatus);
+  await loadAllData();
+}
+
+function editSub(id, amount, dueDate){
+  document.getElementById('edit-sub-modal')?.remove();
+  const modal = document.createElement('div');
+  modal.id = 'edit-sub-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center';
+  modal.onclick = (e)=>{if(e.target===modal)modal.remove();};
+  const inp = 'width:100%;padding:10px;background:#222;color:white;border:1px solid #CC0000;border-radius:8px;margin-bottom:12px;font-family:Inter,sans-serif';
+  modal.innerHTML = `<div style="background:#111;border:1px solid #CC0000;border-radius:12px;padding:30px;width:450px;max-width:90%">
+    <h3 style="color:#CC0000;margin-bottom:20px">✏️ Edit Subscription</h3>
+    <label style="color:white;font-size:13px;font-weight:600">Monthly Fee (₹)</label>
+    <input id="es-amount" type="number" value="${amount}" style="${inp}"/>
+    <label style="color:white;font-size:13px;font-weight:600">Next Payment Due</label>
+    <input id="es-due" type="date" value="${dueDate?dueDate.slice(0,10):''}" style="${inp}"/>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button onclick="saveSub('${id}')" style="flex:1;padding:12px;background:#CC0000;color:white;border:none;border-radius:8px;font-weight:700;cursor:pointer">💾 Save Changes</button>
+      <button onclick="document.getElementById('edit-sub-modal').remove()" style="flex:1;padding:12px;background:#333;color:white;border:none;border-radius:8px;cursor:pointer">Cancel</button>
+    </div></div>`;
+  document.body.appendChild(modal);
+}
+
+async function saveSub(id){
+  const { error } = await supabaseClient.from('subscriptions').update({
+    amount: parseFloat(document.getElementById('es-amount').value) || 0,
+    due_date: document.getElementById('es-due').value || null
+  }).eq('id', id);
+  if(error){ showToast('❌ Error saving subscription', 'red'); return; }
+  showToast('✅ Subscription updated!', 'green');
+  document.getElementById('edit-sub-modal')?.remove();
+  await loadAllData();
+}
+
+async function deleteSub(id){
+  if(!confirm('Delete this subscription record? This cannot be undone.')) return;
+  const { error } = await supabaseClient.from('subscriptions').delete().eq('id', id);
+  if(error){ showToast('❌ Error deleting subscription', 'red'); return; }
+  showToast('✅ Subscription deleted!', 'green');
   await loadAllData();
 }
 
