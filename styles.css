@@ -510,3 +510,50 @@ html,body{max-width:100vw;overflow-x:hidden}
     font-size: 18px;
   }
 }
+
+.service-icon-img,
+.step-icon-img,
+.why-icon-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  border: 2px solid #CC0000;
+  flex-shrink: 0;
+}
+.service-icon-img img,
+.step-icon-img img,
+.why-icon-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  filter: brightness(0.9);
+}
+.service-card:hover .service-icon-img img,
+.step-card:hover .step-icon-img img,
+.why-card:hover .why-icon-img img {
+  transform: scale(1.1);
+  filter: brightness(1.1);
+}
+
+.portfolio-img {
+  width: 100%;
+  height: 160px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  border: 1px solid #CC0000;
+}
+.portfolio-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  filter: brightness(0.8);
+}
+.portfolio-card:hover .portfolio-img img {
+  transform: scale(1.08);
+  filter: brightness(1);
+}
