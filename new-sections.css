@@ -553,3 +553,42 @@
   line-height: 1.6;
   margin-bottom: 0;
 }
+
+/* === SCROLLING TICKER === */
+.marquee-wrapper {
+  display: flex;
+  overflow: hidden;
+  background: #111111;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.marquee-content {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  animation: scrollText 25s linear infinite;
+}
+
+.marquee-content span {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #FFFFFF;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin: 0 16px;
+  white-space: nowrap;
+}
+
+.marquee-content span.dot {
+  color: #CC0000;
+  margin: 0 16px;
+  font-size: 16px;
+}
+
+@keyframes scrollText {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
