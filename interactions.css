@@ -74,15 +74,15 @@
 }
 
 @keyframes idle-pulse {
-  0% { text-shadow: 0 0 10px rgba(204, 0, 0, 0.2), 0 0 20px rgba(204, 0, 0, 0.1); }
-  100% { text-shadow: 0 0 20px rgba(255, 0, 0, 0.6), 0 0 30px rgba(204, 0, 0, 0.3); }
+  0% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.1), 0 0 20px rgba(255, 255, 255, 0.05); }
+  100% { text-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 0 25px rgba(255, 255, 255, 0.15); }
 }
 
 .hero-split-text:hover span {
   animation-play-state: paused;
   transform: translateY(-5px) scale(1.05);
   color: #FFFFFF;
-  text-shadow: 0 0 15px rgba(255, 0, 0, 0.9), 0 0 30px rgba(204, 0, 0, 0.7), 0 0 45px rgba(255, 0, 0, 0.4);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.4);
   /* Hover wave effect delay across the entire sentence */
   transition-delay: calc(0.03s * var(--i));
 }
