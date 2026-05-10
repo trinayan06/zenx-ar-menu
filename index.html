@@ -16,9 +16,9 @@
   <link rel="stylesheet" href="interactions.css?v=6">
   <link rel="stylesheet" href="new-sections.css?v=6">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 
 <body>
@@ -74,7 +74,7 @@
       <!-- Dark overlay so text is readable -->
       <div style="position:absolute;inset:0;z-index:1;background:linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%)"></div>
     </div>
-    <canvas id="hero-3d-canvas" style="position:absolute; inset:0; width:100%; height:100%; z-index:1; pointer-events:auto; touch-action:none;"></canvas>
+    <canvas id="hero-3d-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;cursor:pointer;"></canvas>
     <div class="hero-particles" id="hero-particles"></div>
     <div class="hero-content">
       <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
@@ -276,8 +276,6 @@
 
     <div class="portfolio-carousel-wrapper">
       <div class="portfolio-carousel" id="portfolio-carousel">
-        <div class="portfolio-track" id="portfolio-track">
-          <div class="portfolio-group" id="portfolio-group-original">
         <!-- Card 1 -->
         <div class="port-card">
           <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=90" alt="VIP Cafe" class="port-img">
@@ -342,8 +340,8 @@
             <p style="color: var(--gold); margin-top: 12px; font-weight: 600;">Let's Work Together →</p>
           </div>
         </div>
-        </div>
-        </div>
+        <!-- spacer -->
+        <div class="port-spacer"></div>
       </div>
     </div>
   </section>
@@ -853,6 +851,7 @@ if(ticker) {
 }
   </script>
   <script src="interactions.js"></script>
+  <script src="three-hero.js"></script>
 </body>
 
 </html>
