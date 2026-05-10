@@ -81,4 +81,67 @@ document.addEventListener("DOMContentLoaded", () => {
     counterObserver2.observe(counter);
   });
 
+// ── PORTFOLIO HORIZONTAL DRAG SCROLL ──
+const slider = document.querySelector('#portfolio-carousel');
+let isDown = false;
+let startX;
+let scrollLeft;
+let velX = 0;
+let momentumID;
+
+if (slider) {
+  slider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    slider.style.cursor = 'grabbing';
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+    cancelAnimationFrame(momentumID);
+  });
+  
+  slider.addEventListener('mouseleave', () => {
+    isDown = false;
+    slider.style.cursor = 'grab';
+  });
+  
+  slider.addEventListener('mouseup', () => {
+    isDown = false;
+    slider.style.cursor = 'grab';
+    beginMomentum();
+  });
+  
+  slider.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 2; // scroll speed
+    let prevScrollLeft = slider.scrollLeft;
+    slider.scrollLeft = scrollLeft - walk;
+    velX = slider.scrollLeft - prevScrollLeft;
+  });
+
+  function beginMomentum() {
+    momentumID = requestAnimationFrame(momentumLoop);
+  }
+
+  function momentumLoop() {
+    slider.scrollLeft += velX;
+    velX *= 0.95; // friction
+    if (Math.abs(velX) > 0.5) {
+      momentumID = requestAnimationFrame(momentumLoop);
+    }
+  }
+
+  // Navigation Arrows
+  const prevBtn = document.querySelector('.prev-btn');
+  const nextBtn = document.querySelector('.next-btn');
+  
+  if (prevBtn && nextBtn) {
+    prevBtn.addEventListener('click', () => {
+      slider.scrollBy({ left: -344, behavior: 'smooth' });
+    });
+    nextBtn.addEventListener('click', () => {
+      slider.scrollBy({ left: 344, behavior: 'smooth' });
+    });
+  }
+}
 });

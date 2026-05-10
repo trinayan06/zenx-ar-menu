@@ -255,6 +255,94 @@
       </div>
     </div>
   </section>
+  <!-- ═══════════════ PORTFOLIO / OUR WORK (HORIZONTAL SCROLL) ═══════════════ -->
+  <section class="section" id="portfolio" style="padding: 80px 0; overflow: hidden; position: relative; background: #0a0a0a;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px; display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
+      <div>
+        <p class="section-label reveal">Our Work</p>
+        <h2 class="section-title reveal" style="margin-bottom: 0;">See What We Build</h2>
+      </div>
+      <div class="portfolio-nav reveal" style="display: flex; gap: 12px;">
+        <button class="port-nav-btn prev-btn" aria-label="Previous">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="port-nav-btn next-btn" aria-label="Next">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="portfolio-carousel-wrapper">
+      <div class="portfolio-carousel" id="portfolio-carousel">
+        <!-- Card 1 -->
+        <div class="port-card">
+          <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=90" alt="VIP Cafe" class="port-img">
+          <div class="port-overlay"></div>
+          <div class="port-tag">Instagram</div>
+          <div class="port-badge badge-blue">Starting Soon</div>
+          <div class="port-content">
+            <h3>VIP Cafe</h3>
+            <p>Instagram Management</p>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="port-card">
+          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=90" alt="Restaurant AR Menu" class="port-img">
+          <div class="port-overlay"></div>
+          <div class="port-tag">AR Menu</div>
+          <div class="port-badge badge-blue">Live Demo Available</div>
+          <div class="port-content">
+            <h3>Restaurant AR Menu</h3>
+            <p>AR Experience</p>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="port-card">
+          <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=90" alt="ZEN_X Website" class="port-img">
+          <div class="port-overlay"></div>
+          <div class="port-tag">Website</div>
+          <div class="port-badge badge-green">Completed</div>
+          <div class="port-content">
+            <h3>ZEN_X Website</h3>
+            <p>Website Development</p>
+          </div>
+        </div>
+        <!-- Card 4 -->
+        <div class="port-card">
+          <img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&q=90" alt="Client 4" class="port-img">
+          <div class="port-overlay"></div>
+          <div class="port-tag">Growth</div>
+          <div class="port-badge badge-yellow">In Progress</div>
+          <div class="port-content">
+            <h3>Client #4</h3>
+            <p>Digital Growth Package</p>
+          </div>
+        </div>
+        <!-- Card 5 -->
+        <div class="port-card">
+          <img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&q=90" alt="Client 5" class="port-img">
+          <div class="port-overlay"></div>
+          <div class="port-tag">Automation</div>
+          <div class="port-badge badge-gray">Coming Soon</div>
+          <div class="port-content">
+            <h3>Client #5</h3>
+            <p>WhatsApp Automation Bot</p>
+          </div>
+        </div>
+        <!-- Card 6 (CTA) -->
+        <div class="port-card port-cta-card" onclick="openLeadModal()" style="cursor: pointer;">
+          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=90" alt="Your Business" class="port-img">
+          <div class="port-overlay cta-overlay"></div>
+          <div class="port-content" style="text-align: center; bottom: 50%; transform: translateY(50%);">
+            <h3>Your Business?</h3>
+            <p style="color: var(--gold); margin-top: 12px; font-weight: 600;">Let's Work Together →</p>
+          </div>
+        </div>
+        <!-- spacer -->
+        <div class="port-spacer"></div>
+      </div>
+    </div>
+  </section>
 
   <!-- ═══════════════ PRICING ═══════════════ -->
   <section class="section pricing-section" id="pricing">
@@ -353,41 +441,6 @@
     </div>
   </section>
 
-  <!-- ═══════════════ PORTFOLIO / OUR WORK ═══════════════ -->
-  <section class="section" id="portfolio">
-    <p class="section-label reveal">Our Work</p>
-    <h2 class="section-title reveal">See What We Build</h2>
-    <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span
-        class="ornament-line"></span></div>
-
-    <div class="portfolio-grid reveal"
-      style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px; max-width:1000px; margin:0 auto;">
-      <div class="portfolio-card">
-        <div class="portfolio-img">
-          <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=400&q=80" alt="VIP Cafe"/>
-        </div>
-        <h3 style="color:#fff; font-size:18px; margin-bottom:8px;">VIP Cafe</h3>
-        <p style="color:var(--gold); font-size:14px; font-weight:600;">Instagram Management</p>
-        <p style="color:#aaa; font-size:13px; margin-top:8px;">Starting Soon</p>
-      </div>
-      <div class="portfolio-card">
-        <div class="portfolio-img">
-          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80" alt="AR Menu"/>
-        </div>
-        <h3 style="color:#fff; font-size:18px; margin-bottom:8px;">Restaurant AR Menu</h3>
-        <p style="color:var(--gold); font-size:14px; font-weight:600;">Live Demo Available</p>
-        <p style="color:#aaa; font-size:13px; margin-top:8px;">Scan & See 3D Food</p>
-      </div>
-      <div class="portfolio-card">
-        <div class="portfolio-img">
-          <img src="https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?w=400&q=80" alt="Your Business"/>
-        </div>
-        <h3 style="color:#fff; font-size:18px; margin-bottom:8px;">Your Business</h3>
-        <p style="color:var(--gold); font-size:14px; font-weight:600;">Let's Work Together!</p>
-        <p style="color:#aaa; font-size:13px; margin-top:8px;">Websites & Growth</p>
-      </div>
-    </div>
-  </section>
 
   <!-- ═══════════════ WHY CHOOSE US ═══════════════ -->
   <section class="section" id="why-us">
