@@ -81,33 +81,4 @@ document.addEventListener("DOMContentLoaded", () => {
     counterObserver2.observe(counter);
   });
 
-  // 7. Auto-split Hero Heading Text for Interactive Typography
-  const splitTextElements = document.querySelectorAll('.hero-split-text');
-  
-  splitTextElements.forEach(el => {
-    const text = el.innerText;
-    el.innerHTML = ''; // Clear existing content
-    
-    // Split into words, then characters, to prevent mid-word wrapping
-    const words = text.split(' ');
-    let charIndex = 0;
-    
-    words.forEach((word, index) => {
-      const wordSpan = document.createElement('span');
-      wordSpan.style.display = 'inline-block';
-      
-      const chars = word.split('');
-      chars.forEach(char => {
-        const span = document.createElement('span');
-        span.textContent = char;
-        span.style.setProperty('--i', ++charIndex);
-        wordSpan.appendChild(span);
-      });
-      
-      el.appendChild(wordSpan);
-      if (index < words.length - 1) {
-        el.appendChild(document.createTextNode(' '));
-      }
-    });
-  });
 });

@@ -16,6 +16,8 @@
   <link rel="stylesheet" href="interactions.css?v=6">
   <link rel="stylesheet" href="new-sections.css?v=6">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 
 <body>
@@ -666,6 +668,132 @@
         heroVideo.play();
       });
     }
+  </script>
+  <script>
+// ── SPLIT TEXT ANIMATION ──
+function splitAndAnimate(selector, delay = 0) {
+  const elements = document.querySelectorAll(selector);
+  elements.forEach(el => {
+    const text = el.innerText;
+    const words = text.split(' ');
+    el.innerHTML = words.map(word =>
+      `<span class="word-wrap" style="display:inline-block;overflow:hidden;margin-right:0.25em">
+        <span class="word" style="display:inline-block;transform:translateY(110%);opacity:0">${word}</span>
+      </span>`
+    ).join('');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) {
+          const words = el.querySelectorAll('.word');
+          words.forEach((word, i) => {
+            setTimeout(() => {
+              word.style.transition = 'transform 0.7s cubic-bezier(0.16,1,0.3,1), opacity 0.5s ease';
+              word.style.transform = 'translateY(0)';
+              word.style.opacity = '1';
+            }, delay + i * 80);
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    observer.observe(el);
+  });
+}
+
+// ── HERO HEADING SPECIAL ANIMATION ──
+function animateHeroText() {
+  const h1 = document.querySelector('.hero h1, #hero h1');
+  if(!h1) return;
+  const text = h1.innerText;
+  const chars = text.split('');
+  h1.innerHTML = chars.map((char, i) =>
+    char === ' '
+      ? '<span style="display:inline-block;width:0.3em"> </span>'
+      : `<span class="hero-char" style="display:inline-block;transform:translateY(100%) rotateX(90deg);opacity:0;transform-origin:bottom">${char}</span>`
+  ).join('');
+
+  setTimeout(() => {
+    document.querySelectorAll('.hero-char').forEach((char, i) => {
+      setTimeout(() => {
+        char.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease';
+        char.style.transform = 'translateY(0) rotateX(0deg)';
+        char.style.opacity = '1';
+      }, 2000 + i * 40);
+    });
+  }, 100);
+}
+
+// ── RED HIGHLIGHT ON SPAN TEXT ──
+// Wrap any text inside h2 that has <span> in red with underline animation
+document.querySelectorAll('h2 span, h1 span').forEach(span => {
+  if(span.style.color === 'rgb(204, 0, 0)' || span.style.color === '#CC0000') {
+    span.style.position = 'relative';
+    span.style.display = 'inline-block';
+    span.innerHTML += `<span style="
+      position:absolute;bottom:-4px;left:0;
+      width:0;height:2px;
+      background:#CC0000;
+      transition:width 1.2s ease 0.5s;
+    " class="red-underline"></span>`;
+  }
+});
+
+const underlineObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting) {
+      entry.target.querySelectorAll('.red-underline').forEach(line => {
+        line.style.width = '100%';
+      });
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('h2').forEach(h2 => underlineObserver.observe(h2));
+
+// ── APPLY TO ALL SECTIONS ──
+// Hero h1 gets special character animation
+animateHeroText();
+
+// All h2 headings get word-by-word animation
+splitAndAnimate('h2', 0);
+
+// All h3 headings get word animation with small delay
+splitAndAnimate('h3', 100);
+
+// ── PARAGRAPH FADE IN ──
+document.querySelectorAll('section p, .hero p').forEach((p, i) => {
+  p.style.opacity = '0';
+  p.style.transform = 'translateY(30px)';
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting) {
+        setTimeout(() => {
+          p.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+          p.style.opacity = '1';
+          p.style.transform = 'translateY(0)';
+        }, 200);
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  obs.observe(p);
+});
+
+// ── TICKER ANIMATION ON SCROLL ──
+const ticker = document.querySelector('.ticker-wrap, .ticker');
+if(ticker) {
+  const tickerObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      ticker.style.opacity = entry.isIntersecting ? '1' : '0.3';
+      ticker.style.transition = 'opacity 0.5s ease';
+    });
+  });
+  tickerObs.observe(ticker);
+}
   </script>
   <script src="interactions.js"></script>
 </body>
