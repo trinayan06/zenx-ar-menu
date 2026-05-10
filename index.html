@@ -56,6 +56,21 @@
 
   <!-- ═══════════════ HERO ═══════════════ -->
   <section class="hero" id="hero">
+    <div class="hero-video-wrap">
+      <video
+        id="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;"
+      >
+        <source src="./hero-video.mp4" type="video/mp4"/>
+      </video>
+      <!-- Dark overlay so text is readable -->
+      <div style="position:absolute;inset:0;z-index:1;background:linear-gradient(to right, rgba(0,0,0,0.92) 40%, rgba(0,0,0,0.65) 100%)"></div>
+    </div>
     <div class="hero-particles" id="hero-particles"></div>
     <div class="hero-glow-orb hero-glow-1"></div>
     <div class="hero-glow-orb hero-glow-2"></div>
@@ -82,6 +97,10 @@
         <div class="stat"><span class="stat-num">2x</span><span class="stat-label">Avg. Growth Rate</span></div>
         <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Client Satisfaction</span></div>
       </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-line"></div>
+      <span>Scroll</span>
     </div>
   </section>
 
@@ -634,6 +653,19 @@
         scrollBtn.style.display = window.scrollY > 300 ? 'flex' : 'none';
       }
     });
+
+    // --- Hero Video: Mobile battery saver ---
+    const heroVideo = document.getElementById('hero-video');
+    if(heroVideo) {
+      if(window.innerWidth < 768) {
+        heroVideo.pause();
+        heroVideo.closest('.hero-video-wrap').style.background = 'url(https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80) center/cover';
+      }
+      heroVideo.play().catch(() => {
+        heroVideo.muted = true;
+        heroVideo.play();
+      });
+    }
   </script>
   <script src="interactions.js"></script>
 </body>
