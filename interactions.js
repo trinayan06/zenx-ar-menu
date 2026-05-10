@@ -81,32 +81,58 @@ document.addEventListener("DOMContentLoaded", () => {
     counterObserver2.observe(counter);
   });
 
-// ── PORTFOLIO HORIZONTAL DRAG SCROLL ──
+// ── PORTFOLIO INFINITE AUTO-SCROLL & DRAG ──
 const slider = document.querySelector('#portfolio-carousel');
-let isDown = false;
-let startX;
-let scrollLeft;
-let velX = 0;
-let momentumID;
+const track = document.querySelector('#portfolio-track');
+const originalGroup = document.querySelector('#portfolio-group-original');
 
-if (slider) {
+if (slider && track && originalGroup) {
+  // Clone cards for infinite loop
+  const clonedGroup = originalGroup.cloneNode(true);
+  clonedGroup.id = 'portfolio-group-cloned';
+  track.appendChild(clonedGroup);
+
+  let isDown = false;
+  let startX;
+  let scrollLeft;
+  let velX = 0;
+  let momentumID;
+  let resumeTimeout;
+
+  const pauseAutoScroll = () => {
+    track.classList.add('is-paused');
+    clearTimeout(resumeTimeout);
+  };
+
+  const resumeAutoScrollAfterDelay = () => {
+    clearTimeout(resumeTimeout);
+    resumeTimeout = setTimeout(() => {
+      track.classList.remove('is-paused');
+    }, 2000);
+  };
+
   slider.addEventListener('mousedown', (e) => {
     isDown = true;
     slider.style.cursor = 'grabbing';
     startX = e.pageX - slider.offsetLeft;
     scrollLeft = slider.scrollLeft;
     cancelAnimationFrame(momentumID);
+    pauseAutoScroll();
   });
   
   slider.addEventListener('mouseleave', () => {
-    isDown = false;
-    slider.style.cursor = 'grab';
+    if (isDown) {
+      isDown = false;
+      slider.style.cursor = 'grab';
+      resumeAutoScrollAfterDelay();
+    }
   });
   
   slider.addEventListener('mouseup', () => {
     isDown = false;
     slider.style.cursor = 'grab';
     beginMomentum();
+    resumeAutoScrollAfterDelay();
   });
   
   slider.addEventListener('mousemove', (e) => {
@@ -118,6 +144,10 @@ if (slider) {
     slider.scrollLeft = scrollLeft - walk;
     velX = slider.scrollLeft - prevScrollLeft;
   });
+
+  // Touch events for mobile pause
+  slider.addEventListener('touchstart', pauseAutoScroll, {passive: true});
+  slider.addEventListener('touchend', resumeAutoScrollAfterDelay, {passive: true});
 
   function beginMomentum() {
     momentumID = requestAnimationFrame(momentumLoop);
@@ -137,10 +167,14 @@ if (slider) {
   
   if (prevBtn && nextBtn) {
     prevBtn.addEventListener('click', () => {
+      pauseAutoScroll();
       slider.scrollBy({ left: -344, behavior: 'smooth' });
+      resumeAutoScrollAfterDelay();
     });
     nextBtn.addEventListener('click', () => {
+      pauseAutoScroll();
       slider.scrollBy({ left: 344, behavior: 'smooth' });
+      resumeAutoScrollAfterDelay();
     });
   }
 }
