@@ -117,6 +117,9 @@ a{text-decoration:none;color:inherit}
   }
   .steps-grid{margin:0 auto;max-width:1000px;}
 }
+@media(min-width:769px){
+  .steps-grid{margin:0 auto;max-width:1200px;gap:40px;}
+}
 @media(max-width:600px){.steps-grid{grid-template-columns:1fr;}}
 
 /* FEATURES */
@@ -758,9 +761,7 @@ html,body{max-width:100vw;overflow-x:hidden;background:#000 !important}
 
 /* Final CTA */
 #final-cta {
-  background:
-    linear-gradient(135deg, rgba(0,0,0,0.50) 50%, rgba(100,0,0,0.2) 100%),
-    url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1920&q=90') center/cover fixed !important;
+  background: transparent !important;
 }
 
 /* About Us */
