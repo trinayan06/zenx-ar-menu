@@ -18,7 +18,356 @@
   <link rel="stylesheet" href="premium-theme.css?v=7">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+/* ═══════════════════════════════
+   MOBILE FIXES — MAX 768px
+═══════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── GLOBAL ── */
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+  section {
+    padding: 60px 5% !important;
+  }
+  /* Fix background-attachment: fixed — broken on iOS */
+  section, footer, .hero, #hero,
+  [style*="background-attachment"] {
+    background-attachment: scroll !important;
+  }
+
+  /* ── NAVBAR ── */
+  nav, header {
+    padding: 14px 5% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+  /* Logo center on mobile */
+  nav .logo, header .logo,
+  nav a:first-child, header a:first-child {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+  /* Hide desktop nav links */
+  nav .nav-links, header .nav-links,
+  nav ul, header ul {
+    display: none !important;
+  }
+  /* Show hamburger */
+  nav .hamburger, header .hamburger,
+  nav .menu-toggle, header .menu-toggle {
+    display: flex !important;
+  }
+  /* Nav CTA button hide on mobile */
+  nav .btn-primary, header .btn-primary,
+  nav > a[href*="trial"], header > a[href*="trial"] {
+    display: none !important;
+  }
+
+  /* ── MOBILE MENU ── */
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.97);
+    z-index: 9998;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+  }
+  .mobile-menu.open { display: flex !important; }
+  .mobile-menu a {
+    color: white !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    text-decoration: none !important;
+    letter-spacing: 2px !important;
+    transition: color 0.3s !important;
+  }
+  .mobile-menu a:hover { color: #CC0000 !important; }
+  .mobile-menu .close-menu {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+  }
+  .mobile-menu .menu-cta {
+    background: #CC0000 !important;
+    color: white !important;
+    padding: 14px 32px !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    margin-top: 16px !important;
+  }
+
+  /* ── HERO ── */
+  .hero, #hero {
+    min-height: 100svh !important;
+    padding: 100px 5% 60px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  /* Video background on mobile */
+  #hero-video, .hero-video-wrap video {
+    display: none !important;
+  }
+  .hero-video-wrap {
+    background:
+      linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)),
+      url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=80') center/cover !important;
+  }
+  /* Hero text */
+  .hero h1, #hero h1 {
+    font-size: clamp(32px, 9vw, 48px) !important;
+    text-align: center !important;
+    line-height: 1.1 !important;
+  }
+  .hero p, #hero p {
+    font-size: 15px !important;
+    text-align: center !important;
+    max-width: 100% !important;
+  }
+  /* Hero buttons stack vertically */
+  .hero .btn-group, #hero .btn-group,
+  .hero-buttons, .hero [class*="buttons"],
+  .hero [class*="btn-wrap"] {
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+    align-items: center !important;
+  }
+  .hero .btn-primary, .hero .btn-secondary,
+  #hero a[class*="btn"], #hero button {
+    width: 100% !important;
+    max-width: 320px !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+  /* Hero stats row */
+  .hero [class*="stats"], #hero [class*="stats"] {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    justify-content: center !important;
+  }
+  .hero [class*="stat"], #hero [class*="stat"] {
+    text-align: center !important;
+    min-width: 80px !important;
+  }
+  /* Instagram badge */
+  .hero a[href*="instagram"] {
+    font-size: 11px !important;
+    padding: 5px 12px !important;
+  }
+
+  /* ── TICKER ── */
+  .ticker-wrap, [class*="ticker"] {
+    font-size: 11px !important;
+    padding: 10px 0 !important;
+  }
+
+  /* ── SECTION HEADINGS ── */
+  h2 {
+    font-size: clamp(26px, 7vw, 36px) !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+  h3 { font-size: 18px !important; }
+  [class*="section-tag"], [class*="section-label"] {
+    text-align: center !important;
+    display: block !important;
+  }
+
+  /* ── SERVICE CARDS ── */
+  .services-grid, [class*="services-grid"],
+  [class*="service-grid"] {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .service-card {
+    width: 100% !important;
+  }
+  .service-card-img {
+    height: 160px !important;
+  }
+
+  /* ── HOW IT WORKS ── */
+  [class*="steps-grid"], [class*="process-grid"],
+  [class*="how-grid"] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  [class*="step-card"], [class*="step"] {
+    padding: 16px !important;
+  }
+  [class*="step-card"] img, [class*="step"] img {
+    height: 100px !important;
+  }
+  [class*="step"] h3 { font-size: 14px !important; }
+  [class*="step"] p { font-size: 12px !important; }
+
+  /* ── PRICING ── */
+  .pricing-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    max-width: 100% !important;
+  }
+  .pricing-card { padding: 24px 20px !important; }
+  .plan-price { font-size: 32px !important; }
+  .price-reference {
+    margin: 30px 0 0 !important;
+    padding: 20px !important;
+  }
+  .free-trial-banner {
+    font-size: 12px !important;
+    padding: 12px !important;
+  }
+
+  /* ── PORTFOLIO HORIZONTAL SCROLL ── */
+  [class*="portfolio-wrap"], [class*="portfolio-container"] {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+  [class*="portfolio-wrap"]::-webkit-scrollbar { display: none !important; }
+  [class*="portfolio-track"], [class*="portfolio-scroll"] {
+    width: max-content !important;
+    gap: 12px !important;
+  }
+  [class*="portfolio-card"], [class*="port-card"] {
+    width: 260px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* ── WHY CHOOSE US ── */
+  [class*="why-grid"], [class*="features-grid"] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  .why-card { border-radius: 12px !important; }
+  .why-card-img { height: 100px !important; }
+  .why-card-body { padding: 14px !important; }
+  .why-card h3 { font-size: 14px !important; }
+  .why-card p { font-size: 12px !important; }
+
+  /* ── ERA SECTION ── */
+  .era-section { padding: 60px 5% !important; }
+  .era-content {
+    grid-template-columns: 1fr !important;
+    gap: 30px !important;
+  }
+  .era-left h2 { font-size: 28px !important; }
+  .era-right { display: none !important; }
+
+  /* ── ABOUT / FOUNDERS ── */
+  [class*="founders-grid"] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  .founder-card {
+    padding: 20px 14px !important;
+    border-radius: 12px !important;
+  }
+  .founder-emoji { font-size: 32px !important; }
+  .founder-card h3 { font-size: 15px !important; }
+  .founder-role { font-size: 10px !important; }
+  .founder-desc { font-size: 11px !important; }
+
+  /* ── FAQ ── */
+  .faq-list { gap: 8px !important; }
+  .faq-q { font-size: 14px !important; padding: 14px 16px !important; }
+  .faq-a { font-size: 13px !important; padding: 0 16px 14px !important; }
+
+  /* ── CONTACT SECTION ── */
+  #contact, .contact-section, #final-cta {
+    text-align: center !important;
+    padding: 60px 5% !important;
+  }
+  #contact h2, .contact-section h2, #final-cta h2 {
+    font-size: 28px !important;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 5% 30px !important;
+    text-align: center !important;
+  }
+  footer [class*="footer-grid"],
+  footer [class*="footer-content"] {
+    grid-template-columns: 1fr !important;
+    gap: 30px !important;
+  }
+  footer [class*="quick-links"],
+  footer nav { text-align: center !important; }
+
+  /* ── MODAL ── */
+  #signup-modal > div:last-child {
+    margin: 10px !important;
+    max-width: calc(100vw - 20px) !important;
+    max-height: calc(100svh - 40px) !important;
+    overflow-y: auto !important;
+  }
+  #signup-modal [style*="padding:36px"] {
+    padding: 24px 20px 0 !important;
+  }
+  #signup-modal [style*="padding:28px"] {
+    padding: 20px !important;
+  }
+  #signup-modal h2 { font-size: 20px !important; }
+  #signup-modal [style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  #signup-modal [style*="display:flex;justify-content:center;gap:16px"] {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* ── FLOATING BUTTONS ── */
+  #whatsapp-btn, a[href*="wa.me"] {
+    bottom: 20px !important;
+    right: 16px !important;
+    font-size: 13px !important;
+    padding: 12px 16px !important;
+  }
+  #scroll-top {
+    bottom: 80px !important;
+    left: 16px !important;
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 16px !important;
+  }
+
+  /* ── CUSTOM CURSOR — disable on touch ── */
+  #cursor, #cursor-follower { display: none !important; }
+  * { cursor: auto !important; }
+
+  /* ── HIDE SCROLL INDICATOR ── */
+  .scroll-indicator { display: none !important; }
+
+  /* ── PARTICLES — disable on mobile ── */
+  #particles-js { display: none !important; }
+}
+
+/* ── SMALL PHONES ── */
+@media (max-width: 380px) {
+  .hero h1, #hero h1 { font-size: 28px !important; }
+  [class*="why-grid"] { grid-template-columns: 1fr !important; }
+  [class*="founders-grid"] { grid-template-columns: 1fr !important; }
+  [class*="steps-grid"] { grid-template-columns: 1fr !important; }
+}
+</style>
 </head>
 
 <body>
@@ -41,22 +390,18 @@
       <button class="nav-cta" onclick="openLeadModal()">Start Free Trial</button>
     </div>
     <!-- Mobile hamburger -->
-    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="hamburger" onclick="openMobileMenu()" style="display:none;background:none;border:none;color:white;font-size:24px;cursor:pointer;padding:4px;z-index:9999">☰</button>
   </nav>
 
   <!-- Mobile Menu Overlay -->
-  <div class="mobile-menu-overlay" id="mobileMenu">
-    <div class="mobile-menu-content">
-      <a href="#services" onclick="closeMobileMenu()">Services</a>
-      <a href="#how-it-works" onclick="closeMobileMenu()">How It Works</a>
-      <a href="#pricing" onclick="closeMobileMenu()">Pricing</a>
-      <a href="#why-us" onclick="closeMobileMenu()">Why Us</a>
-      <a href="#about-us" onclick="closeMobileMenu()">About</a>
-      <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
-      <button class="nav-cta" onclick="closeMobileMenu();openLeadModal()">Start Free Trial</button>
-    </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <button class="close-menu" onclick="closeMobileMenu()">✕</button>
+    <a href="#services" onclick="closeMobileMenu()">Services</a>
+    <a href="#how-it-works" onclick="closeMobileMenu()">How It Works</a>
+    <a href="#pricing" onclick="closeMobileMenu()">Pricing</a>
+    <a href="#why-us" onclick="closeMobileMenu()">Why Us</a>
+    <a href="#about-us" onclick="closeMobileMenu()">About</a>
+    <a href="#" onclick="openLeadModal();closeMobileMenu();" class="menu-cta">🚀 Start Free Trial</a>
   </div>
 
   <!-- ═══════════════ HERO ═══════════════ -->
@@ -862,18 +1207,24 @@
     });
 
     // --- Mobile Menu ---
-    function toggleMobileMenu() {
-      const menu = document.getElementById('mobileMenu');
-      const btn = document.getElementById('mobileMenuBtn');
-      menu.classList.toggle('show');
-      btn.classList.toggle('open');
-      document.body.style.overflow = menu.classList.contains('show') ? 'hidden' : '';
+    function openMobileMenu() {
+      document.getElementById('mobile-menu').classList.add('open');
+      document.body.style.overflow = 'hidden';
     }
     function closeMobileMenu() {
-      document.getElementById('mobileMenu').classList.remove('show');
-      document.getElementById('mobileMenuBtn').classList.remove('open');
+      document.getElementById('mobile-menu').classList.remove('open');
       document.body.style.overflow = '';
     }
+    // Close mobile menu when clicking outside
+    document.getElementById('mobile-menu').addEventListener('click', function(e) {
+      if(e.target === this) closeMobileMenu();
+    });
+    // Smooth scroll for mobile menu links
+    document.querySelectorAll('.mobile-menu a[href^="#"]').forEach(a => {
+      a.addEventListener('click', () => {
+        closeMobileMenu();
+      });
+    });
 
     // --- Service Selector ---
     function selectService(btn) {
