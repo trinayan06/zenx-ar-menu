@@ -24,6 +24,60 @@ html, body {
   color: #fff !important;
 }
 
+/* ── GLOBAL ROUNDED CORNERS — Cards & Buttons ── */
+/* All cards: generous 20px radius */
+.service-card,
+.step-card,
+.price-card,
+.why-card,
+.founder-card,
+.port-card,
+.faq-item,
+.trial-highlight,
+.price-reference,
+.signup-card {
+  border-radius: 20px !important;
+}
+
+/* All buttons: pill-shaped 50px radius */
+.btn-primary,
+.btn-secondary,
+.btn-primary--large,
+.nav-cta,
+.service-btn,
+.price-btn,
+.price-btn-outline,
+.price-btn-fill,
+.submit-btn,
+.instagram-btn,
+.mobile-menu-content .nav-cta,
+button[type="submit"],
+a.service-btn {
+  border-radius: 50px !important;
+}
+
+/* Card images: match top corners */
+.service-card-img,
+.step-card-img,
+.why-card-img {
+  border-radius: 20px 20px 0 0 !important;
+}
+
+/* Portfolio cards */
+.port-card {
+  border-radius: 20px !important;
+}
+
+/* Port tag pills */
+.port-tag {
+  border-radius: 50px !important;
+}
+
+/* Port badges */
+.port-badge {
+  border-radius: 8px !important;
+}
+
 /* ── PART 2: Navbar Premium ── */
 .nav {
   background: rgba(0,0,0,0) !important;
