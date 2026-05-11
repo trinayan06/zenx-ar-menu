@@ -159,7 +159,7 @@
    ═══════════════════════════════════════ */
 .why-grid{
   display:grid;grid-template-columns:repeat(4,1fr);
-  gap:32px;max-width:1200px;margin:0 auto;
+  gap:32px;max-width:1400px;margin:0 auto;
 }
 .why-card{
   background:rgba(255,255,255,.05);
@@ -417,7 +417,7 @@
 }
 .why-card-img {
   width: 100%;
-  height: 200px;
+  height: 240px;
   overflow: hidden;
   position: relative;
 }
@@ -440,17 +440,17 @@
   filter: brightness(1);
 }
 .why-card-body {
-  padding: 20px;
+  padding: 24px;
 }
 .why-card-body h3 {
   color: white;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   transition: color 0.3s;
 }
 .why-card:hover .why-card-body h3 { color: #CC0000; }
-.why-card-body p { color: #888; font-size: 13px; line-height: 1.6; margin-bottom: 0; }
+.why-card-body p { color: #888; font-size: 15px; line-height: 1.6; margin-bottom: 0; }
 
 /* === NEW FOUNDER CARD CSS === */
 .founder-card {
