@@ -316,6 +316,14 @@
   height: 200px;
   overflow: hidden;
   flex-shrink: 0;
+  position: relative;
+}
+.service-card-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.85) 100%);
+  pointer-events: none;
 }
 .service-card-img img {
   width: 100%;
@@ -411,6 +419,14 @@
   width: 100%;
   height: 150px;
   overflow: hidden;
+  position: relative;
+}
+.why-card-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  pointer-events: none;
 }
 .why-card-img img {
   width: 100%;
@@ -498,6 +514,13 @@
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
+}
+.step-card-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  pointer-events: none;
 }
 .step-card-img img {
   width: 100%;
