@@ -5,8 +5,8 @@
   --text:#FFFFFF;--text-sec:#cccccc;--text-muted:#999999;
   --radius:16px;--radius-sm:10px;
 }
-html{scroll-behavior:smooth}
-body{font-family:'Inter',sans-serif;background:#000000;color:var(--text);overflow-x:hidden}
+html{scroll-behavior:smooth;background:#000 !important}
+body{font-family:'Inter',sans-serif;background:#000 !important;color:var(--text);overflow-x:hidden}
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--gold-dark);border-radius:3px}
@@ -65,7 +65,7 @@ a{text-decoration:none;color:inherit}
 @keyframes floatUp{0%{transform:translateY(100vh) rotate(0deg);opacity:0}10%{opacity:.12}90%{opacity:.12}100%{transform:translateY(-100px) rotate(360deg);opacity:0}}
 
 /* SECTION COMMON */
-.section{padding:60px 20px;position:relative;background:transparent}
+.section{padding:100px 6%;position:relative;background:transparent}
 .section-label{text-align:center;font-size:12px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:12px}
 .section-title{text-align:center;font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,44px);font-weight:700;margin-bottom:16px;color:var(--text)}
 .section-desc{text-align:center;font-size:16px;color:var(--text-muted);max-width:560px;margin:0 auto 32px;line-height:1.7}
@@ -327,7 +327,7 @@ select.form-input option{background:#111;color:#fff;padding:8px}
 .lead-modal .success-msg p{color:#999;font-size:14px;line-height:1.6}
 
 /* FOOTER */
-.footer{padding:48px 20px 32px;border-top:1px solid rgba(212,168,83,.08);text-align:center}
+.footer{padding:48px 20px 32px;border-top:1px solid rgba(204,0,0,0.2);text-align:center;background:linear-gradient(rgba(0,0,0,0.97),rgba(0,0,0,0.97)),url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=90') center/cover fixed}
 .footer-logo{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
 .footer-tag{font-size:13px;color:var(--text-muted);margin-bottom:24px}
 .footer-links{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
@@ -347,7 +347,7 @@ select.form-input option{background:#111;color:#fff;padding:8px}
 img{max-width:100%;height:auto}
 
 /* Prevent any horizontal overflow */
-html,body{max-width:100vw;overflow-x:hidden}
+html,body{max-width:100vw;overflow-x:hidden;background:#000 !important}
 
 /* ── SMALL TABLETS (≤900px) ── */
 @media(max-width:900px){
@@ -715,4 +715,109 @@ html,body{max-width:100vw;overflow-x:hidden}
   .portfolio-nav { display: none !important; }
   .portfolio-carousel { padding-left: 20px; }
   .port-card { flex: 0 0 280px; height: 380px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PREMIUM SECTION BACKGROUNDS — Unsplash images w/ dark overlays
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Services */
+#services {
+  background:
+    linear-gradient(rgba(0,0,0,0.90), rgba(0,0,0,0.90)),
+    url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1920&q=90') center/cover fixed !important;
+}
+
+/* How It Works */
+#how-it-works {
+  background:
+    linear-gradient(rgba(0,0,0,0.91), rgba(0,0,0,0.91)),
+    url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&q=90') center/cover fixed !important;
+}
+
+/* Portfolio */
+#portfolio {
+  background:
+    linear-gradient(rgba(0,0,0,0.88), rgba(0,0,0,0.88)),
+    url('https://images.unsplash.com/photo-1558655146-364adaf1fcc9?w=1920&q=90') center/cover fixed !important;
+}
+
+/* Pricing */
+#pricing {
+  background:
+    linear-gradient(rgba(0,0,0,0.93), rgba(0,0,0,0.93)),
+    url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1920&q=90') center/cover fixed !important;
+}
+
+/* Why Us */
+#why-us {
+  background:
+    linear-gradient(rgba(0,0,0,0.90), rgba(0,0,0,0.90)),
+    url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1920&q=90') center/cover fixed !important;
+}
+
+/* Final CTA */
+#final-cta {
+  background:
+    linear-gradient(135deg, rgba(0,0,0,0.95) 50%, rgba(100,0,0,0.3) 100%),
+    url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1920&q=90') center/cover fixed !important;
+}
+
+/* About Us */
+#about-us, .about-section {
+  background:
+    linear-gradient(rgba(0,0,0,0.92), rgba(0,0,0,0.92)),
+    url('https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?w=1920&q=90') center/cover fixed !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RED GLOW DIVIDER LINE BETWEEN SECTIONS
+   ═══════════════════════════════════════════════════════════════ */
+.section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #CC0000, transparent);
+  z-index: 5;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RED LEFT ACCENT ON SECTION LABELS
+   ═══════════════════════════════════════════════════════════════ */
+.section-label {
+  position: relative;
+  padding-left: 16px;
+  color: #CC0000 !important;
+  font-size: 11px !important;
+  letter-spacing: 3px !important;
+  text-transform: uppercase !important;
+  font-weight: 600 !important;
+}
+.section-label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 100%;
+  background: #CC0000;
+  border-radius: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE OVERRIDES — Premium spacing + fix fixed-bg on iOS
+   ═══════════════════════════════════════════════════════════════ */
+@media(max-width: 768px) {
+  .section { padding: 60px 5% !important; }
+  /* Fixed background causes paint issues on mobile Safari */
+  .section,
+  #services, #how-it-works, #portfolio, #pricing,
+  #why-us, #final-cta, #about-us, .about-section, .footer {
+    background-attachment: scroll !important;
+  }
 }
