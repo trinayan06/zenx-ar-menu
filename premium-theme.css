@@ -413,7 +413,7 @@ a.service-btn {
 /* ── PART 10: FAQ Accordion ── */
 #faq {
   background:
-    linear-gradient(rgba(0,0,0,0.92), rgba(0,0,0,0.92)),
+    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
     url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&q=90') center/cover fixed !important;
 }
 
@@ -517,12 +517,15 @@ a.service-btn {
   font-weight: 700 !important;
   letter-spacing: 4px !important;
   text-transform: uppercase !important;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8) !important;
 }
 .section-title {
   color: white !important;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.8) !important;
 }
 .section-desc {
   color: rgba(255,255,255,0.6) !important;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.6) !important;
 }
 
 /* ── PART 13: Footer ── */
@@ -611,7 +614,7 @@ a.service-btn {
 /* ── PART 19: Instagram Feed ── */
 #instagram-feed {
   background:
-    linear-gradient(rgba(0,0,0,0.92), rgba(0,0,0,0.92)),
+    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
     url('https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1920&q=90') center/cover fixed !important;
 }
 
