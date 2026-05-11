@@ -81,86 +81,140 @@ document.addEventListener("DOMContentLoaded", () => {
     counterObserver2.observe(counter);
   });
 
-  // ── PORTFOLIO HORIZONTAL DRAG SCROLL ──
-  const slider = document.querySelector('#portfolio-carousel');
-  let isDown = false;
-  let startX;
-  let scrollLeft;
-  let velX = 0;
-  let momentumID;
-  let isHovering = false;
+  // ── INFINITE AUTO SCROLL PORTFOLIO ──
+  const track = document.querySelector('#portfolio-carousel');
 
-  if (slider) {
-    slider.addEventListener('mousedown', (e) => {
-      isDown = true;
-      slider.style.cursor = 'grabbing';
-      startX = e.pageX - slider.offsetLeft;
-      scrollLeft = slider.scrollLeft;
-      cancelAnimationFrame(momentumID);
-    });
+  if (track) {
+    // Clone all cards and append to make infinite loop
+    const originalHTML = track.innerHTML;
+    track.innerHTML = originalHTML + originalHTML + originalHTML; // triple for seamless loop
 
-    slider.addEventListener('mouseenter', () => {
-      isHovering = true;
-    });
+    let scrollPos = 0;
+    let speed = 1; // pixels per frame
+    let isPaused = false;
+    let isDragging = false;
+    let startX = 0;
+    let startScroll = 0;
 
-    slider.addEventListener('mouseleave', () => {
-      isHovering = false;
-      isDown = false;
-      slider.style.cursor = 'grab';
-    });
-
-    slider.addEventListener('mouseup', () => {
-      isDown = false;
-      slider.style.cursor = 'grab';
-      beginMomentum();
-    });
-
-    slider.addEventListener('mousemove', (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - slider.offsetLeft;
-      const walk = (x - startX) * 2; // scroll speed
-      let prevScrollLeft = slider.scrollLeft;
-      slider.scrollLeft = scrollLeft - walk;
-      velX = slider.scrollLeft - prevScrollLeft;
-    });
-
-    function beginMomentum() {
-      momentumID = requestAnimationFrame(momentumLoop);
-    }
-
-    function momentumLoop() {
-      slider.scrollLeft += velX;
-      velX *= 0.95; // friction
-      if (Math.abs(velX) > 0.5) {
-        momentumID = requestAnimationFrame(momentumLoop);
+    // Get the width of ONE set of cards (original set)
+    function getSetWidth() {
+      const allCards = track.querySelectorAll('.port-card');
+      const totalCards = allCards.length;
+      const oneSetCount = totalCards / 3;
+      let width = 0;
+      for (let i = 0; i < oneSetCount; i++) {
+        width += allCards[i].offsetWidth;
       }
+      // Add gap between cards
+      const gap = parseInt(window.getComputedStyle(track).gap) || 24;
+      width += gap * oneSetCount; // gap after each card in the set
+      return width;
     }
 
-    // Auto Scroll Loop
-    function autoScrollLoop() {
-      if (!isHovering && !isDown && Math.abs(velX) < 0.5) {
-        slider.scrollLeft += 1;
-        // Reset if reached end
-        if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 1) {
-          slider.scrollLeft = 0;
+    // Auto scroll loop
+    function autoScroll() {
+      if (!isPaused && !isDragging) {
+        scrollPos += speed;
+        const setWidth = getSetWidth();
+        // Reset to start when we've scrolled one full set
+        if (scrollPos >= setWidth) {
+          scrollPos -= setWidth;
         }
+        if (scrollPos < 0) {
+          scrollPos += setWidth;
+        }
+        track.style.transform = 'translateX(-' + scrollPos + 'px)';
       }
-      requestAnimationFrame(autoScrollLoop);
+      requestAnimationFrame(autoScroll);
     }
-    autoScrollLoop();
+
+    // Pause on hover
+    track.addEventListener('mouseenter', () => { isPaused = true; });
+    track.addEventListener('mouseleave', () => {
+      if (!isDragging) {
+        isPaused = false;
+      }
+    });
+
+    // Drag to scroll manually (mouse)
+    track.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.pageX;
+      startScroll = scrollPos;
+      track.style.cursor = 'grabbing';
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const diff = startX - e.pageX;
+      scrollPos = startScroll + diff;
+      const setWidth = getSetWidth();
+      // Wrap around
+      if (scrollPos < 0) scrollPos = setWidth + scrollPos;
+      if (scrollPos >= setWidth) scrollPos = scrollPos - setWidth;
+      track.style.transform = 'translateX(-' + scrollPos + 'px)';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      track.style.cursor = 'grab';
+      isPaused = false;
+    });
+
+    // Click vs drag detection for CTA card
+    track.addEventListener('click', (e) => {
+      // If mouse moved significantly, prevent the click
+      if (Math.abs(startX - e.pageX) > 5) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true);
+
+    // Touch support for mobile
+    let touchStartX = 0;
+    let touchStartScroll = 0;
+    track.addEventListener('touchstart', (e) => {
+      touchStartX = e.touches[0].pageX;
+      touchStartScroll = scrollPos;
+      isPaused = true;
+    }, { passive: true });
+
+    track.addEventListener('touchmove', (e) => {
+      const diff = touchStartX - e.touches[0].pageX;
+      scrollPos = touchStartScroll + diff;
+      const setWidth = getSetWidth();
+      if (scrollPos < 0) scrollPos = setWidth + scrollPos;
+      if (scrollPos >= setWidth) scrollPos = scrollPos - setWidth;
+      track.style.transform = 'translateX(-' + scrollPos + 'px)';
+    }, { passive: true });
+
+    track.addEventListener('touchend', () => { isPaused = false; });
 
     // Navigation Arrows
     const prevBtn = document.querySelector('.prev-btn');
     const nextBtn = document.querySelector('.next-btn');
-
     if (prevBtn && nextBtn) {
       prevBtn.addEventListener('click', () => {
-        slider.scrollBy({ left: -344, behavior: 'smooth' });
+        scrollPos -= 344;
+        const setWidth = getSetWidth();
+        if (scrollPos < 0) scrollPos = setWidth + scrollPos;
+        track.style.transition = 'transform 0.4s ease';
+        track.style.transform = 'translateX(-' + scrollPos + 'px)';
+        setTimeout(() => { track.style.transition = 'none'; }, 400);
       });
       nextBtn.addEventListener('click', () => {
-        slider.scrollBy({ left: 344, behavior: 'smooth' });
+        scrollPos += 344;
+        const setWidth = getSetWidth();
+        if (scrollPos >= setWidth) scrollPos = scrollPos - setWidth;
+        track.style.transition = 'transform 0.4s ease';
+        track.style.transform = 'translateX(-' + scrollPos + 'px)';
+        setTimeout(() => { track.style.transition = 'none'; }, 400);
       });
     }
+
+    // Start the infinite scroll
+    requestAnimationFrame(autoScroll);
   }
 });

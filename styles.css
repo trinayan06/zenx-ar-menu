@@ -589,52 +589,28 @@ html,body{max-width:100vw;overflow-x:hidden}
   50% { opacity: 1; transform: scaleY(1.2); }
 }
 
-/* HORIZONTAL PORTFOLIO CAROUSEL */
+/* HORIZONTAL PORTFOLIO CAROUSEL — INFINITE AUTO-SCROLL */
 .portfolio-carousel-wrapper {
   width: 100%;
-  overflow: hidden; /* Hide scrollbar but keep JS scrolling */
+  overflow: hidden !important;
+  position: relative;
   cursor: grab;
 }
 .portfolio-carousel-wrapper:active {
-  cursor: grabbing;
+  cursor: grabbing !important;
 }
 .portfolio-carousel {
-  display: flex;
+  display: flex !important;
+  gap: 24px;
   padding-left: 40px; /* match site container padding */
   padding-bottom: 20px; /* space for box-shadow hover */
-  overflow-x: auto;
-  scroll-behavior: auto; /* Handled by JS for smooth inertia */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.portfolio-track {
-  display: flex;
-  width: max-content;
-  animation: scrollTrack 41s linear infinite;
-}
-.portfolio-carousel-wrapper:hover .portfolio-track,
-.portfolio-track.is-paused {
-  animation-play-state: paused !important;
-}
-.portfolio-group {
-  display: flex;
-  gap: 24px;
-  padding-right: 24px;
-}
-@keyframes scrollTrack {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-@media (max-width: 768px) {
-  .portfolio-track {
-    animation-duration: 61s;
-  }
-}
-.portfolio-carousel::-webkit-scrollbar {
-  display: none;
+  width: max-content !important;
+  will-change: transform;
+  transition: none;
 }
 .port-card {
   flex: 0 0 320px;
+  flex-shrink: 0 !important;
   height: 420px;
   position: relative;
   border-radius: 16px;
@@ -646,8 +622,8 @@ html,body{max-width:100vw;overflow-x:hidden}
 }
 .port-card:hover {
   transform: translateY(-6px);
-  border-color: rgba(212, 168, 83, 0.5); /* gold accent */
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(212, 168, 83, 0.1);
+  border-color: rgba(204, 0, 0, 0.5);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(204, 0, 0, 0.15);
 }
 .port-img {
   width: 100%;
@@ -716,7 +692,6 @@ html,body{max-width:100vw;overflow-x:hidden}
 .port-content p {
   font-size: 14px;
   color: #aaa;
-}
 }
 .port-nav-btn {
   width: 44px;
