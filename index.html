@@ -393,10 +393,16 @@
     backdrop-filter: none !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
+    justify-content: flex-end !important;
     border-bottom: 1px solid rgba(204,0,0,0.2) !important;
   }
-  nav .logo img, header .logo img,
+  nav .nav-logo {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+  }
+  nav .nav-logo img, header .logo img,
   nav img[alt*="ZEN"], header img[alt*="ZEN"] {
     height: 36px !important;
     width: auto !important;
