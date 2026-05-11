@@ -410,19 +410,88 @@ a.service-btn {
 .founder-role { color: #CC0000 !important; font-size: 11px !important; font-weight: 700 !important; letter-spacing: 1.5px !important; }
 .founder-desc { color: rgba(255,255,255,0.45) !important; font-size: 13px !important; }
 
-/* ── PART 10: FAQ (if present) ── */
+/* ── PART 10: FAQ Accordion ── */
+#faq {
+  background:
+    linear-gradient(rgba(0,0,0,0.92), rgba(0,0,0,0.92)),
+    url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1920&q=90') center/cover fixed !important;
+}
+
 .faq-item {
   background: #0a0a0a !important;
   border: 1px solid rgba(255,255,255,0.06) !important;
-  border-radius: 10px !important;
+  border-radius: 16px !important;
+  transition: all 0.3s ease !important;
+  overflow: hidden !important;
+}
+.faq-item:hover {
+  border-color: rgba(204,0,0,0.3) !important;
+}
+.faq-item.open {
+  border-color: rgba(204,0,0,0.4) !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 20px rgba(204,0,0,0.05) !important;
+}
+
+.faq-q {
+  width: 100%;
+  background: none !important;
+  border: none !important;
+  padding: 20px 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  cursor: pointer !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: white !important;
+  text-align: left !important;
+  transition: color 0.3s !important;
+  gap: 16px !important;
+}
+.faq-q:hover {
+  color: #CC0000 !important;
+}
+.faq-q span:first-child {
+  color: inherit !important;
+}
+
+.faq-icon {
+  color: #CC0000 !important;
+  font-size: 22px !important;
+  font-weight: 300 !important;
+  flex-shrink: 0 !important;
+  width: 28px !important;
+  height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  background: rgba(204,0,0,0.08) !important;
   transition: all 0.3s !important;
 }
-.faq-item:hover { border-color: rgba(204,0,0,0.3) !important; }
-.faq-item.open { border-color: rgba(204,0,0,0.4) !important; }
-.faq-q { color: white !important; font-weight: 600 !important; font-size: 15px !important; }
-.faq-q:hover { color: #CC0000 !important; }
-.faq-q span { color: #CC0000 !important; }
-.faq-a { color: rgba(255,255,255,0.5) !important; font-size: 14px !important; line-height: 1.7 !important; }
+.faq-item.open .faq-icon {
+  background: #CC0000 !important;
+  color: white !important;
+  transform: rotate(45deg) !important;
+}
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding: 0 24px;
+}
+.faq-item.open .faq-a {
+  max-height: 300px;
+  padding: 0 24px 20px;
+}
+.faq-a p {
+  color: rgba(255,255,255,0.5) !important;
+  font-size: 14px !important;
+  line-height: 1.7 !important;
+  margin: 0 !important;
+}
 
 /* ── PART 11: Contact / CTA Section ── */
 #final-cta {

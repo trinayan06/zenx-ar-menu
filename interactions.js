@@ -218,3 +218,20 @@ document.addEventListener("DOMContentLoaded", () => {
     requestAnimationFrame(autoScroll);
   }
 });
+
+// ── FAQ ACCORDION TOGGLE ──
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  
+  // Close all other FAQs for a clean accordion effect
+  document.querySelectorAll('.faq-item').forEach(faq => {
+    faq.classList.remove('open');
+  });
+
+  // Open the clicked one if it wasn't already open
+  if (!wasOpen) {
+    item.classList.add('open');
+  }
+}
+window.toggleFaq = toggleFaq;
