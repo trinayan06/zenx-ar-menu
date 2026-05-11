@@ -554,36 +554,97 @@
     </div>
   </section>
 
-  <!-- ═══════════════ LEAD CAPTURE MODAL ═══════════════ -->
-  <div class="lead-modal-overlay" id="leadModal" onclick="if(event.target===this)closeLeadModal()">
-    <div class="lead-modal">
-      <button class="lead-modal-close" onclick="closeLeadModal()">✕</button>
-      <img src="logo.png" alt="ZEN_X" style="height:50px;margin:0 auto 12px;display:block">
-      <h2>Get Started with ZEN_X</h2>
-      <p class="lead-modal-sub">Enter your details and we'll get your digital growth started within 24 hours.</p>
-      <form id="lead-form" onsubmit="return handleLeadSubmit(event)">
-        <div class="form-group"><label class="form-label">Business Name</label><input class="form-input" type="text"
-            id="lead-name" placeholder="e.g. My Business" required></div>
-        <div class="form-group"><label class="form-label">Owner Name</label><input class="form-input" type="text"
-            id="lead-owner" placeholder="e.g. Rahul Sharma" required></div>
-        <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" type="tel"
-            id="lead-phone" placeholder="+91 98765 43210" required></div>
-        <div class="form-group"><label class="form-label">Interested In</label>
-          <select class="form-input" id="lead-service">
-            <option value="instagram">Instagram Handling</option>
-            <option value="ar-menu">AR Menu System</option>
-            <option value="website">Website Development</option>
-            <option value="digital-growth">Digital Growth Package</option>
-            <option value="all">All Services</option>
-          </select>
+  <!-- ═══════════════ PREMIUM LEAD CAPTURE MODAL ═══════════════ -->
+  <div id="leadModal" style="display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px">
+    <!-- Backdrop -->
+    <div onclick="closeLeadModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(8px)"></div>
+
+    <!-- Modal Box -->
+    <div class="premium-modal-box" style="position:relative;z-index:1;width:100%;max-width:460px;background:#0a0a0a;border:1px solid rgba(204,0,0,0.3);border-radius:20px;overflow:hidden;box-shadow:0 0 80px rgba(204,0,0,0.15),0 40px 80px rgba(0,0,0,0.8);transform:translateY(20px);opacity:0;transition:all 0.35s cubic-bezier(0.16,1,0.3,1)">
+
+      <!-- Red top line -->
+      <div style="height:2px;background:linear-gradient(to right,transparent,#CC0000,transparent)"></div>
+
+      <!-- Header -->
+      <div style="padding:36px 36px 0;text-align:center;position:relative">
+        <!-- Close button -->
+        <button onclick="closeLeadModal()" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s" onmouseover="this.style.borderColor='rgba(204,0,0,0.5)';this.style.color='#CC0000'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.5)'">✕</button>
+
+        <!-- Logo -->
+        <div style="width:56px;height:56px;border-radius:12px;background:#111;border:1px solid rgba(204,0,0,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;overflow:hidden">
+          <img src="logo.png" alt="ZEN_X" style="width:40px;height:40px;object-fit:contain"/>
         </div>
-        <button class="submit-btn" type="submit" id="lead-submit-btn">🚀 Start Free Trial</button>
-      </form>
-      <div class="success-msg" id="lead-success" style="display:none">
-        <div class="check">✓</div>
-        <h3>Thank You!</h3>
-        <p>Our team will reach out within 24 hours to kickstart your growth journey.</p>
+
+        <!-- Title -->
+        <h2 style="color:white;font-size:24px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em;font-family:'Playfair Display',serif">Get Started with <span style="color:#CC0000">ZEN_X</span></h2>
+        <p style="color:rgba(255,255,255,0.4);font-size:13px;line-height:1.6;margin-bottom:4px">Enter your details and we'll get your digital growth started within 24 hours.</p>
+
+        <!-- Trust badges -->
+        <div style="display:flex;justify-content:center;gap:16px;margin-top:14px;margin-bottom:4px;flex-wrap:wrap">
+          <span style="color:rgba(255,255,255,0.3);font-size:11px;display:flex;align-items:center;gap:4px"><span style="color:#CC0000">✓</span> 15-day free trial</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:11px;display:flex;align-items:center;gap:4px"><span style="color:#CC0000">✓</span> No credit card</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:11px;display:flex;align-items:center;gap:4px"><span style="color:#CC0000">✓</span> Cancel anytime</span>
+        </div>
       </div>
+
+      <!-- Divider -->
+      <div style="height:1px;background:rgba(255,255,255,0.04);margin:24px 0 0"></div>
+
+      <!-- Form -->
+      <form id="lead-form" onsubmit="return handleLeadSubmit(event)" style="padding:28px 36px 36px">
+        <div style="display:flex;flex-direction:column;gap:16px">
+
+          <!-- Business Name -->
+          <div>
+            <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Business Name</label>
+            <input type="text" id="lead-name" placeholder="e.g. My Restaurant" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
+          </div>
+
+          <!-- Owner Name -->
+          <div>
+            <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Your Name</label>
+            <input type="text" id="lead-owner" placeholder="e.g. Rahul Sharma" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
+          </div>
+
+          <!-- Phone -->
+          <div>
+            <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Phone Number</label>
+            <input type="tel" id="lead-phone" placeholder="+91 98765 43210" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
+          </div>
+
+          <!-- Service selector -->
+          <div>
+            <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Interested In</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="service-selector">
+              <button type="button" onclick="selectService(this)" data-service="instagram" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">📸 Instagram</button>
+              <button type="button" onclick="selectService(this)" data-service="ar-menu" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">🥽 AR Menu</button>
+              <button type="button" onclick="selectService(this)" data-service="website" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">💻 Website</button>
+              <button type="button" onclick="selectService(this)" data-service="digital-growth" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">📈 Growth</button>
+              <button type="button" onclick="selectService(this)" data-service="ai-bots" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">🤖 AI Bots</button>
+              <button type="button" onclick="selectService(this)" data-service="all" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">⚡ Full Bundle</button>
+            </div>
+            <input type="hidden" id="lead-service" value=""/>
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" id="lead-submit-btn" style="width:100%;background:#CC0000;color:white;border:none;border-radius:10px;padding:16px;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.3s;margin-top:4px;position:relative;overflow:hidden" onmouseover="this.style.background='#FF0000';this.style.boxShadow='0 8px 30px rgba(204,0,0,0.4)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#CC0000';this.style.boxShadow='none';this.style.transform='translateY(0)'">
+            🚀 Start Free Trial — 15 Days Free
+          </button>
+
+          <!-- Bottom note -->
+          <p style="text-align:center;color:rgba(255,255,255,0.25);font-size:11px;margin:0">We respond within 2 hours · No spam ever</p>
+        </div>
+      </form>
+
+      <!-- Success state -->
+      <div id="lead-success" style="display:none;text-align:center;padding:48px 36px">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(0,200,83,0.1);border:1px solid rgba(0,200,83,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:32px">✓</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:white;margin-bottom:8px">Thank You!</h3>
+        <p style="color:rgba(255,255,255,0.5);font-size:14px;line-height:1.6">Our team will reach out within 24 hours to kickstart your growth journey.</p>
+      </div>
+
+      <!-- Bottom red line -->
+      <div style="height:1px;background:linear-gradient(to right,transparent,rgba(204,0,0,0.3),transparent)"></div>
     </div>
   </div>
 
@@ -661,20 +722,51 @@
       document.body.style.overflow = '';
     }
 
+    // --- Service Selector ---
+    function selectService(btn) {
+      document.querySelectorAll('#service-selector button').forEach(b => {
+        b.style.background = '#111';
+        b.style.borderColor = 'rgba(255,255,255,0.08)';
+        b.style.color = 'rgba(255,255,255,0.5)';
+      });
+      btn.style.background = 'rgba(204,0,0,0.12)';
+      btn.style.borderColor = 'rgba(204,0,0,0.5)';
+      btn.style.color = 'white';
+      document.getElementById('lead-service').value = btn.dataset.service;
+    }
+
     // --- Lead Modal ---
     function openLeadModal() {
-      document.getElementById('leadModal').classList.add('show');
+      const modal = document.getElementById('leadModal');
+      modal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
+      // Animate in
+      setTimeout(() => {
+        const box = modal.querySelector('.premium-modal-box');
+        if (box) {
+          box.style.transform = 'translateY(0)';
+          box.style.opacity = '1';
+        }
+      }, 10);
     }
     function closeLeadModal() {
-      document.getElementById('leadModal').classList.remove('show');
-      document.body.style.overflow = '';
+      const modal = document.getElementById('leadModal');
+      const box = modal.querySelector('.premium-modal-box');
+      if (box) {
+        box.style.transform = 'translateY(20px)';
+        box.style.opacity = '0';
+      }
+      setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }, 300);
     }
     async function handleLeadSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('lead-submit-btn');
       btn.disabled = true;
-      btn.textContent = 'Submitting...';
+      btn.textContent = '⏳ Sending...';
+      btn.style.opacity = '0.7';
       const data = {
         name: document.getElementById('lead-name').value,
         owner_name: document.getElementById('lead-owner').value,
@@ -685,6 +777,11 @@
       await submitToSupabase(data);
       document.getElementById('lead-form').style.display = 'none';
       document.getElementById('lead-success').style.display = 'block';
+      // Also open WhatsApp with details
+      const msg = `Hi ZEN_X! I want to get started.\n\nBusiness: ${data.name}\nName: ${data.owner_name}\nPhone: ${data.phone}\nInterested in: ${data.city || 'Your services'}\n\nPlease contact me!`;
+      setTimeout(() => {
+        window.open(`https://wa.me/919864119506?text=${encodeURIComponent(msg)}`, '_blank');
+      }, 1500);
       return false;
     }
 
