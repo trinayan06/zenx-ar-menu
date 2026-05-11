@@ -358,6 +358,120 @@
 
   /* ── PARTICLES — disable on mobile ── */
   #particles-js { display: none !important; }
+  /* ── ADDITIONAL MOBILE FIXES ── */
+  * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-attachment: scroll !important;
+    will-change: auto !important;
+  }
+  .service-card, .pricing-card, .why-card, .founder-card, .faq-item {
+    box-shadow: none !important;
+  }
+  .service-card, .pricing-card, .why-card,
+  .founder-card, .faq-item, nav, header {
+    transition: border-color 0.2s !important;
+  }
+  .service-card:hover, .pricing-card:hover,
+  .why-card:hover, .founder-card:hover {
+    transform: none !important;
+  }
+  #cursor, #cursor-follower, #particles-js, .scroll-indicator, #hero-video {
+    display: none !important;
+  }
+  * { cursor: auto !important; }
+
+  /* ── NAVBAR FIXES ── */
+  nav, header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1000 !important;
+    padding: 12px 5% !important;
+    background: rgba(0,0,0,0.95) !important;
+    backdrop-filter: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-bottom: 1px solid rgba(204,0,0,0.2) !important;
+  }
+  nav .logo img, header .logo img,
+  nav img[alt*="ZEN"], header img[alt*="ZEN"] {
+    height: 36px !important;
+    width: auto !important;
+  }
+  nav ul, header ul,
+  nav .nav-links, header .nav-links {
+    display: none !important;
+  }
+  .hamburger {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: none !important;
+    border: none !important;
+    color: white !important;
+    font-size: 22px !important;
+    cursor: pointer !important;
+    padding: 4px !important;
+    z-index: 1001 !important;
+  }
+
+  /* ── HERO FIXES ── */
+  .hero, #hero {
+    background:
+      linear-gradient(rgba(0,0,0,0.80), rgba(0,0,0,0.80)),
+      url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=60') center/cover no-repeat !important;
+    background-attachment: scroll !important;
+    min-height: 100svh !important;
+    padding-top: 80px !important;
+    text-align: center !important;
+  }
+  .hero h1, #hero h1 {
+    font-size: clamp(30px, 8vw, 44px) !important;
+    text-align: center !important;
+    line-height: 1.15 !important;
+  }
+  .hero p, #hero p {
+    font-size: 15px !important;
+    text-align: center !important;
+  }
+  .hero [class*="btn"], #hero [class*="btn"],
+  .hero a, #hero a {
+    width: 100% !important;
+    max-width: 300px !important;
+    text-align: center !important;
+    justify-content: center !important;
+    display: flex !important;
+    margin: 0 auto !important;
+  }
+  [class*="btn-group"], [class*="hero-buttons"],
+  .hero [class*="buttons"] {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .service-card, .portfolio-track {
+    will-change: transform;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+body {
+  -webkit-overflow-scrolling: touch;
+  overflow-x: hidden;
+}
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* ── SMALL PHONES ── */
@@ -1173,20 +1287,49 @@
 
   <!-- ═══════════════ SCRIPTS ═══════════════ -->
   <script>
-    // --- Animated Particles ---
-    (function () {
-      const container = document.getElementById('hero-particles');
-      for (let i = 0; i < 30; i++) {
-        const p = document.createElement('span');
-        p.className = 'particle';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
-        p.style.animationDuration = (10 + Math.random() * 20) + 's';
-        p.style.animationDelay = (Math.random() * 15) + 's';
-        p.style.opacity = 0.1 + Math.random() * 0.2;
-        container.appendChild(p);
+    // ── MOBILE DETECTION ──
+    const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    // Disable video on mobile immediately
+    if(isMobile) {
+      const heroVideo = document.getElementById('hero-video');
+      if(heroVideo) {
+        heroVideo.pause();
+        heroVideo.removeAttribute('autoplay');
+        heroVideo.style.display = 'none';
+        const videoWrap = document.querySelector('.hero-video-wrap');
+        if(videoWrap) {
+          videoWrap.style.background = 'url(https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=60) center/cover no-repeat';
+        }
       }
-    })();
+    }
+
+    // ── LAZY LOAD IMAGES ──
+    document.querySelectorAll('img:not([loading])').forEach(img => {
+      img.setAttribute('loading', 'lazy');
+      img.setAttribute('decoding', 'async');
+    });
+
+    // --- Animated Particles ---
+    if(!isMobile) {
+      (function () {
+        const container = document.getElementById('hero-particles');
+        for (let i = 0; i < 30; i++) {
+          const p = document.createElement('span');
+          p.className = 'particle';
+          p.style.left = Math.random() * 100 + '%';
+          p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+          p.style.animationDuration = (10 + Math.random() * 20) + 's';
+          p.style.animationDelay = (Math.random() * 15) + 's';
+          p.style.opacity = 0.1 + Math.random() * 0.2;
+          container.appendChild(p);
+        }
+      })();
+    } else {
+      const pjs = document.getElementById('particles-js');
+      if(pjs) pjs.style.display = 'none';
+    }
 
     // --- Scroll Reveal ---
     const revealObserver = new IntersectionObserver((entries) => {
@@ -1417,14 +1560,16 @@ const underlineObserver = new IntersectionObserver(entries => {
 document.querySelectorAll('h2').forEach(h2 => underlineObserver.observe(h2));
 
 // ── APPLY TO ALL SECTIONS ──
-// Hero h1 gets special character animation
-animateHeroText();
+if(!isMobile) {
+  // Hero h1 gets special character animation
+  animateHeroText();
 
-// All h2 headings get word-by-word animation
-splitAndAnimate('h2', 0);
+  // All h2 headings get word-by-word animation
+  splitAndAnimate('h2', 0);
 
-// All h3 headings get word animation with small delay
-splitAndAnimate('h3', 100);
+  // All h3 headings get word animation with small delay
+  splitAndAnimate('h3', 100);
+}
 
 // ── PARAGRAPH FADE IN ──
 document.querySelectorAll('section p, .hero p').forEach((p, i) => {
