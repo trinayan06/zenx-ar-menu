@@ -1435,20 +1435,33 @@ img {
       btn.textContent = '⏳ Sending...';
       btn.style.opacity = '0.7';
       btn.disabled = true;
+      btn.disabled = true;
+
+      // Map service names
+      const serviceMap = {
+        'instagram': 'instagram',
+        'ar-menu': 'ar_menu',
+        'website': 'website',
+        'digital-growth': 'digital_growth',
+        'ai-bots': 'ai_bots',
+        'all': 'bundle'
+      };
+      const serviceType = serviceMap[service] || 'other';
 
       try {
         // Try saving to Supabase via REST API
         const SUPABASE_URL = 'https://qjykkdmujwlkpcdyzeqa.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_rUybvqyug25z0OIXaCs25Q_cTmKdC8h';
+        const headers = {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        };
 
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
+        // 1. Insert into clients table (get ID back)
+        const clientRes = await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_KEY,
-            'Authorization': `Bearer ${SUPABASE_KEY}`,
-            'Prefer': 'return=minimal'
-          },
+          headers: { ...headers, 'Prefer': 'return=representation' },
           body: JSON.stringify({
             name: business,
             owner_name: name,
@@ -1460,16 +1473,34 @@ img {
           })
         });
 
-        if(response.ok || response.status === 201) {
-          // Also save to restaurants table as backup
+        if(clientRes.ok || clientRes.status === 201) {
+          let clientId = null;
+          try {
+            const clientData = await clientRes.json();
+            clientId = Array.isArray(clientData) ? clientData[0]?.id : clientData?.id;
+          } catch(e) {}
+
+          // 2. Auto-create a project for this client
+          if(clientId) {
+            await fetch(`${SUPABASE_URL}/rest/v1/projects`, {
+              method: 'POST',
+              headers: { ...headers, 'Prefer': 'return=minimal' },
+              body: JSON.stringify({
+                client_id: clientId,
+                service_type: serviceType,
+                package: 'standard',
+                monthly_fee: 0,
+                status: 'pending',
+                start_date: new Date().toISOString().split('T')[0],
+                notes: `Auto-created from website signup. Interested in: ${service}`
+              })
+            }).catch(() => {});
+          }
+
+          // 3. Backup to restaurants table
           await fetch(`${SUPABASE_URL}/rest/v1/restaurants`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': SUPABASE_KEY,
-              'Authorization': `Bearer ${SUPABASE_KEY}`,
-              'Prefer': 'return=minimal'
-            },
+            headers: { ...headers, 'Prefer': 'return=minimal' },
             body: JSON.stringify({
               name: business,
               owner_name: name,
@@ -1477,7 +1508,7 @@ img {
               status: 'pending',
               plan: service
             })
-          }).catch(() => {}); // ignore if restaurants table doesn't exist
+          }).catch(() => {});
 
           // Success - show success state and redirect to WhatsApp
           btn.textContent = 'Saved! Opening WhatsApp...';
@@ -1500,9 +1531,9 @@ img {
           }, 1200);
 
         } else {
-          const errorText = await response.text();
-          console.error('Supabase error:', response.status, errorText);
-          throw new Error(`Status ${response.status}`);
+          const errorText = await clientRes.text();
+          console.error('Supabase error:', clientRes.status, errorText);
+          throw new Error(`Status ${clientRes.status}`);
         }
 
       } catch(error) {
