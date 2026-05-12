@@ -166,9 +166,12 @@ function renderRecentActivity(){
   }
   // Combine clients and projects for activity
   const items = [];
-  allClients.slice(0,3).forEach(c => {
+  allClients.slice(0,5).forEach(c => {
     const date = c.created_at ? new Date(c.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '';
-    items.push(`<div class="activity-item"><span class="activity-dot"></span>🏪 <strong>${c.name||'Unknown'}</strong> joined as a client <span style="color:#666;margin-left:auto;font-size:12px">${date}</span></div>`);
+    const statusBadge = c.status === 'pending'
+      ? '<span style="background:rgba(255,183,0,0.15);color:#FFB700;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;margin-left:8px">PENDING</span>'
+      : '<span style="background:rgba(0,204,0,0.1);color:#00CC00;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;margin-left:8px">ACTIVE</span>';
+    items.push(`<div class="activity-item" style="display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:10px"><span class="activity-dot"></span>🏪 <strong>${c.name||'Unknown'}</strong> joined as a client ${statusBadge}</div><span style="color:#666;font-size:12px">${date}</span></div>`);
   });
   allProjects.slice(0,2).forEach(p => {
     const clientName = p.clients?.name || 'Unknown';
@@ -254,22 +257,25 @@ function renderClients(filter=''){
            (c.city||'').toLowerCase().includes(f);
   });
   if(data.length === 0){
-    tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:#888">No clients yet — signups will appear here</td></tr>';
+    tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:#888">No clients yet — new signups will appear here automatically</td></tr>';
     return;
   }
   tb.innerHTML = data.map(c => {
     const status = c.status || 'pending';
     const date = c.created_at ? new Date(c.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
-    return `<tr>
+    const phoneCell = c.phone ? `<a href="tel:${c.phone}" style="color:#CC0000;text-decoration:none">${c.phone}</a>` : '—';
+    const approveBtn = status === 'pending' ? `<button class="btn btn-outline btn-sm" style="color:#00CC00;border-color:rgba(0,204,0,.3)" onclick="approveClient('${c.id}')">✓ Approve</button>` : '';
+    return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
       <td><strong>${c.name||'—'}</strong></td>
       <td>${c.business_type||'other'}</td>
       <td>${c.plan||c.service_type||'—'}</td>
       <td>${c.owner_name||'—'}</td>
-      <td>${c.phone||'—'}</td>
+      <td>${phoneCell}</td>
       <td>${c.city||'—'}</td>
       <td>${getBadge(status)}</td>
       <td>${date}</td>
       <td><div class="btn-row">
+        ${approveBtn}
         <button class="btn btn-outline btn-sm" onclick="viewClient('${c.id}')">View</button>
         <button class="btn btn-outline btn-sm" onclick="editClient('${c.id}')">Edit</button>
         <button class="btn btn-danger btn-sm" onclick="deleteClient('${c.id}')">Delete</button>
@@ -294,6 +300,13 @@ async function deleteClient(id){
   const { error } = await supabaseClient.from('clients').delete().eq('id', id);
   if(error){ showToast('❌ Error deleting client', true); return; }
   showToast('✅ Client deleted successfully');
+  await loadAllData();
+}
+
+async function approveClient(id){
+  const { error } = await supabaseClient.from('clients').update({ status: 'active' }).eq('id', id);
+  if(error){ showToast('❌ Error approving client', true); return; }
+  showToast('✅ Client approved!');
   await loadAllData();
 }
 
@@ -958,6 +971,35 @@ async function seedVipCafe(){
   } catch(e){ console.log('Seed check:', e.message); }
 }
 
+// ========== REAL-TIME SUBSCRIPTIONS ==========
+function subscribeToNewClients() {
+  supabaseClient
+    .channel('clients-channel')
+    .on('postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'clients' },
+      (payload) => {
+        console.log('New client signed up:', payload.new);
+        showToast(`🔔 New signup: ${payload.new.name}!`);
+        loadAllData();
+      }
+    )
+    .on('postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'clients' },
+      () => { loadAllData(); }
+    )
+    .on('postgres_changes',
+      { event: 'DELETE', schema: 'public', table: 'clients' },
+      () => { loadAllData(); }
+    )
+    .subscribe();
+}
+
 // ========== INIT ==========
 loadSettings();
 checkSession();
+// Start real-time listener after auth
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if(event === 'SIGNED_IN' && session) {
+    subscribeToNewClients();
+  }
+});
