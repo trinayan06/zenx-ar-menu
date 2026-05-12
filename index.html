@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -1416,48 +1416,125 @@ img {
     }
     async function handleLeadSubmit(e) {
       e.preventDefault();
+
+      const business = document.getElementById('lead-name').value.trim();
+      const name = document.getElementById('lead-owner').value.trim();
+      const phone = document.getElementById('lead-phone').value.trim();
+      const service = document.getElementById('lead-service').value || 'Not specified';
+
+      // Validate
+      if(!business || !name || !phone) {
+        const btn = document.getElementById('lead-submit-btn');
+        btn.style.animation = 'shake 0.4s ease';
+        setTimeout(() => btn.style.animation = '', 400);
+        alert('Please fill in all fields!');
+        return false;
+      }
+
       const btn = document.getElementById('lead-submit-btn');
-      btn.disabled = true;
       btn.textContent = '⏳ Sending...';
       btn.style.opacity = '0.7';
-      const data = {
-        name: document.getElementById('lead-name').value,
-        owner_name: document.getElementById('lead-owner').value,
-        phone: document.getElementById('lead-phone').value,
-        city: document.getElementById('lead-service') ? document.getElementById('lead-service').value : '',
-        status: 'pending'
-      };
-      await submitToSupabase(data);
-      document.getElementById('lead-form').style.display = 'none';
-      document.getElementById('lead-success').style.display = 'block';
-      // Also open WhatsApp with details
-      const msg = `Hi ZEN_X! I want to get started.\n\nBusiness: ${data.name}\nName: ${data.owner_name}\nPhone: ${data.phone}\nInterested in: ${data.city || 'Your services'}\n\nPlease contact me!`;
-      setTimeout(() => {
-        window.open(`https://wa.me/919864119506?text=${encodeURIComponent(msg)}`, '_blank');
-      }, 1500);
+      btn.disabled = true;
+
+      try {
+        // Try saving to Supabase via REST API
+        const SUPABASE_URL = 'https://qjykkdmujwlkpcdyzeqa.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_rUybvqyug25z0OIXaCs25Q_cTmKdC8h';
+
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({
+            name: business,
+            owner_name: name,
+            phone: phone,
+            business_type: 'other',
+            status: 'pending',
+            city: '',
+            email: ''
+          })
+        });
+
+        if(response.ok || response.status === 201) {
+          // Also save to restaurants table as backup
+          await fetch(`${SUPABASE_URL}/rest/v1/restaurants`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_KEY,
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify({
+              name: business,
+              owner_name: name,
+              phone: phone,
+              status: 'pending',
+              plan: service
+            })
+          }).catch(() => {}); // ignore if restaurants table doesn't exist
+
+          // Success - show success state and redirect to WhatsApp
+          btn.textContent = 'Saved! Opening WhatsApp...';
+          btn.style.background = '#1a4a1a';
+          btn.style.opacity = '1';
+          document.getElementById('lead-form').style.display = 'none';
+          document.getElementById('lead-success').style.display = 'block';
+
+          const msg = `Hi ZEN_X!\n\nI want to start my free trial!\n\nBusiness: ${business}\nName: ${name}\nPhone: ${phone}\nInterested in: ${service}\n\nPlease contact me!`;
+          const waUrl = `https://wa.me/919864119506?text=${encodeURIComponent(msg)}`;
+
+          setTimeout(() => {
+            window.open(waUrl, '_blank');
+            setTimeout(() => {
+              btn.textContent = 'Start Free Trial - 15 Days Free';
+              btn.style.background = '#CC0000';
+              btn.style.opacity = '1';
+              btn.disabled = false;
+            }, 500);
+          }, 1200);
+
+        } else {
+          const errorText = await response.text();
+          console.error('Supabase error:', response.status, errorText);
+          throw new Error(`Status ${response.status}`);
+        }
+
+      } catch(error) {
+        console.error('Submit error:', error);
+
+        // Even if Supabase fails - still open WhatsApp so customer is not lost
+        btn.textContent = 'Opening WhatsApp...';
+        btn.style.opacity = '1';
+        document.getElementById('lead-form').style.display = 'none';
+        document.getElementById('lead-success').style.display = 'block';
+
+        const msg = `Hi ZEN_X!\n\nI want to start my free trial!\n\nBusiness: ${business}\nName: ${name}\nPhone: ${phone}\nInterested in: ${service}\n\nPlease contact me!`;
+        const waUrl = `https://wa.me/919864119506?text=${encodeURIComponent(msg)}`;
+
+        setTimeout(() => {
+          window.open(waUrl, '_blank');
+          btn.textContent = 'Start Free Trial - 15 Days Free';
+          btn.style.background = '#CC0000';
+          btn.style.opacity = '1';
+          btn.disabled = false;
+        }, 800);
+      }
+
       return false;
     }
 
-    // --- Supabase Integration ---
+    // --- Supabase Integration (for other uses) ---
     const { createClient } = supabase;
     const supabaseClient = createClient(
       'https://qjykkdmujwlkpcdyzeqa.supabase.co',
       'sb_publishable_rUybvqyug25z0OIXaCs25Q_cTmKdC8h'
     );
-    async function submitToSupabase(data) {
-      try {
-        const { error } = await supabaseClient
-          .from('restaurants')
-          .insert([data]);
-        if (error) {
-          console.error('Supabase error:', error);
-          alert('Error saving data. Please try again.');
-        }
-      } catch (err) {
-        console.error('Submit error:', err);
-        alert('Connection error. Please try again.');
-      }
-    }
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLeadModal(); });
 

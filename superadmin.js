@@ -254,16 +254,16 @@ function renderClients(filter=''){
            (c.city||'').toLowerCase().includes(f);
   });
   if(data.length === 0){
-    tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:#888">No clients found</td></tr>';
+    tb.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:40px;color:#888">No clients yet — signups will appear here</td></tr>';
     return;
   }
   tb.innerHTML = data.map(c => {
-    const status = c.status || 'active';
-    const date = c.created_at ? new Date(c.created_at).toLocaleDateString('en-IN',{month:'short',year:'numeric'}) : '—';
+    const status = c.status || 'pending';
+    const date = c.created_at ? new Date(c.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
     return `<tr>
       <td><strong>${c.name||'—'}</strong></td>
-      <td>${c.business_type||'—'}</td>
-      <td>${c.service_type||'—'}</td>
+      <td>${c.business_type||'other'}</td>
+      <td>${c.plan||c.service_type||'—'}</td>
       <td>${c.owner_name||'—'}</td>
       <td>${c.phone||'—'}</td>
       <td>${c.city||'—'}</td>
