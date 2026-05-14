@@ -37,33 +37,32 @@ const SuperAdminDashboard = () => {
   };
 
   useEffect(() => {
-    const savedAuth = localStorage.getItem('zenx_admin_auth');
-    if (savedAuth === 'true') {
-      setSession(true);
-      loadAllData();
-    }
-    setLoading(false);
+    checkSession();
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      if (session) loadAllData();
+    });
+    return () => authListener?.subscription?.unsubscribe();
   }, []);
+
+  const checkSession = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setSession(session);
+    if (session) loadAllData();
+    setLoading(false);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError('');
     setIsLoggingIn(true);
-    setTimeout(() => {
-      setIsLoggingIn(false);
-      if (password === 'founder@2026') {
-        localStorage.setItem('zenx_admin_auth', 'true');
-        setSession(true);
-        loadAllData();
-      } else {
-        setLoginError('⛔ Access Denied — Wrong Password');
-      }
-    }, 500);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setIsLoggingIn(false);
+    if (error) setLoginError('⛔ Access Denied — ' + error.message);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('zenx_admin_auth');
-    setSession(false);
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
   };
 
   const loadAllData = async () => {
