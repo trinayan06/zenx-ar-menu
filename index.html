@@ -1,1178 +1,863 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZEN_X — Digital Solutions for Businesses | Instagram, Websites & AR</title>
-  <meta name="description"
-    content="ZEN_X helps businesses grow with Instagram handling, website development, AR menus, and smart digital solutions. Start your 15-day free trial today.">
+  <title>ZEN_X — Digital Solutions for Businesses</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=6">
-  <link rel="stylesheet" href="interactions.css?v=6">
-  <link rel="stylesheet" href="new-sections.css?v=6">
-  <link rel="stylesheet" href="premium-theme.css?v=7">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<style>
-/* ═══════════════════════════════
-   MOBILE FIXES — MAX 768px
-═══════════════════════════════ */
-@media (max-width: 768px) {
 
-  /* ── GLOBAL ── */
-  html, body {
-    overflow-x: hidden !important;
-    width: 100% !important;
-  }
-  section {
-    padding: 60px 5% !important;
-  }
-  /* Fix background-attachment: fixed — broken on iOS */
-  section, footer, .hero, #hero,
-  [style*="background-attachment"] {
-    background-attachment: scroll !important;
-  }
+  <style>
+    /* DESIGN SYSTEM */
+    :root {
+      --black: #000000;
+      --black-1: #0a0a0a;
+      --black-2: #111111;
+      --black-3: #1a1a1a;
+      --red: #CC0000;
+      --red-hover: #e60000;
+      --white: #ffffff;
+      --white-60: rgba(255,255,255,0.6);
+      --white-30: rgba(255,255,255,0.3);
+      --white-10: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.08);
+      --border-red: rgba(204,0,0,0.3);
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius: 12px;
+      --radius-lg: 20px;
+      --transition: 0.3s ease;
+    }
 
-  /* ── NAVBAR ── */
-  nav, header {
-    padding: 14px 5% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-  }
-  /* Logo center on mobile */
-  nav .logo, header .logo,
-  nav a:first-child, header a:first-child {
-    position: absolute !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-  }
-  /* Hide desktop nav links */
-  nav .nav-links, header .nav-links,
-  nav ul, header ul {
-    display: none !important;
-  }
-  /* Show hamburger */
-  nav .hamburger, header .hamburger,
-  nav .menu-toggle, header .menu-toggle {
-    display: flex !important;
-  }
-  /* Nav CTA button hide on mobile */
-  nav .btn-primary, header .btn-primary,
-  nav > a[href*="trial"], header > a[href*="trial"] {
-    display: none !important;
-  }
+    /* GLOBAL RESET */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1,h2,h3,h4 { font-family: 'Syne', sans-serif; line-height: 1.1; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { font-family: 'DM Sans', sans-serif; cursor: pointer; }
+    section { padding: 100px 6%; }
+    @media(max-width:768px) { section { padding: 60px 5%; } }
 
-  /* ── MOBILE MENU ── */
-  .mobile-menu {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.97);
-    z-index: 9998;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 32px;
-  }
-  .mobile-menu.open { display: flex !important; }
-  .mobile-menu a {
-    color: white !important;
-    font-size: 24px !important;
-    font-weight: 700 !important;
-    text-decoration: none !important;
-    letter-spacing: 2px !important;
-    transition: color 0.3s !important;
-  }
-  .mobile-menu a:hover { color: #CC0000 !important; }
-  .mobile-menu .close-menu {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 28px;
-    cursor: pointer;
-  }
-  .mobile-menu .menu-cta {
-    background: #CC0000 !important;
-    color: white !important;
-    padding: 14px 32px !important;
-    border-radius: 8px !important;
-    font-size: 16px !important;
-    margin-top: 16px !important;
-  }
+    /* SCROLL REVEAL CSS */
+    .reveal-el {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal-el.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-  /* ── HERO ── */
-  .hero, #hero {
-    min-height: 100svh !important;
-    padding: 100px 5% 60px !important;
-    text-align: center !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-  /* Video background on mobile */
-  #hero-video, .hero-video-wrap video {
-    display: none !important;
-  }
-  .hero-video-wrap {
-    background:
-      linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)),
-      url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=80') center/cover !important;
-  }
-  /* Hero text */
-  .hero h1, #hero h1 {
-    font-size: clamp(32px, 9vw, 48px) !important;
-    text-align: center !important;
-    line-height: 1.1 !important;
-  }
-  .hero p, #hero p {
-    font-size: 15px !important;
-    text-align: center !important;
-    max-width: 100% !important;
-  }
-  /* Hero buttons stack vertically */
-  .hero .btn-group, #hero .btn-group,
-  .hero-buttons, .hero [class*="buttons"],
-  .hero [class*="btn-wrap"] {
-    flex-direction: column !important;
-    gap: 12px !important;
-    width: 100% !important;
-    align-items: center !important;
-  }
-  .hero .btn-primary, .hero .btn-secondary,
-  #hero a[class*="btn"], #hero button {
-    width: 100% !important;
-    max-width: 320px !important;
-    text-align: center !important;
-    justify-content: center !important;
-  }
-  /* Hero stats row */
-  .hero [class*="stats"], #hero [class*="stats"] {
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    gap: 16px !important;
-    justify-content: center !important;
-  }
-  .hero [class*="stat"], #hero [class*="stat"] {
-    text-align: center !important;
-    min-width: 80px !important;
-  }
-  /* Instagram badge */
-  .hero a[href*="instagram"] {
-    font-size: 11px !important;
-    padding: 5px 12px !important;
-  }
+    /* 1 - NAVBAR */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 6%;
+      height: 70px;
+      background: rgba(0,0,0,0);
+      border-bottom: 1px solid transparent;
+      transition: all 0.4s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(0,0,0,0.95);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo img { height: 38px; width: auto; }
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.65);
+      font-size: 14px; font-weight: 500;
+      transition: color 0.3s;
+      letter-spacing: 0.02em;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta {
+      background: #CC0000; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 10px 22px;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.03em;
+      transition: all 0.3s;
+    }
+    .nav-cta:hover { background: #e60000; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(204,0,0,0.35); }
+    .hamburger {
+      display: none; flex-direction: column;
+      gap: 5px; background: none; border: none; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 1.5px;
+      background: #fff; transition: all 0.3s;
+    }
+    .mobile-nav {
+      display: none; position: fixed; inset: 0;
+      background: #000; z-index: 9999;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 32px;
+    }
+    .mobile-nav.open { display: flex !important; }
+    .mobile-nav ul { list-style: none; text-align: center; display: flex; flex-direction: column; gap: 28px; }
+    .mobile-nav a { font-size: 28px; font-weight: 700; font-family: 'Syne', sans-serif; color: #fff; transition: color 0.3s; }
+    .mobile-nav a:hover { color: #CC0000; }
+    .mobile-nav-close {
+      position: absolute; top: 24px; right: 24px;
+      background: none; border: none; color: #fff;
+      font-size: 24px; cursor: pointer;
+    }
+    .mobile-cta {
+      background: #CC0000; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 14px 36px; font-size: 16px; font-weight: 700;
+      margin-top: 8px;
+    }
+    @media(max-width:768px) {
+      .nav-links, .nav-cta { display: none !important; }
+      .hamburger { display: flex !important; }
+      #navbar { padding: 0 5%; }
+    }
 
-  /* ── TICKER ── */
-  .ticker-wrap, [class*="ticker"] {
-    font-size: 11px !important;
-    padding: 10px 0 !important;
-  }
+    /* 2 - HERO SECTION */
+    #hero {
+      position: relative; overflow: hidden;
+      min-height: 100svh; padding: 0 6%;
+      display: flex; align-items: center;
+      background: #000;
+    }
+    .hero-video-wrap {
+      position: absolute; inset: 0; z-index: 0;
+    }
+    #hero-video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.4);
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.3) 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 1;
+      max-width: 620px;
+      padding-top: 70px;
+    }
+    .hero-tag {
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.6);
+      font-size: 12px; font-weight: 500;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 7px 16px; border-radius: 4px;
+      margin-bottom: 24px;
+    }
+    #hero h1 {
+      font-size: clamp(42px, 6vw, 80px);
+      font-weight: 800; color: #fff;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+    .red-text { color: #CC0000; }
+    #hero p {
+      font-size: 17px; color: rgba(255,255,255,0.6);
+      max-width: 480px; margin-bottom: 36px;
+      line-height: 1.7;
+    }
+    .hero-btns {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      margin-bottom: 52px;
+    }
+    .btn-red {
+      background: #CC0000; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 14px 28px; font-size: 15px; font-weight: 600;
+      transition: all 0.3s;
+    }
+    .btn-red:hover { background: #e60000; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(204,0,0,0.4); }
+    .btn-ghost {
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
+      border-radius: 8px; padding: 14px 28px;
+      font-size: 15px; font-weight: 500;
+      transition: all 0.3s; display: inline-flex; align-items: center;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+    .hero-stats {
+      display: flex; align-items: center; gap: 28px;
+    }
+    .stat { display: flex; flex-direction: column; gap: 4px; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px; font-weight: 800; color: #fff;
+    }
+    .stat-label { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 0.5px; }
+    .stat-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.1); }
+    @media(max-width:768px) {
+      #hero-video { display: none; }
+      .hero-overlay { background: rgba(0,0,0,0.7); }
+      #hero { padding: 120px 5% 60px; min-height: 100svh; background: linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=60') center/cover; }
+      .hero-content { max-width: 100%; }
+      #hero h1 { font-size: clamp(36px, 9vw, 52px); }
+      #hero p { font-size: 15px; }
+      .hero-btns { flex-direction: column; }
+      .btn-red, .btn-ghost { width: 100%; text-align: center; justify-content: center; }
+      .hero-stats { gap: 20px; }
+      .stat-num { font-size: 22px; }
+    }
 
-  /* ── SECTION HEADINGS ── */
-  h2 {
-    font-size: clamp(26px, 7vw, 36px) !important;
-    line-height: 1.2 !important;
-    text-align: center !important;
-  }
-  h3 { font-size: 18px !important; }
-  [class*="section-tag"], [class*="section-label"] {
-    text-align: center !important;
-    display: block !important;
-  }
+    /* 3 - TICKER */
+    .ticker-wrap {
+      background: #CC0000; overflow: hidden;
+      padding: 13px 0; white-space: nowrap;
+    }
+    .ticker-track {
+      display: inline-block;
+      animation: ticker 30s linear infinite;
+    }
+    .ticker-track span {
+      color: #fff; font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; margin: 0 18px;
+    }
+    .ticker-track .dot { color: rgba(255,255,255,0.5); margin: 0 4px; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
 
-  /* ── SERVICE CARDS ── */
-  .services-grid, [class*="services-grid"],
-  [class*="service-grid"] {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-  }
-  .service-card {
-    width: 100% !important;
-  }
-  .service-card-img {
-    height: 160px !important;
-  }
+    /* 4 - SERVICES SECTION */
+    #services { background: #0a0a0a; }
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-tag {
+      display: inline-block; color: #CC0000;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-header h2 { font-size: clamp(32px, 4vw, 48px); color: #fff; margin-bottom: 14px; }
+    .section-header p { color: rgba(255,255,255,0.5); font-size: 16px; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 1000px; margin: 0 auto;
+    }
+    .service-card {
+      background: #111; border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      display: flex; flex-direction: column;
+    }
+    .service-card:hover { border-color: rgba(204,0,0,0.4); transform: translateY(-6px); }
+    .service-img { height: 200px; overflow: hidden; }
+    .service-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; filter: brightness(0.85); }
+    .service-card:hover .service-img img { transform: scale(1.05); filter: brightness(1); }
+    .service-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .service-badge {
+      display: inline-block; background: #CC0000; color: #fff;
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      padding: 3px 10px; border-radius: 4px; margin-bottom: 12px;
+    }
+    .service-body h3 { color: #fff; font-size: 20px; margin-bottom: 16px; transition: color 0.3s; }
+    .service-card:hover h3 { color: #CC0000; }
+    .service-body ul { list-style: none; flex: 1; margin-bottom: 20px; }
+    .service-body li {
+      color: rgba(255,255,255,0.5); font-size: 14px;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .service-body li::before { content: '✓'; color: #CC0000; font-weight: 700; flex-shrink: 0; }
+    .service-btn {
+      background: transparent; border: 1px solid rgba(204,0,0,0.4);
+      color: #CC0000; border-radius: 8px;
+      padding: 10px 20px; font-size: 14px; font-weight: 600;
+      transition: all 0.3s; align-self: flex-start;
+    }
+    .service-btn:hover { background: #CC0000; color: #fff; border-color: #CC0000; }
+    @media(max-width:768px) {
+      .services-grid { grid-template-columns: 1fr; gap: 16px; }
+      .service-img { height: 180px; }
+    }
 
-  /* ── HOW IT WORKS ── */
-  [class*="steps-grid"], [class*="process-grid"],
-  [class*="how-grid"] {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 12px !important;
-  }
-  [class*="step-card"], [class*="step"] {
-    padding: 16px !important;
-  }
-  [class*="step-card"] img, [class*="step"] img {
-    height: 100px !important;
-  }
-  [class*="step"] h3 { font-size: 14px !important; }
-  [class*="step"] p { font-size: 12px !important; }
+    /* 5 - HOW IT WORKS */
+    #how-it-works { background: #000; }
+    .process-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 2px; max-width: 1100px; margin: 0 auto;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; overflow: hidden;
+    }
+    .process-card {
+      background: #0a0a0a; padding: 36px 28px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.3s;
+    }
+    .process-card:last-child { border-right: none; }
+    .process-card:hover { background: #111; }
+    .process-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 42px; font-weight: 800;
+      color: rgba(204,0,0,0.2);
+      margin-bottom: 20px;
+      line-height: 1;
+      transition: color 0.3s;
+    }
+    .process-card:hover .process-num { color: rgba(204,0,0,0.5); }
+    .process-card h3 { color: #fff; font-size: 17px; margin-bottom: 12px; }
+    .process-card p { color: rgba(255,255,255,0.45); font-size: 14px; line-height: 1.6; }
+    @media(max-width:768px) {
+      .process-grid { grid-template-columns: 1fr 1fr; }
+      .process-card { padding: 24px 20px; border-right: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); }
+      .process-num { font-size: 32px; }
+    }
+    @media(max-width:480px) {
+      .process-grid { grid-template-columns: 1fr; }
+    }
 
-  /* ── PRICING ── */
-  .pricing-grid {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
-    max-width: 100% !important;
-  }
-  .pricing-card { padding: 24px 20px !important; }
-  .plan-price { font-size: 32px !important; }
-  .price-reference {
-    margin: 30px 0 0 !important;
-    padding: 20px !important;
-  }
-  .free-trial-banner {
-    font-size: 12px !important;
-    padding: 12px !important;
-  }
+    /* 6 - PRICING */
+    #pricing { background: #0a0a0a; }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 20px; max-width: 960px; margin: 0 auto 40px;
+    }
+    .pricing-card {
+      background: #111; border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; padding: 32px 28px;
+      display: flex; flex-direction: column;
+      position: relative; transition: all 0.3s;
+    }
+    .pricing-card:hover { border-color: rgba(204,0,0,0.3); transform: translateY(-4px); }
+    .pricing-card.featured { border-color: rgba(204,0,0,0.4); box-shadow: 0 0 40px rgba(204,0,0,0.1); }
+    .featured-label {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: #CC0000; color: #fff;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      padding: 4px 16px; border-radius: 20px;
+    }
+    .pricing-top { margin-bottom: 24px; }
+    .pricing-card h3 { color: #fff; font-size: 20px; margin-bottom: 10px; }
+    .price { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: #CC0000; }
+    .price span { font-size: 14px; color: rgba(255,255,255,0.35); font-family: 'DM Sans', sans-serif; font-weight: 400; }
+    .pricing-card ul { list-style: none; flex: 1; margin-bottom: 24px; }
+    .pricing-card li {
+      color: rgba(255,255,255,0.55); font-size: 14px;
+      padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .pricing-card li::before { content: '✓'; color: #CC0000; font-weight: 700; flex-shrink: 0; }
+    .pricing-btn {
+      width: 100%; padding: 13px;
+      background: transparent; border: 1px solid rgba(204,0,0,0.4);
+      color: #CC0000; border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      transition: all 0.3s;
+    }
+    .pricing-btn:hover, .featured-btn {
+      background: #CC0000; color: #fff; border-color: #CC0000;
+    }
+    .ar-pricing {
+      max-width: 700px; margin: 0 auto;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; overflow: hidden;
+      background: #111;
+    }
+    .ar-price-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 28px;
+    }
+    .ar-price-item h4 { color: #fff; font-size: 16px; margin-bottom: 4px; }
+    .ar-price-item p { color: rgba(255,255,255,0.4); font-size: 13px; }
+    .ar-price-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #CC0000; white-space: nowrap; }
+    .ar-price-num span { font-size: 13px; color: rgba(255,255,255,0.35); font-family: 'DM Sans'; font-weight: 400; }
+    .ar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 0 28px; }
+    @media(max-width:768px) {
+      .pricing-grid { grid-template-columns: 1fr; gap: 16px; }
+      .ar-price-item { flex-direction: column; align-items: flex-start; gap: 10px; padding: 20px; }
+    }
 
-  /* ── PORTFOLIO HORIZONTAL SCROLL ── */
-  [class*="portfolio-wrap"], [class*="portfolio-container"] {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-  }
-  [class*="portfolio-wrap"]::-webkit-scrollbar { display: none !important; }
-  [class*="portfolio-track"], [class*="portfolio-scroll"] {
-    width: max-content !important;
-    gap: 12px !important;
-  }
-  [class*="portfolio-card"], [class*="port-card"] {
-    width: 260px !important;
-    flex-shrink: 0 !important;
-  }
+    /* 7 - WHY CHOOSE US */
+    #why-us { background: #000; }
+    .why-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; overflow: hidden;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .why-card {
+      background: #0a0a0a; padding: 36px 28px;
+      transition: background 0.3s;
+    }
+    .why-card:hover { background: #111; }
+    .why-icon { font-size: 32px; margin-bottom: 20px; display: block; }
+    .why-card h3 { color: #fff; font-size: 18px; margin-bottom: 12px; }
+    .why-card p { color: rgba(255,255,255,0.45); font-size: 14px; line-height: 1.6; }
+    @media(max-width:768px) {
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .why-card { padding: 24px 20px; }
+    }
+    @media(max-width:480px) {
+      .why-grid { grid-template-columns: 1fr; }
+    }
 
-  /* ── WHY CHOOSE US ── */
-  [class*="why-grid"], [class*="features-grid"] {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 12px !important;
-  }
-  .why-card { border-radius: 12px !important; }
-  .why-card-img { height: 100px !important; }
-  .why-card-body { padding: 14px !important; }
-  .why-card h3 { font-size: 14px !important; }
-  .why-card p { font-size: 12px !important; }
+    /* 8 - ABOUT / FOUNDERS */
+    #about-us { background: #0a0a0a; }
+    .founders-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 16px; max-width: 960px; margin: 0 auto;
+    }
+    .founder-card {
+      background: #111; border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; padding: 32px 20px;
+      text-align: center; transition: all 0.3s;
+    }
+    .founder-card:hover { border-color: rgba(204,0,0,0.3); transform: translateY(-4px); }
+    .founder-emoji { font-size: 40px; margin-bottom: 16px; display: block; }
+    .founder-card h3 { color: #fff; font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .founder-role { color: #CC0000; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    @media(max-width:768px) {
+      .founders-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .founder-card { padding: 24px 16px; }
+      .founder-emoji { font-size: 32px; }
+    }
 
-  /* ── ERA SECTION ── */
-  .era-section { padding: 60px 5% !important; }
-  .era-content {
-    grid-template-columns: 1fr !important;
-    gap: 30px !important;
-  }
-  .era-left h2 { font-size: 28px !important; }
-  .era-right { display: none !important; }
+    /* 9 - FAQ */
+    #faq { background: #000; }
+    .faq-item { border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .faq-q {
+      width: 100%; background: none; border: none; color: #fff;
+      font-size: 16px; font-weight: 500;
+      padding: 22px 0; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; text-align: left;
+      transition: color 0.3s;
+    }
+    .faq-q:hover { color: #CC0000; }
+    .faq-icon {
+      color: #CC0000; font-size: 22px; font-weight: 300;
+      flex-shrink: 0; transition: transform 0.3s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-item.open .faq-q { color: #CC0000; }
+    .faq-a {
+      display: none; color: rgba(255,255,255,0.5);
+      font-size: 15px; line-height: 1.7;
+      padding-bottom: 22px;
+    }
+    .faq-item.open .faq-a { display: block; }
 
-  /* ── ABOUT / FOUNDERS ── */
-  [class*="founders-grid"] {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 12px !important;
-  }
-  .founder-card {
-    padding: 20px 14px !important;
-    border-radius: 12px !important;
-  }
-  .founder-emoji { font-size: 32px !important; }
-  .founder-card h3 { font-size: 15px !important; }
-  .founder-role { font-size: 10px !important; }
-  .founder-desc { font-size: 11px !important; }
+    /* 10 - CONTACT CTA */
+    #contact { background: #0a0a0a; text-align: center; }
+    .cta-box { max-width: 600px; margin: 0 auto; }
+    .cta-box h2 { font-size: clamp(32px,5vw,52px); color: #fff; margin-bottom: 16px; }
+    .cta-box p { color: rgba(255,255,255,0.5); font-size: 16px; margin-bottom: 36px; }
+    .contact-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-top: 28px; flex-wrap: wrap;
+    }
+    .contact-links a {
+      color: rgba(255,255,255,0.4); font-size: 14px;
+      transition: color 0.3s;
+    }
+    .contact-links a:hover { color: #fff; }
 
-  /* ── FAQ ── */
-  .faq-list { gap: 8px !important; }
-  .faq-q { font-size: 14px !important; padding: 14px 16px !important; }
-  .faq-a { font-size: 13px !important; padding: 0 16px 14px !important; }
+    /* 11 - FOOTER */
+    footer { background: #000; border-top: 1px solid rgba(255,255,255,0.06); padding: 48px 6% 28px; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; margin-bottom: 40px; flex-wrap: wrap; }
+    .footer-links { display: flex; gap: 28px; flex-wrap: wrap; align-items: center; }
+    .footer-links a { color: rgba(255,255,255,0.4); font-size: 14px; transition: color 0.3s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { display: flex; justify-content: space-between; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; gap: 8px; }
+    .footer-bottom span { color: rgba(255,255,255,0.25); font-size: 12px; }
+    @media(max-width:768px) { .footer-inner { flex-direction: column; } .footer-bottom { flex-direction: column; } }
 
-  /* ── CONTACT SECTION ── */
-  #contact, .contact-section, #final-cta {
-    text-align: center !important;
-    padding: 60px 5% !important;
-  }
-  #contact h2, .contact-section h2, #final-cta h2 {
-    font-size: 28px !important;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    padding: 40px 5% 30px !important;
-    text-align: center !important;
-  }
-  footer [class*="footer-grid"],
-  footer [class*="footer-content"] {
-    grid-template-columns: 1fr !important;
-    gap: 30px !important;
-  }
-  footer [class*="quick-links"],
-  footer nav { text-align: center !important; }
-
-  /* ── MODAL ── */
-  #signup-modal > div:last-child {
-    margin: 10px !important;
-    max-width: calc(100vw - 20px) !important;
-    max-height: calc(100svh - 40px) !important;
-    overflow-y: auto !important;
-  }
-  #signup-modal [style*="padding:36px"] {
-    padding: 24px 20px 0 !important;
-  }
-  #signup-modal [style*="padding:28px"] {
-    padding: 20px !important;
-  }
-  #signup-modal h2 { font-size: 20px !important; }
-  #signup-modal [style*="grid-template-columns:1fr 1fr"] {
-    grid-template-columns: 1fr 1fr !important;
-  }
-  #signup-modal [style*="display:flex;justify-content:center;gap:16px"] {
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-  }
-
-  /* ── FLOATING BUTTONS ── */
-  #whatsapp-btn, a[href*="wa.me"] {
-    bottom: 20px !important;
-    right: 16px !important;
-    font-size: 13px !important;
-    padding: 12px 16px !important;
-  }
-  #scroll-top {
-    bottom: 80px !important;
-    left: 16px !important;
-    width: 38px !important;
-    height: 38px !important;
-    font-size: 16px !important;
-  }
-
-  /* ── CUSTOM CURSOR — disable on touch ── */
-  #cursor, #cursor-follower { display: none !important; }
-  * { cursor: auto !important; }
-
-  /* ── HIDE SCROLL INDICATOR ── */
-  .scroll-indicator { display: none !important; }
-
-  /* ── PARTICLES — disable on mobile ── */
-  #particles-js { display: none !important; }
-  /* ── ADDITIONAL MOBILE FIXES ── */
-  * {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    background-attachment: scroll !important;
-    will-change: auto !important;
-  }
-  .service-card, .pricing-card, .why-card, .founder-card, .faq-item {
-    box-shadow: none !important;
-  }
-  .service-card, .pricing-card, .why-card,
-  .founder-card, .faq-item, nav, header {
-    transition: border-color 0.2s !important;
-  }
-  .service-card:hover, .pricing-card:hover,
-  .why-card:hover, .founder-card:hover {
-    transform: none !important;
-  }
-  #cursor, #cursor-follower, #particles-js, .scroll-indicator, #hero-video {
-    display: none !important;
-  }
-  * { cursor: auto !important; }
-
-  /* ── NAVBAR FIXES ── */
-  nav, header {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 1000 !important;
-    padding: 12px 5% !important;
-    background: rgba(0,0,0,0.95) !important;
-    backdrop-filter: none !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-end !important;
-    border-bottom: 1px solid rgba(204,0,0,0.2) !important;
-  }
-  nav .nav-logo {
-    position: absolute !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    margin: 0 !important;
-  }
-  nav .nav-logo img, header .logo img,
-  nav img[alt*="ZEN"], header img[alt*="ZEN"] {
-    height: 36px !important;
-    width: auto !important;
-  }
-  nav ul, header ul,
-  nav .nav-links, header .nav-links {
-    display: none !important;
-  }
-  .hamburger {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: none !important;
-    border: none !important;
-    color: white !important;
-    font-size: 22px !important;
-    cursor: pointer !important;
-    padding: 4px !important;
-    z-index: 1001 !important;
-  }
-
-  /* ── HERO FIXES ── */
-  .hero, #hero {
-    background:
-      linear-gradient(rgba(0,0,0,0.80), rgba(0,0,0,0.80)),
-      url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=60') center/cover no-repeat !important;
-    background-attachment: scroll !important;
-    min-height: 100svh !important;
-    padding-top: 80px !important;
-    text-align: center !important;
-  }
-  .hero h1, #hero h1 {
-    font-size: clamp(30px, 8vw, 44px) !important;
-    text-align: center !important;
-    line-height: 1.15 !important;
-  }
-  .hero p, #hero p {
-    font-size: 15px !important;
-    text-align: center !important;
-  }
-  .hero [class*="btn"], #hero [class*="btn"],
-  .hero a, #hero a {
-    width: 100% !important;
-    max-width: 300px !important;
-    text-align: center !important;
-    justify-content: center !important;
-    display: flex !important;
-    margin: 0 auto !important;
-  }
-  [class*="btn-group"], [class*="hero-buttons"],
-  .hero [class*="buttons"] {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 12px !important;
-    width: 100% !important;
-  }
-}
-
-@media (min-width: 769px) {
-  .service-card, .portfolio-track {
-    will-change: transform;
-  }
-}
-
-html {
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-body {
-  -webkit-overflow-scrolling: touch;
-  overflow-x: hidden;
-}
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* ── SMALL PHONES ── */
-@media (max-width: 380px) {
-  .hero h1, #hero h1 { font-size: 28px !important; }
-  [class*="why-grid"] { grid-template-columns: 1fr !important; }
-  [class*="founders-grid"] { grid-template-columns: 1fr !important; }
-  [class*="steps-grid"] { grid-template-columns: 1fr !important; }
-}
-</style>
+    /* 14 - FLOATING BUTTONS */
+    #whatsapp-btn {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      background: #25D366; color: #fff;
+      padding: 12px 20px; border-radius: 50px;
+      font-weight: 600; font-size: 14px;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+      transition: all 0.3s;
+    }
+    #whatsapp-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,211,102,0.4); }
+    #scroll-top {
+      position: fixed; bottom: 80px; left: 24px; z-index: 999;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #CC0000; color: #fff; border: none;
+      font-size: 18px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(204,0,0,0.3);
+      transition: all 0.3s;
+    }
+    #scroll-top:hover { transform: translateY(-2px); }
+  </style>
 </head>
-
 <body>
 
-  <!-- ═══════════════ NAVIGATION ═══════════════ -->
-  <nav class="nav" id="main-nav">
-    <a href="#" class="nav-logo" style="display: flex; align-items: center; gap: 10px;">
-      <img src="logo.png" alt="ZEN_X Logo" style="height: 50px;">
-      <span class="animated-logo-text">
-        <span style="--i:1">Z</span><span style="--i:2">E</span><span style="--i:3">N</span><span
-          style="--i:4">_</span><span style="--i:5">X</span>
-      </span>
+  <!-- 1 — NAVBAR -->
+  <nav id="navbar">
+    <a href="/" class="nav-logo">
+      <img src="./logo.png" alt="ZEN_X" height="38"/>
     </a>
-    <div class="nav-links">
-      <a href="#services">Services</a>
-      <a href="#how-it-works">How It Works</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#why-us">Why Us</a>
-      <a href="#faq">FAQ</a>
-      <button class="nav-cta" onclick="openLeadModal()">Start Free Trial</button>
-    </div>
-    <!-- Mobile hamburger -->
-    <button class="hamburger" onclick="openMobileMenu()" style="display:none;background:none;border:none;color:white;font-size:24px;cursor:pointer;padding:4px;z-index:9999">☰</button>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#how-it-works">Process</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#about-us">About</a></li>
+    </ul>
+    <button class="nav-cta" onclick="openLeadModal()">Start Free Trial</button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
-  <!-- Mobile Menu Overlay -->
-  <div class="mobile-menu" id="mobile-menu">
-    <button class="close-menu" onclick="closeMobileMenu()">✕</button>
-    <a href="#services" onclick="closeMobileMenu()">Services</a>
-    <a href="#how-it-works" onclick="closeMobileMenu()">How It Works</a>
-    <a href="#pricing" onclick="closeMobileMenu()">Pricing</a>
-    <a href="#why-us" onclick="closeMobileMenu()">Why Us</a>
-    <a href="#about-us" onclick="closeMobileMenu()">About</a>
-    <a href="#" onclick="openLeadModal();closeMobileMenu();" class="menu-cta">🚀 Start Free Trial</a>
+  <div class="mobile-nav" id="mobile-nav">
+    <button class="mobile-nav-close" id="mobile-close">✕</button>
+    <ul>
+      <li><a href="#services" class="mobile-link">Services</a></li>
+      <li><a href="#how-it-works" class="mobile-link">Process</a></li>
+      <li><a href="#pricing" class="mobile-link">Pricing</a></li>
+      <li><a href="#about-us" class="mobile-link">About</a></li>
+    </ul>
+    <button class="mobile-cta" onclick="openLeadModal();closeMobileNav()">🚀 Start Free Trial</button>
   </div>
 
-  <!-- ═══════════════ HERO ═══════════════ -->
-  <section class="hero" id="hero">
+  <!-- 2 — HERO SECTION -->
+  <section id="hero">
     <div class="hero-video-wrap">
-      <video
-        id="hero-video"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="auto"
-        style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;"
-      >
+      <video autoplay muted loop playsinline id="hero-video">
         <source src="./bg-vid.mp4" type="video/mp4"/>
       </video>
-      <!-- Dark overlay so text is readable -->
-      <div style="position:absolute;inset:0;z-index:1;background:linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%)"></div>
+      <div class="hero-overlay"></div>
     </div>
-    <div class="hero-particles" id="hero-particles"></div>
     <div class="hero-content">
-      <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px;">
-        <div class="hero-badge float-anim" style="margin-bottom: 0;"><span class="dot"></span> Helping local businesses grow faster 🚀</div>
-        <a href="https://www.instagram.com/zen_x_2026" target="_blank" class="insta-badge"
-          style="display:inline-flex; align-items:center; gap:6px; padding:6px 16px; border-radius:50px; border:1px solid #CC0000; background:rgba(0,0,0,0.5); color:#fff; font-size:12px; font-weight:600; text-decoration:none; transition:all 0.3s; margin-bottom: 0;">
-          📸 Follow @zen_x_2026
-        </a>
-      </div>
-      <h1 class="hero-split-text">ZEN_X — Your Digital Growth Partner</h1>
-      <p class="hero-sub">We help businesses grow online with <strong>Instagram handling</strong>,
-        <strong>websites</strong>, and <strong>smart automation solutions</strong>.
-      </p>
+      <div class="hero-tag">Digital Growth Partner</div>
+      <h1>We Build Your<br/><span class="red-text">Digital Future.</span></h1>
+      <p>Instagram management, websites, AR menus and smart automation — for businesses ready to grow.</p>
       <div class="hero-btns">
-        <button class="btn-primary" onclick="openLeadModal()">
-          <span>🚀</span> Start Free Trial
-        </button>
-        <button class="btn-secondary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
-          <span>⚡</span> View Services
-        </button>
+        <button class="btn-red" onclick="openLeadModal()">Start Free Trial →</button>
+        <a href="#services" class="btn-ghost">See Services</a>
       </div>
       <div class="hero-stats">
-        <div class="stat"><span class="stat-num">10+</span><span class="stat-label">Businesses Served</span></div>
-        <div class="stat"><span class="stat-num">2x</span><span class="stat-label">Avg. Growth Rate</span></div>
-        <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Client Satisfaction</span></div>
+        <div class="stat"><span class="stat-num" data-target="10" data-suffix="+">0+</span><span class="stat-label">Businesses Served</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" data-target="15" data-suffix="+">0+</span><span class="stat-label">Days Free Trial</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" data-target="24" data-suffix="h">0h</span><span class="stat-label">Response Time</span></div>
       </div>
-    </div>
-    <div class="scroll-indicator">
-      <div class="scroll-line"></div>
-      <span>Scroll</span>
     </div>
   </section>
 
-  <!-- ═══════════════ SCROLLING TICKER ═══════════════ -->
-  <div class="marquee-wrapper">
-    <div class="marquee-content">
-      <span>INSTAGRAM GROWTH</span> <span class="dot">•</span>
-      <span>DIGITAL SOLUTIONS</span> <span class="dot">•</span>
-      <span>SEO & REBUILD</span> <span class="dot">•</span>
-      <span>AI-WHATSAPP BOTS</span> <span class="dot">•</span>
-      <span>AI-CALLING AGENTS</span> <span class="dot">•</span>
-      <span>E-COMMERCE WEBSITES</span> <span class="dot">•</span>
-      <span>RESTAURANT AR MENU</span> <span class="dot">•</span>
-    </div>
-    <div class="marquee-content" aria-hidden="true">
-      <span>INSTAGRAM GROWTH</span> <span class="dot">•</span>
-      <span>DIGITAL SOLUTIONS</span> <span class="dot">•</span>
-      <span>SEO & REBUILD</span> <span class="dot">•</span>
-      <span>AI-WHATSAPP BOTS</span> <span class="dot">•</span>
-      <span>AI-CALLING AGENTS</span> <span class="dot">•</span>
-      <span>E-COMMERCE WEBSITES</span> <span class="dot">•</span>
-      <span>RESTAURANT AR MENU</span> <span class="dot">•</span>
+  <!-- 3 — TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <span>INSTAGRAM GROWTH</span><span class="dot">•</span>
+      <span>AR MENU SYSTEM</span><span class="dot">•</span>
+      <span>WEBSITE DEVELOPMENT</span><span class="dot">•</span>
+      <span>DIGITAL GROWTH</span><span class="dot">•</span>
+      <span>AI AUTOMATION</span><span class="dot">•</span>
+      <span>SOCIAL MEDIA</span><span class="dot">•</span>
+      <span>INSTAGRAM GROWTH</span><span class="dot">•</span>
+      <span>AR MENU SYSTEM</span><span class="dot">•</span>
+      <span>WEBSITE DEVELOPMENT</span><span class="dot">•</span>
+      <span>DIGITAL GROWTH</span><span class="dot">•</span>
+      <span>AI AUTOMATION</span><span class="dot">•</span>
+      <span>SOCIAL MEDIA</span><span class="dot">•</span>
     </div>
   </div>
 
-  <!-- ═══════════════ SERVICES ═══════════════ -->
-  <section class="section" id="services">
-    <p class="section-label reveal">Our Expertise</p>
-    <h2 class="section-title reveal">What We Provide</h2>
-    <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span
-        class="ornament-line"></span></div>
-    <p class="section-desc reveal">End-to-end digital solutions tailored for growing businesses.</p>
+  <!-- 4 — SERVICES SECTION -->
+  <section id="services">
+    <div class="section-header">
+      <span class="section-tag">OUR EXPERTISE</span>
+      <h2>What We <span class="red-text">Provide</span></h2>
+      <p>End-to-end digital solutions tailored for growing businesses.</p>
+    </div>
     <div class="services-grid">
-
-      <div class="service-card reveal">
-        <div class="service-card-img">
-          <img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&q=90" alt="Instagram Management"/>
-        </div>
-        <div class="service-card-body">
-          <div class="service-badge">🔥 MOST POPULAR</div>
+      <div class="service-card">
+        <div class="service-img"><img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=600&q=80" alt="Instagram" loading="lazy"/></div>
+        <div class="service-body">
+          <div class="service-badge">🔥 Most Popular</div>
           <h3>Instagram Handling</h3>
-          <ul>
-            <li>Content creation & scheduling</li>
-            <li>Reels & posts production</li>
-            <li>Growth strategy & hashtag research</li>
-            <li>Community management</li>
-          </ul>
-          <a href="#final-cta" class="service-btn">Get Quote →</a>
+          <ul><li>Content creation & scheduling</li><li>Reels & posts production</li><li>Growth strategy & hashtag research</li><li>Community management</li></ul>
+          <button class="service-btn" onclick="openLeadModal('Instagram Handling')">Get Quote →</button>
         </div>
       </div>
-
-      <div class="service-card reveal">
-        <div class="service-card-img">
-          <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=90" alt="AR Menu"/>
-        </div>
-        <div class="service-card-body">
+      <div class="service-card">
+        <div class="service-img"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80" alt="AR Menu" loading="lazy"/></div>
+        <div class="service-body">
           <h3>AR Menu System</h3>
-          <ul>
-            <li>3D food experience for restaurants</li>
-            <li>QR-based interactive menu</li>
-            <li>Realistic dish visualization</li>
-            <li>Boost orders by 35%</li>
-          </ul>
-          <a href="#final-cta" class="service-btn">Get Quote →</a>
+          <ul><li>3D food experience for restaurants</li><li>QR-based interactive menu</li><li>Realistic dish visualization</li><li>Boost orders by 35%</li></ul>
+          <button class="service-btn" onclick="openLeadModal('AR Menu System')">Get Quote →</button>
         </div>
       </div>
-
-      <div class="service-card reveal">
-        <div class="service-card-img">
-          <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=90" alt="Website Development"/>
-        </div>
-        <div class="service-card-body">
+      <div class="service-card">
+        <div class="service-img"><img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80" alt="Website" loading="lazy"/></div>
+        <div class="service-body">
           <h3>Website Development</h3>
-          <ul>
-            <li>Business websites & portfolios</li>
-            <li>Landing pages & funnels</li>
-            <li>Mobile responsive design</li>
-            <li>SEO optimized</li>
-          </ul>
-          <a href="#final-cta" class="service-btn">Get Quote →</a>
+          <ul><li>Business websites & portfolios</li><li>Landing pages & funnels</li><li>Mobile responsive design</li><li>SEO optimized</li></ul>
+          <button class="service-btn" onclick="openLeadModal('Website Development')">Get Quote →</button>
         </div>
       </div>
-
-      <div class="service-card reveal">
-        <div class="service-card-img">
-          <img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&q=90" alt="Digital Growth"/>
-        </div>
-        <div class="service-card-body">
+      <div class="service-card">
+        <div class="service-img"><img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=600&q=80" alt="Growth" loading="lazy"/></div>
+        <div class="service-body">
           <h3>Digital Growth</h3>
-          <ul>
-            <li>Brand identity & strategy</li>
-            <li>Online presence management</li>
-            <li>Competitor analysis</li>
-            <li>Performance tracking</li>
-          </ul>
-          <a href="#final-cta" class="service-btn">Get Quote →</a>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ═══════════════ HOW IT WORKS ═══════════════ -->
-  <section class="section" id="how-it-works">
-    <p class="section-label reveal">The Process</p>
-    <h2 class="section-title reveal">How It Works</h2>
-    <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span
-        class="ornament-line"></span></div>
-    <p class="section-desc reveal">Simple steps to accelerate your business growth.</p>
-    <div class="steps-grid">
-      <div class="step-card reveal">
-        <div class="step-card-img">
-          <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=90" alt="Understand"/>
-        </div>
-        <div class="step-card-body">
-          <div class="step-num">1</div>
-          <h3>We Understand Your Business</h3>
-          <p>Deep dive into your goals, audience, and competition to craft a custom strategy.</p>
-        </div>
-      </div>
-      <div class="step-card reveal">
-        <div class="step-card-img">
-          <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=90" alt="Plan"/>
-        </div>
-        <div class="step-card-body">
-          <div class="step-num">2</div>
-          <h3>We Plan Your Content & Strategy</h3>
-          <p>Build a content calendar, design templates, and map out your growth roadmap.</p>
-        </div>
-      </div>
-      <div class="step-card reveal">
-        <div class="step-card-img">
-          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=90" alt="Execute"/>
-        </div>
-        <div class="step-card-body">
-          <div class="step-num">3</div>
-          <h3>We Execute & Manage</h3>
-          <p>We handle everything — posting, engagement, analytics, and optimization.</p>
-        </div>
-      </div>
-      <div class="step-card reveal">
-        <div class="step-card-img">
-          <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=800&q=90" alt="Growth"/>
-        </div>
-        <div class="step-card-body">
-          <div class="step-num">4</div>
-          <h3>You Get Growth & Customers</h3>
-          <p>Watch your followers, reach, and revenue grow while you focus on your business.</p>
+          <ul><li>Brand identity & strategy</li><li>Online presence management</li><li>Competitor analysis</li><li>Performance tracking</li></ul>
+          <button class="service-btn" onclick="openLeadModal('Digital Growth')">Get Quote →</button>
         </div>
       </div>
     </div>
   </section>
-  <!-- ═══════════════ PORTFOLIO / OUR WORK (HORIZONTAL SCROLL) ═══════════════ -->
-  <section class="section" id="portfolio" style="padding: 80px 0; overflow: hidden; position: relative;">
-    <div style="max-width: 1200px; margin: 0 auto; padding: 0 40px; display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
-      <div>
-        <p class="section-label reveal">Our Work</p>
-        <h2 class="section-title reveal" style="margin-bottom: 0;">See What We Build</h2>
-      </div>
-      <div class="portfolio-nav reveal" style="display: flex; gap: 12px;">
-        <button class="port-nav-btn prev-btn" aria-label="Previous">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-        <button class="port-nav-btn next-btn" aria-label="Next">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-      </div>
-    </div>
 
-    <div class="portfolio-carousel-wrapper">
-      <div class="portfolio-carousel" id="portfolio-carousel">
-        <!-- Card 1 -->
-        <div class="port-card">
-          <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=90" alt="VIP Cafe" class="port-img">
-          <div class="port-overlay"></div>
-          <div class="port-tag">Instagram</div>
-          <div class="port-badge badge-blue">Starting Soon</div>
-          <div class="port-content">
-            <h3>VIP Cafe</h3>
-            <p>Instagram Management</p>
-          </div>
-        </div>
-        <!-- Card 2 -->
-        <div class="port-card">
-          <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=90" alt="Restaurant AR Menu" class="port-img">
-          <div class="port-overlay"></div>
-          <div class="port-tag">AR Experience</div>
-          <div class="port-badge badge-blue">Live Demo Available</div>
-          <div class="port-content">
-            <h3>Restaurant AR Menu</h3>
-            <p>AR Experience</p>
-          </div>
-        </div>
-        <!-- Card 3 -->
-        <div class="port-card">
-          <img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=800&q=90" alt="ZEN_X Website" class="port-img">
-          <div class="port-overlay"></div>
-          <div class="port-tag">Website</div>
-          <div class="port-badge badge-green">Completed</div>
-          <div class="port-content">
-            <h3>ZEN_X Website</h3>
-            <p>Website Development</p>
-          </div>
-        </div>
-        <!-- Card 4 -->
-        <div class="port-card">
-          <img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&q=90" alt="Client 4" class="port-img">
-          <div class="port-overlay"></div>
-          <div class="port-tag">Growth</div>
-          <div class="port-badge badge-yellow">In Progress</div>
-          <div class="port-content">
-            <h3>Client #4</h3>
-            <p>Digital Growth Package</p>
-          </div>
-        </div>
-        <!-- Card 5 -->
-        <div class="port-card">
-          <img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&q=90" alt="Client 5" class="port-img">
-          <div class="port-overlay"></div>
-          <div class="port-tag">Automation</div>
-          <div class="port-badge badge-gray">Coming Soon</div>
-          <div class="port-content">
-            <h3>Client #5</h3>
-            <p>WhatsApp Automation Bot</p>
-          </div>
-        </div>
-        <!-- Card 6 (CTA) -->
-        <div class="port-card port-cta-card" onclick="openLeadModal()" style="cursor: pointer;">
-          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=90" alt="Your Business" class="port-img">
-          <div class="port-overlay cta-overlay"></div>
-          <div class="port-content" style="text-align: center; bottom: 50%; transform: translateY(50%);">
-            <h3>Your Business?</h3>
-            <p style="color: var(--gold); margin-top: 12px; font-weight: 600;">Let's Work Together →</p>
-          </div>
-        </div>
-      </div>
+  <!-- 5 — HOW IT WORKS -->
+  <section id="how-it-works">
+    <div class="section-header">
+      <span class="section-tag">THE PROCESS</span>
+      <h2>How It <span class="red-text">Works</span></h2>
+      <p>Simple steps to accelerate your business growth.</p>
     </div>
-    <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:20px">
-      <span style="color:#888;font-size:12px;letter-spacing:2px;text-transform:uppercase">Drag to explore</span>
-      <div style="width:40px;height:1px;background:#CC0000"></div>
-      <span style="color:#888;font-size:12px;letter-spacing:2px;text-transform:uppercase">Our work</span>
+    <div class="process-grid">
+      <div class="process-card">
+        <div class="process-num">01</div>
+        <h3>We Understand Your Business</h3>
+        <p>Deep dive into your goals, audience, and competition to craft a custom strategy.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-num">02</div>
+        <h3>We Plan Your Strategy</h3>
+        <p>Build a content calendar, design templates, and map out your growth roadmap.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-num">03</div>
+        <h3>We Execute & Manage</h3>
+        <p>We handle everything — posting, engagement, analytics, and optimization.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-num">04</div>
+        <h3>You Get Growth</h3>
+        <p>Watch your followers, reach, and revenue grow while you focus on your business.</p>
+      </div>
     </div>
   </section>
 
-  <!-- ═══════════════ INSTAGRAM FEED ═══════════════ -->
-  <section class="section" id="instagram-feed">
-    <p class="section-label reveal">FOLLOW US</p>
-    <h2 class="section-title reveal">We Post. You Grow.</h2>
-    <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span class="ornament-line"></span></div>
-    <p class="section-desc reveal">Follow @zen_x_2026 for daily tips, client results, and behind-the-scenes content.</p>
-
-    <div class="insta-grid reveal">
-      <a href="https://www.instagram.com/zen_x_2026" target="_blank" class="insta-card">
-        <img src="1.jpg" alt="Instagram Post 1">
-        <div class="insta-overlay">
-          <span class="insta-icon">📸</span>
-          <span class="insta-text">View Post</span>
-        </div>
-      </a>
-      <a href="https://www.instagram.com/zen_x_2026" target="_blank" class="insta-card">
-        <img src="2.jpg" alt="Instagram Post 2">
-        <div class="insta-overlay">
-          <span class="insta-icon">📸</span>
-          <span class="insta-text">View Post</span>
-        </div>
-      </a>
-      <a href="https://www.instagram.com/zen_x_2026" target="_blank" class="insta-card">
-        <img src="3.jpg" alt="Instagram Post 3">
-        <div class="insta-overlay">
-          <span class="insta-icon">📸</span>
-          <span class="insta-text">View Post</span>
-        </div>
-      </a>
-      <a href="https://www.instagram.com/zen_x_2026" target="_blank" class="insta-card">
-        <img src="4.jpg" alt="Instagram Post 4">
-        <div class="insta-overlay">
-          <span class="insta-icon">📸</span>
-          <span class="insta-text">View Post</span>
-        </div>
-      </a>
-      <a href="https://www.instagram.com/zen_x_2026" target="_blank" class="insta-card">
-        <img src="5.jpg" alt="Instagram Post 5">
-        <div class="insta-overlay">
-          <span class="insta-icon">📸</span>
-          <span class="insta-text">View Post</span>
-        </div>
-      </a>
-      <a href="https://www.instagram.com/zen_x_2026" target="_blank" class="insta-card">
-        <img src="1.jpg" alt="Instagram Post 6">
-        <div class="insta-overlay">
-          <span class="insta-icon">📸</span>
-          <span class="insta-text">View Post</span>
-        </div>
-      </a>
+  <!-- 6 — PRICING -->
+  <section id="pricing">
+    <div class="section-header">
+      <span class="section-tag">PRICING</span>
+      <h2>Simple <span class="red-text">Pricing</span></h2>
+      <p>Transparent pricing — no hidden charges. First 15 days free.</p>
     </div>
-
-    <div style="text-align: center; margin-top: 40px;" class="reveal">
-      <a href="https://www.instagram.com/zen_x_2026" target="_blank" class="btn-secondary" style="border-color: #CC0000; color: #CC0000;">
-        Follow @zen_x_2026 &rarr;
-      </a>
-    </div>
-  </section>
-
-  <!-- ═══════════════ PRICING ═══════════════ -->
-  <section class="section pricing-section" id="pricing">
-    <p class="section-label reveal">Pricing</p>
-    <h2 class="section-title reveal">Flexible Plans for Every Business</h2>
-    <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span
-        class="ornament-line"></span></div>
-
-    <!-- FREE TRIAL HIGHLIGHT -->
-    <div class="trial-highlight reveal">
-      <div class="trial-glow"></div>
-      <div class="trial-content">
-        <div class="trial-gift">🎁</div>
-        <div>
-          <h3>15-Day Free Trial</h3>
-          <p>No payment required for first 15 days · Cancel anytime · Try completely risk-free</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-top">
+          <h3>Basic</h3>
+          <div class="price">₹3,000<span>/mo</span></div>
         </div>
-      </div>
-    </div>
-
-    <!-- INSTAGRAM GROWTH PACKAGES -->
-    <h3 class="pricing-subheading reveal">📱 Instagram Growth Packages</h3>
-    <div class="pricing-grid pricing-grid--3col">
-
-      <div class="price-card reveal">
-        <p class="price-name">Basic</p>
-        <p class="price-amount">₹3,000<span>/month</span></p>
-        <ul class="price-features">
-          <li>12 posts per month (3/week)</li>
-          <li>Basic photo editing (Canva)</li>
+        <ul>
+          <li>12 posts per month</li>
+          <li>Basic photo editing</li>
           <li>Captions & hashtags</li>
           <li>Stories 3x per week</li>
-          <li>Reply to comments</li>
+          <li>Comment replies</li>
         </ul>
-        <button class="price-btn price-btn-outline" onclick="openLeadModal()">Start Free Trial</button>
+        <button class="pricing-btn" onclick="openLeadModal('Instagram Basic')">Start Free Trial</button>
       </div>
-
-      <div class="price-card featured reveal">
-        <div class="price-badge">BEST VALUE</div>
-        <p class="price-name">Standard</p>
-        <p class="price-amount">₹5,000<span>/month</span></p>
-        <ul class="price-features">
+      <div class="pricing-card featured">
+        <div class="featured-label">BEST VALUE</div>
+        <div class="pricing-top">
+          <h3>Standard</h3>
+          <div class="price">₹5,000<span>/mo</span></div>
+        </div>
+        <ul>
           <li>20 posts per month</li>
-          <li>Professional photo editing</li>
+          <li>Professional editing</li>
           <li>4 reels per month</li>
           <li>Daily stories</li>
           <li>Hashtag research</li>
-          <li>Monthly growth report</li>
+          <li>Monthly report</li>
         </ul>
-        <button class="price-btn price-btn-fill" onclick="openLeadModal()">Start Free Trial</button>
+        <button class="pricing-btn featured-btn" onclick="openLeadModal('Instagram Standard')">Start Free Trial</button>
       </div>
-
-      <div class="price-card reveal">
-        <div class="price-badge price-badge--premium">PREMIUM</div>
-        <p class="price-name">Premium</p>
-        <p class="price-amount">₹8,000<span>/month</span></p>
-        <ul class="price-features">
+      <div class="pricing-card">
+        <div class="pricing-top">
+          <h3>Premium</h3>
+          <div class="price">₹8,000<span>/mo</span></div>
+        </div>
+        <ul>
           <li>Daily posts</li>
           <li>8 reels per month</li>
-          <li>Daily stories</li>
-          <li>Ad management (client pays ads)</li>
+          <li>Ad management</li>
           <li>Competitor analysis</li>
           <li>Weekly reports</li>
-          <li class="highlight-feature">🎁 FREE AR Menu included</li>
+          <li>FREE AR Menu included</li>
         </ul>
-        <button class="price-btn price-btn-fill" onclick="openLeadModal()">Start Free Trial</button>
+        <button class="pricing-btn" onclick="openLeadModal('Instagram Premium')">Start Free Trial</button>
       </div>
-
     </div>
-
-    <!-- AR MENU PRICING -->
-    <h3 class="pricing-subheading reveal">🥽 AR Menu Pricing</h3>
-    <div class="pricing-grid pricing-grid--2col">
-      <div class="price-card reveal">
-        <p class="price-name">Maintenance Plan</p>
-        <p class="price-amount">₹1,200<span>/month</span></p>
-        <ul class="price-features">
-          <li>Full AR Menu System</li>
-          <li>QR Code for Each Table</li>
-          <li>Unlimited Dish Listings</li>
-          <li>Continuous Support & Updates</li>
-        </ul>
-        <button class="price-btn price-btn-outline" onclick="openLeadModal()">Start Setup</button>
+    <div class="ar-pricing">
+      <div class="ar-price-item">
+        <div>
+          <h4>AR Menu — Monthly</h4>
+          <p>Full AR system, QR codes, unlimited dishes</p>
+        </div>
+        <div class="ar-price-num">₹1,200<span>/mo</span></div>
       </div>
-      <div class="price-card reveal">
-        <p class="price-name">Per Dish Pricing</p>
-        <p class="price-amount">₹100<span>per 3D dish</span></p>
-        <ul class="price-features">
-          <li>High-quality 3D Dish Model</li>
-          <li>Realistic AR Experience</li>
-          <li>One-time cost per dish</li>
-          <li>Pay only for dishes you add</li>
-        </ul>
-        <button class="price-btn price-btn-outline" onclick="openLeadModal()">Add Dishes</button>
+      <div class="ar-divider"></div>
+      <div class="ar-price-item">
+        <div>
+          <h4>Per 3D Dish Model</h4>
+          <p>One-time setup per dish</p>
+        </div>
+        <div class="ar-price-num">₹100<span>/dish</span></div>
       </div>
     </div>
   </section>
 
-
-  <!-- ═══════════════ WHY CHOOSE US ═══════════════ -->
-  <section class="section" id="why-us">
-    <p class="section-label reveal">The ZEN_X Difference</p>
-    <h2 class="section-title reveal">Why Choose Us</h2>
-    <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span
-        class="ornament-line"></span></div>
+  <!-- 7 — WHY CHOOSE US -->
+  <section id="why-us">
+    <div class="section-header">
+      <span class="section-tag">THE ZEN_X DIFFERENCE</span>
+      <h2>Why Choose <span class="red-text">Us</span></h2>
+    </div>
     <div class="why-grid">
       <div class="why-card">
-        <div class="why-card-img">
-          <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800&q=90" alt="Affordable"/>
-        </div>
-        <div class="why-card-body">
-          <h3>Affordable for Small Businesses</h3>
-          <p>Plans designed to fit tight budgets without compromising on quality or results.</p>
-        </div>
+        <div class="why-icon">💰</div>
+        <h3>Affordable for All</h3>
+        <p>Premium quality at prices small businesses can actually afford. Plans from ₹999.</p>
       </div>
-
       <div class="why-card">
-        <div class="why-card-img">
-          <img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&q=90" alt="Growth"/>
-        </div>
-        <div class="why-card-body">
-          <h3>Real Growth Focus</h3>
-          <p>We don't just post — we strategize, analyze, and optimize for actual business growth.</p>
-        </div>
+        <div class="why-icon">📈</div>
+        <h3>Real Growth Focus</h3>
+        <p>We don't just post — we strategize, analyze, and optimize for actual results.</p>
       </div>
-
       <div class="why-card">
-        <div class="why-card-img">
-          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=90" alt="Fast"/>
-        </div>
-        <div class="why-card-body">
-          <h3>Fast Execution</h3>
-          <p>Get started within 24 hours. No long onboarding — just results from day one.</p>
-        </div>
+        <div class="why-icon">⚡</div>
+        <h3>Fast Execution</h3>
+        <p>Get started within 24 hours. No long onboarding — results from day one.</p>
       </div>
-
       <div class="why-card">
-        <div class="why-card-img">
-          <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&q=90" alt="Team"/>
-        </div>
-        <div class="why-card-body">
-          <h3>Creative + Technical Team</h3>
-          <p>Designers, developers, and marketers working together to grow your brand.</p>
-        </div>
+        <div class="why-icon">🤝</div>
+        <h3>Founder Direct</h3>
+        <p>You work directly with the founders — not interns or junior employees.</p>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════ FAQ ═══════════════ -->
-  <section class="section" id="faq">
-    <p class="section-label reveal">FAQ</p>
-    <h2 class="section-title reveal">Frequently Asked Questions</h2>
-    <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span class="ornament-line"></span></div>
-    <p class="section-desc reveal">Everything you need to know before getting started with ZEN_X.</p>
-
-    <div class="faq-container" style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px">
-
-      <div class="faq-item reveal">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>Is the 15-day free trial really free?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Yes, 100% free. No credit card required, no hidden charges. You get full access to your chosen service for 15 days. If you're not satisfied, simply walk away — no questions asked.</p>
-        </div>
-      </div>
-
-      <div class="faq-item reveal">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>How much does Instagram handling cost after the trial?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Our plans start at just ₹3,000/month for the Basic plan, ₹5,000/month for Standard (our most popular), and ₹8,000/month for Premium which includes a free AR Menu. All plans include content creation, scheduling, and growth strategy.</p>
-        </div>
-      </div>
-
-      <div class="faq-item reveal">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>How fast can you start working on my business?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Within 24 hours. Once you sign up, we schedule a quick call to understand your brand, and our team starts working on your content calendar and strategy immediately. Most clients see their first post within 2-3 days.</p>
-        </div>
-      </div>
-
-      <div class="faq-item reveal">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>What exactly is the AR Menu system?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Our AR Menu lets restaurant customers scan a QR code on their table and see realistic 3D models of dishes on their phone — right on the table using augmented reality. It increases order confidence and can boost average order value by up to 35%.</p>
-        </div>
-      </div>
-
-      <div class="faq-item reveal">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>Can I cancel anytime?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Absolutely. There are no long-term contracts or lock-in periods. You can cancel your subscription at the end of any billing cycle. We believe in earning your trust every month.</p>
-        </div>
-      </div>
-
-      <div class="faq-item reveal">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>How long before I see results on Instagram?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Most clients notice increased engagement within the first 2 weeks. Meaningful follower growth and lead generation typically start showing within 30-60 days, depending on your niche and consistency.</p>
-        </div>
-      </div>
-
-      <div class="faq-item reveal">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>What are WhatsApp Automation Bots?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Our AI-powered WhatsApp bots handle customer inquiries, take orders, send automated follow-ups, and provide 24/7 support — all through WhatsApp. Perfect for restaurants, clinics, and service businesses that get a lot of customer messages.</p>
-        </div>
-      </div>
-
-      <div class="faq-item reveal">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>Do you offer custom packages?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Yes! If our standard plans don't fit your needs, we'll create a custom package tailored to your business. Just reach out via WhatsApp or fill out the contact form, and we'll put together a personalized quote within 24 hours.</p>
-        </div>
-      </div>
-
+  <!-- 8 — ABOUT / FOUNDERS -->
+  <section id="about-us">
+    <div class="section-header">
+      <span class="section-tag">WHO WE ARE</span>
+      <h2>Built by <span class="red-text">Innovators</span></h2>
+      <p>ZEN_X is a team of young innovators from India — helping businesses grow digitally at prices they can afford.</p>
     </div>
-  </section>
-
-  <!-- ═══════════════ FINAL CTA ═══════════════ -->
-  <section class="section cta-section" id="final-cta">
-    <div class="cta-glow-orb cta-glow-1"></div>
-    <div class="cta-glow-orb cta-glow-2"></div>
-    <div class="cta-content reveal">
-      <h2 class="cta-title">Let's Grow Your Business 🚀</h2>
-      <p class="cta-desc">Join businesses that are already scaling with ZEN_X digital solutions.</p>
-      <button class="btn-primary btn-primary--large" onclick="openLeadModal()">
-        <span>🚀</span> Get Started — First 15 Days FREE
-      </button>
-      <p class="cta-note">✓ No credit card · ✓ Cancel anytime · ✓ Response within 24hrs</p>
-    </div>
-  </section>
-
-  <!-- ═══════════════ ABOUT US SECTION ═══════════════ -->
-  <section class="section about-section" id="about-us">
-    <div class="about-content">
-      <p class="section-label reveal" style="color: #CC0000; font-weight: bold; font-size: 14px;">WHO WE ARE</p>
-      <h2 class="section-title reveal" style="color: #ffffff;">Built by Passionate Innovators</h2>
-      <div class="ornament reveal"><span class="ornament-line"></span><span class="ornament-diamond"></span><span
-          class="ornament-line"></span></div>
-      <p class="section-desc reveal" style="color: #cccccc;">ZEN_X is a digital solutions company built by a team of
-        young innovators from India. We believe every business — big or small — deserves world-class digital presence to
-        attract customers and scale growth.</p>
-
-      <div class="founders-grid reveal">
-        <div class="founder-card">
-          <div class="founder-emoji">👑</div>
-          <h3>Trinayan Mahanta</h3>
-          <p class="founder-role">Co-Founder & CEO</p>
-          <p class="founder-desc">Leads vision, strategy and business development</p>
-        </div>
-        <div class="founder-card">
-          <div class="founder-emoji">💻</div>
-          <h3>Snehangshu Das</h3>
-          <p class="founder-role">Co-Founder & Tech Lead</p>
-          <p class="founder-desc">Builds all digital products and technical solutions</p>
-        </div>
-        <div class="founder-card">
-          <div class="founder-emoji">🎨</div>
-          <h3>Mannat Sahu</h3>
-          <p class="founder-role">Co-Founder & Design Lead</p>
-          <p class="founder-desc">Creates visual identity and brand experience</p>
-        </div>
-        <div class="founder-card">
-          <div class="founder-emoji">📈</div>
-          <h3>Aditya Pragyan</h3>
-          <p class="founder-role">Co-Founder & Marketing Lead</p>
-          <p class="founder-desc">Drives growth strategy and client relationships</p>
-        </div>
+    <div class="founders-grid">
+      <div class="founder-card">
+        <div class="founder-emoji">👑</div>
+        <h3>Trinayan Mahanta</h3>
+        <div class="founder-role">CEO & Co-Founder</div>
       </div>
-
-      <div class="about-social reveal">
-        <a href="https://www.instagram.com/zen_x_2026?igsh=MTc3ZmZhaTc1M3NuOA==" target="_blank"
-          class="instagram-btn">📸 Follow us @zen_x_2026</a>
+      <div class="founder-card">
+        <div class="founder-emoji">💻</div>
+        <h3>Snehangshu Das</h3>
+        <div class="founder-role">Tech Lead & Co-Founder</div>
+      </div>
+      <div class="founder-card">
+        <div class="founder-emoji">🎨</div>
+        <h3>Mannat Sahu</h3>
+        <div class="founder-role">Design Lead & Co-Founder</div>
+      </div>
+      <div class="founder-card">
+        <div class="founder-emoji">📈</div>
+        <h3>Aditya Pragyan</h3>
+        <div class="founder-role">Marketing Lead & Co-Founder</div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════ PREMIUM LEAD CAPTURE MODAL ═══════════════ -->
+  <!-- 9 — FAQ -->
+  <section id="faq">
+    <div class="section-header">
+      <span class="section-tag">FAQ</span>
+      <h2>Common <span class="red-text">Questions</span></h2>
+    </div>
+    <div class="faq-list" style="max-width:720px;margin:0 auto">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>Why choose ZEN_X over agencies?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a">We give personal attention, faster delivery, and better prices. You work directly with the founders — not junior staff.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>How long does it take to start?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a">Instagram setup in 24 hours. Websites in 3–7 days. AR Menu in 2–3 days. We move fast.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>Is the 15-day trial really free?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a">100% free. No credit card required. No contracts. Cancel anytime before the trial ends.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>Do you provide support after delivery?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a">Yes — all monthly plans include ongoing support and updates. One-time projects get 30 days free support.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>What if I don't have content ready?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a">No problem — we create everything for you. Just tell us about your business and we handle the rest.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 — CONTACT CTA -->
+  <section id="contact">
+    <div class="cta-box">
+      <span class="section-tag">GET STARTED</span>
+      <h2>Ready to <span class="red-text">Grow?</span></h2>
+      <p>Join businesses already scaling with ZEN_X. First 15 days completely free.</p>
+      <button class="btn-red" onclick="openLeadModal()" style="font-size:16px;padding:16px 36px">🚀 Start Free Trial</button>
+      <div class="contact-links">
+        <a href="https://wa.me/919864119506" target="_blank">💬 WhatsApp Us</a>
+        <a href="https://www.instagram.com/zen_x_2026" target="_blank">📸 @zen_x_2026</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 — FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <img src="./logo.png" alt="ZEN_X" height="32" style="margin-bottom:12px"/>
+        <p style="color:rgba(255,255,255,0.3);font-size:13px;max-width:260px">Digital solutions for businesses ready to grow.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#services">Services</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#about-us">About</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://www.instagram.com/zen_x_2026" target="_blank">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ZEN_X. All rights reserved.</span>
+      <span>Built by Team ZEN_X — Hyderabad, India</span>
+    </div>
+  </footer>
+
+  <!-- 14 — FLOATING BUTTONS -->
+  <a href="https://wa.me/919864119506" target="_blank" id="whatsapp-btn">💬 WhatsApp</a>
+  <button id="scroll-top" style="display:none">↑</button>
+
+  <!-- LEAD CAPTURE MODAL -->
   <div id="leadModal" style="display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px">
     <!-- Backdrop -->
     <div onclick="closeLeadModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(8px)"></div>
@@ -1190,11 +875,11 @@ img {
 
         <!-- Logo -->
         <div style="width:56px;height:56px;border-radius:12px;background:#111;border:1px solid rgba(204,0,0,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;overflow:hidden">
-          <img src="logo.png" alt="ZEN_X" style="width:40px;height:40px;object-fit:contain"/>
+          <img src="./logo.png" alt="ZEN_X" style="width:40px;height:40px;object-fit:contain"/>
         </div>
 
         <!-- Title -->
-        <h2 style="color:white;font-size:24px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em;font-family:'Playfair Display',serif">Get Started with <span style="color:#CC0000">ZEN_X</span></h2>
+        <h2 style="color:white;font-size:24px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em;font-family:'Syne',sans-serif">Get Started with <span style="color:#CC0000">ZEN_X</span></h2>
         <p style="color:rgba(255,255,255,0.4);font-size:13px;line-height:1.6;margin-bottom:4px">Enter your details and we'll get your digital growth started within 24 hours.</p>
 
         <!-- Trust badges -->
@@ -1215,37 +900,37 @@ img {
           <!-- Business Name -->
           <div>
             <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Business Name</label>
-            <input type="text" id="lead-name" placeholder="e.g. My Restaurant" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
+            <input type="text" id="lead-name" placeholder="e.g. My Restaurant" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
           </div>
 
           <!-- Owner Name -->
           <div>
             <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Your Name</label>
-            <input type="text" id="lead-owner" placeholder="e.g. Rahul Sharma" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
+            <input type="text" id="lead-owner" placeholder="e.g. Rahul Sharma" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
           </div>
 
           <!-- Phone -->
           <div>
             <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Phone Number</label>
-            <input type="tel" id="lead-phone" placeholder="+91 98765 43210" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
+            <input type="tel" id="lead-phone" placeholder="+91 98765 43210" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
           </div>
 
           <!-- Service selector -->
           <div>
             <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Interested In</label>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="service-selector">
-              <button type="button" onclick="selectService(this)" data-service="instagram" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">📸 Instagram</button>
-              <button type="button" onclick="selectService(this)" data-service="ar-menu" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">🥽 AR Menu</button>
-              <button type="button" onclick="selectService(this)" data-service="website" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">💻 Website</button>
-              <button type="button" onclick="selectService(this)" data-service="digital-growth" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">📈 Growth</button>
-              <button type="button" onclick="selectService(this)" data-service="ai-bots" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">🤖 AI Bots</button>
-              <button type="button" onclick="selectService(this)" data-service="all" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">⚡ Full Bundle</button>
+              <button type="button" onclick="selectService(this)" data-service="instagram" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">📸 Instagram</button>
+              <button type="button" onclick="selectService(this)" data-service="ar-menu" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">🥽 AR Menu</button>
+              <button type="button" onclick="selectService(this)" data-service="website" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">💻 Website</button>
+              <button type="button" onclick="selectService(this)" data-service="digital-growth" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">📈 Growth</button>
+              <button type="button" onclick="selectService(this)" data-service="ai-bots" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">🤖 AI Bots</button>
+              <button type="button" onclick="selectService(this)" data-service="all" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">⚡ Full Bundle</button>
             </div>
             <input type="hidden" id="lead-service" value=""/>
           </div>
 
           <!-- Submit button -->
-          <button type="submit" id="lead-submit-btn" style="width:100%;background:#CC0000;color:white;border:none;border-radius:10px;padding:16px;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.3s;margin-top:4px;position:relative;overflow:hidden" onmouseover="this.style.background='#FF0000';this.style.boxShadow='0 8px 30px rgba(204,0,0,0.4)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#CC0000';this.style.boxShadow='none';this.style.transform='translateY(0)'">
+          <button type="submit" id="lead-submit-btn" style="width:100%;background:#CC0000;color:white;border:none;border-radius:10px;padding:16px;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.3s;margin-top:4px;position:relative;overflow:hidden" onmouseover="this.style.background='#FF0000';this.style.boxShadow='0 8px 30px rgba(204,0,0,0.4)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#CC0000';this.style.boxShadow='none';this.style.transform='translateY(0)'">
             🚀 Start Free Trial — 15 Days Free
           </button>
 
@@ -1257,7 +942,7 @@ img {
       <!-- Success state -->
       <div id="lead-success" style="display:none;text-align:center;padding:48px 36px">
         <div style="width:72px;height:72px;border-radius:50%;background:rgba(0,200,83,0.1);border:1px solid rgba(0,200,83,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:32px">✓</div>
-        <h3 style="font-family:'Playfair Display',serif;font-size:22px;color:white;margin-bottom:8px">Thank You!</h3>
+        <h3 style="font-family:'Syne',sans-serif;font-size:22px;color:white;margin-bottom:8px">Thank You!</h3>
         <p style="color:rgba(255,255,255,0.5);font-size:14px;line-height:1.6">Our team will reach out within 24 hours to kickstart your growth journey.</p>
       </div>
 
@@ -1266,113 +951,79 @@ img {
     </div>
   </div>
 
-  <!-- ═══════════════ FOOTER ═══════════════ -->
-  <footer class="footer">
-    <div class="footer-logo" style="display: flex; align-items: center; justify-content: center; gap: 10px;"><img
-        src="logo.png" alt="ZEN_X Logo" style="height: 50px;"> ZEN_X</div>
-    <p class="footer-tag">Digital Solutions for Businesses — Instagram · Websites · AR · Growth</p>
-    <div class="footer-links">
-      <a href="#services">Services</a>
-      <a href="#how-it-works">How It Works</a>
-      <a href="#pricing">Pricing</a>
-      <a href="#why-us">Why Us</a>
-      <a href="#about-us">About Us</a>
-      <a href="menu.html">AR Demo</a>
-      <a href="https://www.instagram.com/zen_x_2026" target="_blank" style="color: var(--gold);">Instagram</a>
-      <a href="tel:+919864119506" style="color: var(--gold);">📱 +91 9864119506</a>
-    </div>
-    <p class="footer-copy">© 2026 ZEN_X. Built with ❤️ by Team ZEN_X — Trinayan Mahanta, Snehangshu Das, Mannat Sahu</p>
-  </footer>
-
-  <!-- ═══════════════ FLOATING BUTTONS ═══════════════ -->
-  <a href="https://wa.me/919864119506?text=Hi ZEN_X! I want to know more about your services" target="_blank"
-    id="whatsapp-btn">
-    💬 WhatsApp Us
-  </a>
-  <button id="scroll-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
-
-  <!-- ═══════════════ SCRIPTS ═══════════════ -->
   <script>
-    // ── MOBILE DETECTION ──
-    const isMobile = window.innerWidth <= 768 || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    // Disable video on mobile immediately
-    if(isMobile) {
-      const heroVideo = document.getElementById('hero-video');
-      if(heroVideo) {
-        heroVideo.pause();
-        heroVideo.removeAttribute('autoplay');
-        heroVideo.style.display = 'none';
-        const videoWrap = document.querySelector('.hero-video-wrap');
-        if(videoWrap) {
-          videoWrap.style.background = 'url(https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=60) center/cover no-repeat';
-        }
-      }
-    }
-
-    // ── LAZY LOAD IMAGES ──
-    document.querySelectorAll('img:not([loading])').forEach(img => {
-      img.setAttribute('loading', 'lazy');
-      img.setAttribute('decoding', 'async');
-    });
-
-    // --- Animated Particles ---
-    if(!isMobile) {
-      (function () {
-        const container = document.getElementById('hero-particles');
-        for (let i = 0; i < 30; i++) {
-          const p = document.createElement('span');
-          p.className = 'particle';
-          p.style.left = Math.random() * 100 + '%';
-          p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
-          p.style.animationDuration = (10 + Math.random() * 20) + 's';
-          p.style.animationDelay = (Math.random() * 15) + 's';
-          p.style.opacity = 0.1 + Math.random() * 0.2;
-          container.appendChild(p);
-        }
-      })();
-    } else {
-      const pjs = document.getElementById('particles-js');
-      if(pjs) pjs.style.display = 'none';
-    }
-
-    // --- Scroll Reveal ---
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-    // --- Navbar shadow + scrolled class on scroll ---
+    // 12 — JAVASCRIPT — clean and minimal
+    
+    // Navbar scroll
+    const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
-      const nav = document.getElementById('main-nav');
-      if (window.scrollY > 40) {
-        nav.classList.add('scrolled');
-        nav.style.boxShadow = '0 4px 30px rgba(0,0,0,.5)';
-      } else {
-        nav.classList.remove('scrolled');
-        nav.style.boxShadow = 'none';
-      }
+      navbar?.classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    // --- Mobile Menu ---
-    function openMobileMenu() {
-      document.getElementById('mobile-menu').classList.add('open');
+    // Mobile nav
+    document.getElementById('hamburger')?.addEventListener('click', () => {
+      document.getElementById('mobile-nav').classList.add('open');
       document.body.style.overflow = 'hidden';
-    }
-    function closeMobileMenu() {
-      document.getElementById('mobile-menu').classList.remove('open');
+    });
+    function closeMobileNav() {
+      document.getElementById('mobile-nav')?.classList.remove('open');
       document.body.style.overflow = '';
     }
-    // Close mobile menu when clicking outside
-    document.getElementById('mobile-menu').addEventListener('click', function(e) {
-      if(e.target === this) closeMobileMenu();
-    });
-    // Smooth scroll for mobile menu links
-    document.querySelectorAll('.mobile-menu a[href^="#"]').forEach(a => {
-      a.addEventListener('click', () => {
-        closeMobileMenu();
+    document.getElementById('mobile-close')?.addEventListener('click', closeMobileNav);
+    document.querySelectorAll('.mobile-link').forEach(a => a.addEventListener('click', closeMobileNav));
+
+    // FAQ toggle
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if(!isOpen) item.classList.add('open');
+    }
+
+    // Stat counter
+    function countUp(el) {
+      const target = parseFloat(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1800;
+      const start = performance.now();
+      function update(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(ease * target) + suffix;
+        if(p < 1) requestAnimationFrame(update);
+        else el.textContent = target + suffix;
+      }
+      requestAnimationFrame(update);
+    }
+    const statsObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting) { countUp(e.target); statsObserver.unobserve(e.target); } });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('[data-target]').forEach(el => statsObserver.observe(el));
+
+    // Video on desktop only
+    const isMobile = window.innerWidth <= 768;
+    const vid = document.getElementById('hero-video');
+    if(vid && isMobile) { vid.pause(); vid.style.display = 'none'; }
+
+    // Lazy images
+    document.querySelectorAll('img').forEach(img => { img.loading = 'lazy'; img.decoding = 'async'; });
+
+    // Scroll to top
+    const scrollBtn = document.getElementById('scroll-top');
+    if(scrollBtn) {
+      window.addEventListener('scroll', () => { scrollBtn.style.display = window.scrollY > 500 ? 'flex' : 'none'; });
+      scrollBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+    }
+
+    // Scroll reveal — simple
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting) { e.target.classList.add('revealed'); revealObserver.unobserve(e.target); }
       });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.service-card,.founder-card,.pricing-card,.why-card,.process-card,.faq-item').forEach(el => {
+      el.classList.add('reveal-el');
+      revealObserver.observe(el);
     });
 
     // --- Service Selector ---
@@ -1389,10 +1040,11 @@ img {
     }
 
     // --- Lead Modal ---
-    function openLeadModal() {
+    function openLeadModal(preselectService = null) {
       const modal = document.getElementById('leadModal');
       modal.style.display = 'flex';
       document.body.style.overflow = 'hidden';
+
       // Animate in
       setTimeout(() => {
         const box = modal.querySelector('.premium-modal-box');
@@ -1401,7 +1053,25 @@ img {
           box.style.opacity = '1';
         }
       }, 10);
+
+      // Pre-select service if provided
+      if (preselectService && typeof preselectService === 'string') {
+        document.getElementById('lead-service').value = preselectService;
+        const mapToDataset = {
+          'Instagram Handling': 'instagram',
+          'AR Menu System': 'ar-menu',
+          'Website Development': 'website',
+          'Digital Growth': 'digital-growth',
+          'Instagram Basic': 'instagram',
+          'Instagram Standard': 'instagram',
+          'Instagram Premium': 'instagram'
+        };
+        const ds = mapToDataset[preselectService] || preselectService;
+        const btn = document.querySelector(`#service-selector button[data-service="${ds}"]`);
+        if (btn) selectService(btn);
+      }
     }
+
     function closeLeadModal() {
       const modal = document.getElementById('leadModal');
       const box = modal.querySelector('.premium-modal-box');
@@ -1414,6 +1084,7 @@ img {
         document.body.style.overflow = '';
       }, 300);
     }
+
     async function handleLeadSubmit(e) {
       e.preventDefault();
 
@@ -1434,7 +1105,6 @@ img {
       const btn = document.getElementById('lead-submit-btn');
       btn.textContent = '⏳ Sending...';
       btn.style.opacity = '0.7';
-      btn.disabled = true;
       btn.disabled = true;
 
       // Map service names
@@ -1568,157 +1238,6 @@ img {
     );
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLeadModal(); });
-
-    // --- Scroll to Top Button Visibility ---
-    window.addEventListener('scroll', () => {
-      const scrollBtn = document.getElementById('scroll-top-btn');
-      if (scrollBtn) {
-        scrollBtn.style.display = window.scrollY > 300 ? 'flex' : 'none';
-      }
-    });
-
-    // --- Hero Video: Mobile battery saver ---
-    const heroVideo = document.getElementById('hero-video');
-    if(heroVideo) {
-      if(window.innerWidth < 768) {
-        heroVideo.pause();
-        heroVideo.closest('.hero-video-wrap').style.background = 'url(https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80) center/cover';
-      }
-      heroVideo.play().catch(() => {
-        heroVideo.muted = true;
-        heroVideo.play();
-      });
-    }
   </script>
-  <script>
-// ── SPLIT TEXT ANIMATION ──
-function splitAndAnimate(selector, delay = 0) {
-  const elements = document.querySelectorAll(selector);
-  elements.forEach(el => {
-    const text = el.innerText;
-    const words = text.split(' ');
-    el.innerHTML = words.map(word =>
-      `<span class="word-wrap" style="display:inline-block;overflow:hidden;margin-right:0.25em">
-        <span class="word" style="display:inline-block;transform:translateY(110%);opacity:0">${word}</span>
-      </span>`
-    ).join('');
-
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if(entry.isIntersecting) {
-          const words = el.querySelectorAll('.word');
-          words.forEach((word, i) => {
-            setTimeout(() => {
-              word.style.transition = 'transform 0.7s cubic-bezier(0.16,1,0.3,1), opacity 0.5s ease';
-              word.style.transform = 'translateY(0)';
-              word.style.opacity = '1';
-            }, delay + i * 80);
-          });
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
-
-    observer.observe(el);
-  });
-}
-
-// ── HERO HEADING SPECIAL ANIMATION ──
-function animateHeroText() {
-  const h1 = document.querySelector('.hero h1, #hero h1');
-  if(!h1) return;
-  const text = h1.innerText;
-  const chars = text.split('');
-  h1.innerHTML = chars.map((char, i) =>
-    char === ' '
-      ? '<span style="display:inline-block;width:0.3em"> </span>'
-      : `<span class="hero-char" style="display:inline-block;transform:translateY(100%) rotateX(90deg);opacity:0;transform-origin:bottom">${char}</span>`
-  ).join('');
-
-  setTimeout(() => {
-    document.querySelectorAll('.hero-char').forEach((char, i) => {
-      setTimeout(() => {
-        char.style.transition = 'transform 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease';
-        char.style.transform = 'translateY(0) rotateX(0deg)';
-        char.style.opacity = '1';
-      }, 2000 + i * 40);
-    });
-  }, 100);
-}
-
-// ── RED HIGHLIGHT ON SPAN TEXT ──
-// Wrap any text inside h2 that has <span> in red with underline animation
-document.querySelectorAll('h2 span, h1 span').forEach(span => {
-  if(span.style.color === 'rgb(204, 0, 0)' || span.style.color === '#CC0000') {
-    span.style.position = 'relative';
-    span.style.display = 'inline-block';
-    span.innerHTML += `<span style="
-      position:absolute;bottom:-4px;left:0;
-      width:0;height:2px;
-      background:#CC0000;
-      transition:width 1.2s ease 0.5s;
-    " class="red-underline"></span>`;
-  }
-});
-
-const underlineObserver = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if(entry.isIntersecting) {
-      entry.target.querySelectorAll('.red-underline').forEach(line => {
-        line.style.width = '100%';
-      });
-    }
-  });
-}, { threshold: 0.5 });
-
-document.querySelectorAll('h2').forEach(h2 => underlineObserver.observe(h2));
-
-// ── APPLY TO ALL SECTIONS ──
-if(!isMobile) {
-  // Hero h1 gets special character animation
-  animateHeroText();
-
-  // All h2 headings get word-by-word animation
-  splitAndAnimate('h2', 0);
-
-  // All h3 headings get word animation with small delay
-  splitAndAnimate('h3', 100);
-}
-
-// ── PARAGRAPH FADE IN ──
-document.querySelectorAll('section p, .hero p').forEach((p, i) => {
-  p.style.opacity = '0';
-  p.style.transform = 'translateY(30px)';
-
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting) {
-        setTimeout(() => {
-          p.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-          p.style.opacity = '1';
-          p.style.transform = 'translateY(0)';
-        }, 200);
-        obs.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.3 });
-
-  obs.observe(p);
-});
-
-// ── TICKER ANIMATION ON SCROLL ──
-const ticker = document.querySelector('.ticker-wrap, .ticker');
-if(ticker) {
-  const tickerObs = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      ticker.style.opacity = entry.isIntersecting ? '1' : '0.3';
-      ticker.style.transition = 'opacity 0.5s ease';
-    });
-  });
-  tickerObs.observe(ticker);
-}
-  </script>
-  <script src="interactions.js"></script>
 </body>
-
 </html>
