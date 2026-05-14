@@ -36,8 +36,8 @@ export default function Navbar({ openModal }) {
         style={{ background: 'rgba(8,8,8,0.92)', backdropFilter: 'blur(12px)', height: '44px', display: 'flex', alignItems: 'center', padding: '0 24px' }}
       >
         <div style={{ maxWidth: '980px' }} className="mx-auto w-full flex items-center justify-between">
-          <a href="#" style={{ background: 'none', border: 'none', padding: 0 }} className="flex-shrink-0 relative z-[200]">
-            <img src="/logo.png" style={{ height: '32px', background: 'none', border: 'none', padding: 0 }} alt="ZEN_X" />
+          <a href="#" className="flex-shrink-0 relative z-[200]">
+            <img src="/logo.png" style={{ height: '36px', mixBlendMode: 'screen', background: 'transparent' }} alt="ZEN_X" />
           </a>
 
           <motion.div
