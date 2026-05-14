@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { DollarSign, TrendingUp, Zap, Users } from 'lucide-react';
+import TiltCard from './TiltCard';
 
 const features = [
   {
@@ -26,37 +27,42 @@ const features = [
 
 export default function WhyUs() {
   return (
-    <section id="why-us" className="relative py-24 w-full">
-      {/* Background */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-overlay md:bg-fixed"
-        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1920&q=90")' }}
-      ></div>
+    <section id="why-us" className="relative py-32 w-full bg-bg2 overflow-hidden">
+      {/* Background large text */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden">
+        <span className="font-syne font-extrabold text-[150px] md:text-[250px] text-white opacity-[0.02] whitespace-nowrap">
+          ZEN_X
+        </span>
+      </div>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="block text-gray-light text-[11px] uppercase tracking-[0.25em] mb-4">THE ZEN_X DIFFERENCE</span>
-          <h2 className="text-5xl md:text-[64px] text-white font-heading tracking-wide mb-4">
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
+        <div className="text-center mb-20">
+          <span className="block text-accent font-bebas text-[13px] uppercase tracking-[0.3em] mb-4">THE ZEN_X DIFFERENCE</span>
+          <h2 className="text-[48px] md:text-[64px] text-white font-syne font-extrabold tracking-wide mb-4">
             Why Choose Us
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {features.map((feature, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 60 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ borderColor: '#FFF' }}
-              className="group bg-black/50 backdrop-blur-md border border-white/10 rounded p-8 flex flex-col transition-colors duration-300"
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: i * 0.15, ease: "easeOut" }}
             >
-              <div className="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-black transition-colors text-white">
-                <feature.icon size={28} className="transition-colors" />
-              </div>
-              <h3 className="text-xl font-medium text-white mb-3">{feature.title}</h3>
-              <p className="text-gray-light text-sm">{feature.desc}</p>
+              <TiltCard className="p-10 flex flex-col h-full group">
+                <div className="w-[64px] h-[64px] rounded-full bg-gradient-to-br from-accent to-accent2 flex items-center justify-center mb-8 shadow-[0_0_20px_rgba(108,99,255,0.3)] transition-transform duration-400 group-hover:scale-110">
+                  <feature.icon size={28} className="text-white" />
+                </div>
+                <h3 className="text-[24px] font-syne font-bold text-white mb-4 group-hover:text-accent2 transition-colors duration-300">
+                  {feature.title}
+                </h3>
+                <p className="text-gray text-[16px] font-space leading-relaxed">
+                  {feature.desc}
+                </p>
+              </TiltCard>
             </motion.div>
           ))}
         </div>

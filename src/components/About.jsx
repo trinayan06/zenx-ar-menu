@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Camera } from 'lucide-react';
+import TiltCard from './TiltCard';
 
 const team = [
   {
@@ -30,52 +31,56 @@ const team = [
 
 export default function About() {
   return (
-    <section className="py-24 bg-[#080808]">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="block text-gray-light text-[11px] uppercase tracking-[0.25em] mb-4">WHO WE ARE</span>
-          <h2 className="text-5xl md:text-[64px] text-white font-heading tracking-wide mb-6">
+    <section className="py-32 bg-bg2">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center mb-20">
+          <span className="block text-accent font-bebas text-[13px] uppercase tracking-[0.3em] mb-4">WHO WE ARE</span>
+          <h2 className="text-[48px] md:text-[64px] text-white font-syne font-extrabold tracking-wide mb-6">
             Built by Passionate Innovators
           </h2>
-          <p className="text-gray-light text-lg max-w-2xl mx-auto">
+          <p className="text-gray text-[18px] font-space max-w-2xl mx-auto">
             ZEN_X is a team of young innovators from India — helping businesses grow digitally at prices they can afford.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
           {team.map((member, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 60 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ borderColor: '#FFF' }}
-              className="group bg-[#111111] border border-[#2A2A2A] rounded p-8 text-center transition-colors duration-300 flex flex-col items-center"
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: i * 0.15, ease: "easeOut" }}
             >
-              <div className="w-16 h-16 rounded-full bg-[#1A1A1A] border border-transparent group-hover:border-white transition-colors flex items-center justify-center text-3xl mb-6">
-                {member.emoji}
-              </div>
-              <h3 className="text-white text-base font-medium mb-1">{member.name}</h3>
-              <div className="text-gray-light text-[13px] uppercase tracking-wider mb-4">
-                {member.role}
-              </div>
-              <p className="text-gray-mid text-sm leading-relaxed">
-                {member.desc}
-              </p>
+              <TiltCard className="p-8 text-center flex flex-col items-center h-full">
+                <div className="w-[72px] h-[72px] rounded-full bg-gradient-to-br from-bg3 to-bg border border-white/10 flex items-center justify-center text-[32px] mb-6 shadow-inner">
+                  {member.emoji}
+                </div>
+                <h3 className="text-white text-[18px] font-syne font-bold mb-2">{member.name}</h3>
+                <div className="text-accent text-[13px] font-bebas tracking-[0.1em] mb-4">
+                  {member.role}
+                </div>
+                <p className="text-gray text-[14px] font-space leading-relaxed">
+                  {member.desc}
+                </p>
+              </TiltCard>
             </motion.div>
           ))}
         </div>
 
         <div className="flex justify-center">
-          <a
+          <motion.a
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
             href="https://www.instagram.com/zen_x_2026"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-6 py-3 border border-white/20 text-white rounded-sm font-medium hover:border-white transition-colors"
+            className="inline-flex items-center px-[32px] py-[14px] border border-white/20 text-white rounded-[10px] font-space font-medium hover:border-accent hover:text-accent transition-colors duration-300"
           >
-            <Camera size={20} className="mr-2" /> Follow Our Journey
-          </a>
+            <Camera size={20} className="mr-3" /> Follow Our Journey
+          </motion.a>
         </div>
       </div>
     </section>

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Camera, ScanLine, Globe, TrendingUp, Check } from 'lucide-react';
+import TiltCard from './TiltCard';
 
 const servicesData = [
   {
@@ -54,62 +55,56 @@ const servicesData = [
 
 export default function Services({ openModal }) {
   return (
-    <section id="services" className="relative py-24 w-full">
-      {/* Background */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-overlay md:bg-fixed"
-        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920&q=90")' }}
-      ></div>
-
-      <div className="relative z-10 max-w-6xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="block text-gray-light text-[11px] uppercase tracking-[0.25em] mb-4">OUR EXPERTISE</span>
-          <h2 className="text-5xl md:text-[64px] text-white font-heading tracking-wide mb-4">
+    <section id="services" className="relative py-32 w-full bg-dot-pattern">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="text-center mb-20">
+          <span className="block text-accent font-bebas text-[13px] uppercase tracking-[0.3em] mb-4">OUR EXPERTISE</span>
+          <h2 className="text-[48px] md:text-[64px] text-white font-syne font-extrabold tracking-wide mb-4">
             What We Provide
           </h2>
-          <p className="text-gray-light text-lg">
-            End-to-end digital solutions tailored for growing businesses.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {servicesData.map((service, index) => (
             <motion.div
               key={service.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 60 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              whileHover={{ y: -6, borderColor: 'rgba(255,255,255,0.25)' }}
-              className="bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] rounded p-8 flex flex-col transition-colors duration-300 relative"
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: index * 0.1 }}
             >
-              {service.popular && (
-                <div className="absolute top-8 right-8 border border-white/20 bg-black/50 text-white text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">
-                  🔥 MOST POPULAR
+              <TiltCard className="p-8 md:p-10 flex flex-col h-full relative group">
+                {service.popular && (
+                  <div className="absolute top-6 right-6 bg-gradient-to-r from-accent to-accent2 text-white text-[11px] font-space uppercase font-bold tracking-wider px-4 py-1.5 rounded-full z-10 shadow-[0_0_15px_rgba(108,99,255,0.4)]">
+                    🔥 MOST POPULAR
+                  </div>
+                )}
+                
+                <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-accent to-accent2 flex items-center justify-center mb-8 shadow-[0_0_20px_rgba(108,99,255,0.3)]">
+                  <service.icon className="text-white" size={28} />
                 </div>
-              )}
-              
-              <service.icon className="text-white mb-6" size={32} />
-              
-              <h3 className="text-2xl font-medium text-white mb-6">
-                {service.title}
-              </h3>
-              
-              <ul className="flex-1 space-y-4 mb-8">
-                {service.features.map((feature, i) => (
-                  <li key={i} className="flex items-start text-gray-light text-sm">
-                    <Check size={16} className="text-white mr-3 mt-0.5 shrink-0" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              
-              <button
-                onClick={openModal}
-                className="text-white font-medium text-left inline-flex items-center hover:underline self-start mt-auto"
-              >
-                Get Quote <span className="ml-2">→</span>
-              </button>
+                
+                <h3 className="text-[22px] font-syne font-bold text-white mb-6">
+                  {service.title}
+                </h3>
+                
+                <ul className="flex-1 space-y-4 mb-10">
+                  {service.features.map((feature, i) => (
+                    <li key={i} className="flex items-start text-gray text-[15px] font-space">
+                      <Check size={18} className="text-accent mr-3 mt-0.5 shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <button
+                  onClick={openModal}
+                  className="text-accent font-space font-medium text-left inline-flex items-center hover:underline self-start mt-auto relative"
+                >
+                  Get Quote <span className="ml-2">→</span>
+                  <div className="absolute -bottom-2 left-0 w-0 h-[1px] bg-gradient-to-r from-accent to-accent2 transition-all duration-300 group-hover:w-full"></div>
+                </button>
+              </TiltCard>
             </motion.div>
           ))}
         </div>

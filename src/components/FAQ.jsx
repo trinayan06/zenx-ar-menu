@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 const faqs = [
   {
@@ -49,11 +49,11 @@ export default function FAQ() {
   };
 
   return (
-    <section id="faq" className="py-24 bg-[#0A0A0A]">
+    <section id="faq" className="py-32 bg-bg">
       <div className="max-w-3xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="block text-gray-light text-[11px] uppercase tracking-[0.25em] mb-4">FAQ</span>
-          <h2 className="text-5xl md:text-[64px] text-white font-heading tracking-wide">
+        <div className="text-center mb-20">
+          <span className="block text-accent font-bebas text-[13px] uppercase tracking-[0.3em] mb-4">FAQ</span>
+          <h2 className="text-[48px] md:text-[64px] text-white font-syne font-extrabold tracking-wide">
             Frequently Asked Questions
           </h2>
         </div>
@@ -62,18 +62,27 @@ export default function FAQ() {
           {faqs.map((faq, i) => {
             const isOpen = openIndex === i;
             return (
-              <div key={i} className="border-b border-[#1C1C1C]">
+              <motion.div 
+                key={i} 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="border-b border-white/[0.06]"
+              >
                 <button
                   onClick={() => toggle(i)}
-                  className="w-full py-6 flex items-center justify-between text-left focus:outline-none"
+                  className="w-full py-8 flex items-center justify-between text-left focus:outline-none group"
                 >
-                  <span className="text-white text-base font-medium pr-8">{faq.q}</span>
+                  <span className="text-white text-[18px] font-syne font-semibold pr-8 group-hover:text-accent transition-colors">
+                    {faq.q}
+                  </span>
                   <motion.div
-                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    animate={{ rotate: isOpen ? 45 : 0 }}
                     transition={{ duration: 0.3 }}
-                    className="shrink-0 text-white"
+                    className="shrink-0 text-accent group-hover:text-accent2 transition-colors"
                   >
-                    {isOpen ? <X size={20} /> : <Plus size={20} />}
+                    <Plus size={24} />
                   </motion.div>
                 </button>
                 <AnimatePresence>
@@ -82,16 +91,16 @@ export default function FAQ() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
                       className="overflow-hidden"
                     >
-                      <p className="pb-6 text-gray-light text-[15px] leading-[1.7]">
+                      <p className="pb-8 text-gray text-[16px] font-space leading-[1.8]">
                         {faq.a}
                       </p>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
             );
           })}
         </div>

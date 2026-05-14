@@ -16,7 +16,7 @@ export default function Navbar({ openModal }) {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -25,52 +25,46 @@ export default function Navbar({ openModal }) {
   return (
     <>
       <motion.nav
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className={`fixed top-0 left-0 right-0 z-[100] transition-colors duration-300 ${
-          isScrolled ? 'bg-[#080808]/90 backdrop-blur-md border-b border-white/5' : 'bg-transparent'
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className={`fixed top-0 left-0 right-0 z-[100] w-full transition-all duration-300 ${
+          isScrolled 
+            ? 'bg-[#050508]/80 backdrop-blur-[24px] border-b border-white/10 py-3' 
+            : 'bg-[#050508]/40 backdrop-blur-md border-b border-white/[0.06] py-5'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <a href="#" className="flex-shrink-0">
-            <img src="/logo.png" height={36} className="h-9" alt="ZEN_X" />
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+          <a href="#" className="flex-shrink-0 relative z-[200]">
+            <img src="/logo.png" height={38} className="h-[38px] w-auto" alt="ZEN_X" />
           </a>
 
           <div className="hidden md:flex items-center space-x-8">
-            {links.map((link, i) => (
-              <motion.a
+            {links.map((link) => (
+              <a
                 key={link.name}
                 href={link.href}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.05 }}
-                className="text-gray-light hover:text-white uppercase tracking-[0.1em] text-xs transition-colors"
+                className="text-[14px] text-[#888899] font-space tracking-[0.05em] hover:text-white hover:underline decoration-accent underline-offset-4 transition-all"
               >
                 {link.name}
-              </motion.a>
+              </a>
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4 }}
-            className="hidden md:block"
-          >
+          <div className="hidden md:block">
             <button
               onClick={openModal}
-              className="bg-white text-black px-6 py-2.5 rounded-sm text-sm font-medium hover:bg-gray-200 transition-colors"
+              className="btn-gradient text-white font-space font-medium text-[15px] px-[22px] py-[10px] rounded-[8px] transition-all hover:scale-105 hover:shadow-[0_0_24px_rgba(108,99,255,0.5)]"
             >
               Start Free Trial
             </button>
-          </motion.div>
+          </div>
 
           <button
-            className="md:hidden text-white"
-            onClick={() => setMobileMenuOpen(true)}
+            className="md:hidden text-white relative z-[200]"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            <Menu size={24} />
+            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </motion.nav>
@@ -81,22 +75,16 @@ export default function Navbar({ openModal }) {
             initial={{ opacity: 0, y: '-100%' }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '-100%' }}
-            transition={{ type: 'tween', duration: 0.3 }}
-            className="fixed inset-0 z-[200] bg-[#080808] flex flex-col items-center justify-center space-y-8"
+            transition={{ type: 'tween', duration: 0.4, ease: "easeInOut" }}
+            className="fixed inset-0 z-[150] bg-[#050508] flex flex-col items-center justify-center space-y-8"
           >
-            <button
-              className="absolute top-6 right-6 text-white"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <X size={32} />
-            </button>
-            <div className="flex flex-col items-center space-y-6">
+            <div className="flex flex-col items-center space-y-8 mt-16">
               {links.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-white text-2xl uppercase tracking-[0.1em] font-heading"
+                  className="text-white text-[28px] font-syne font-bold hover:text-accent transition-colors"
                 >
                   {link.name}
                 </a>
@@ -106,7 +94,7 @@ export default function Navbar({ openModal }) {
                   setMobileMenuOpen(false);
                   openModal();
                 }}
-                className="bg-white text-black px-8 py-3 rounded-sm font-medium mt-4 text-lg uppercase tracking-wider font-heading"
+                className="btn-gradient text-white px-8 py-4 rounded-xl font-space font-medium mt-8 text-lg"
               >
                 Start Free Trial
               </button>

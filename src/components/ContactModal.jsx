@@ -32,13 +32,11 @@ export default function ContactModal({ isOpen, onClose }) {
   }, [isOpen]);
 
   const handleSubmit = () => {
-    // Basic validation
     if (!formData.businessName || !formData.name || !formData.phone) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    // Logic to send to WhatsApp / Supabase based on previous instructions
     const message = `Hi ZEN_X!\n\nI want to start my free trial!\n\nBusiness: ${formData.businessName}\nName: ${formData.name}\nPhone: ${formData.phone}\nInterested in: ${formData.service || 'Not specified'}\n\nPlease contact me!`;
     const waUrl = `https://wa.me/919864119506?text=${encodeURIComponent(message)}`;
     
@@ -55,36 +53,36 @@ export default function ContactModal({ isOpen, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/95 z-[1000]"
+            className="fixed inset-0 bg-[#050508]/92 z-[9999] backdrop-blur-sm"
           />
           
-          <div className="fixed inset-0 z-[1001] flex items-center justify-center p-4 pointer-events-none">
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 pointer-events-none">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="w-full max-w-[480px] bg-[#111] border border-[#2A2A2A] rounded p-8 sm:p-12 relative pointer-events-auto shadow-2xl"
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="w-full max-w-[500px] bg-[#0C0C12] border border-accent/30 rounded-[24px] p-8 sm:p-12 relative pointer-events-auto shadow-[0_0_50px_rgba(108,99,255,0.15)]"
             >
               <button
                 onClick={onClose}
-                className="absolute top-6 right-6 text-white hover:text-gray-light transition-colors"
+                className="absolute top-6 right-6 text-white hover:text-accent transition-colors"
               >
                 <X size={24} />
               </button>
 
-              <h2 className="text-4xl text-white font-heading tracking-wide mb-2">
-                Get Started with ZEN_X
+              <h2 className="text-[36px] text-white font-syne font-bold mb-2 leading-tight">
+                Get Started
               </h2>
               
-              <p className="text-gray-light text-sm mb-6">
+              <p className="text-gray text-[14px] font-space mb-8">
                 Enter your details and we'll get your digital growth started within 24 hours.
               </p>
 
-              <div className="flex flex-wrap items-center gap-4 mb-8 text-xs text-gray-light">
-                <span><span className="text-white mr-1">✓</span> 15-day free trial</span>
-                <span><span className="text-white mr-1">✓</span> No credit card</span>
-                <span><span className="text-white mr-1">✓</span> Cancel anytime</span>
+              <div className="flex flex-wrap items-center gap-4 mb-8 text-[13px] font-space text-gray-light">
+                <span><span className="text-accent mr-1">✓</span> 15-day free trial</span>
+                <span><span className="text-accent mr-1">✓</span> No credit card</span>
+                <span><span className="text-accent mr-1">✓</span> Cancel anytime</span>
               </div>
 
               <div className="space-y-6">
@@ -94,7 +92,7 @@ export default function ContactModal({ isOpen, onClose }) {
                     placeholder="Business Name"
                     value={formData.businessName}
                     onChange={(e) => setFormData({...formData, businessName: e.target.value})}
-                    className="w-full bg-transparent border-b border-[#2A2A2A] text-white py-3 outline-none focus:border-white transition-colors"
+                    className="w-full bg-transparent border-b border-white/15 text-white py-3 font-space text-[15px] outline-none focus:border-accent transition-colors"
                   />
                 </div>
                 
@@ -104,7 +102,7 @@ export default function ContactModal({ isOpen, onClose }) {
                     placeholder="Your Name"
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full bg-transparent border-b border-[#2A2A2A] text-white py-3 outline-none focus:border-white transition-colors"
+                    className="w-full bg-transparent border-b border-white/15 text-white py-3 font-space text-[15px] outline-none focus:border-accent transition-colors"
                   />
                 </div>
                 
@@ -114,21 +112,21 @@ export default function ContactModal({ isOpen, onClose }) {
                     placeholder="Phone Number"
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    className="w-full bg-transparent border-b border-[#2A2A2A] text-white py-3 outline-none focus:border-white transition-colors"
+                    className="w-full bg-transparent border-b border-white/15 text-white py-3 font-space text-[15px] outline-none focus:border-accent transition-colors"
                   />
                 </div>
 
-                <div className="pt-2">
-                  <label className="text-gray-light text-xs uppercase tracking-wider mb-3 block">Interested In</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <div className="pt-4">
+                  <label className="text-gray text-[12px] font-space uppercase tracking-wider mb-4 block">Interested In</label>
+                  <div className="flex flex-wrap gap-3">
                     {servicesList.map((service) => (
                       <button
                         key={service}
                         onClick={() => setFormData({...formData, service})}
-                        className={`text-xs py-2 px-3 rounded border transition-colors text-left ${
+                        className={`text-[13px] font-space py-2.5 px-4 rounded-full border transition-all ${
                           formData.service === service 
-                            ? 'bg-white/10 border-white text-white' 
-                            : 'bg-transparent border-[#2A2A2A] text-gray-light hover:border-gray-mid'
+                            ? 'bg-accent/20 border-accent text-white shadow-[0_0_15px_rgba(108,99,255,0.3)]' 
+                            : 'bg-transparent border-white/10 text-gray hover:border-white/30 hover:text-white'
                         }`}
                       >
                         {service}
@@ -139,12 +137,12 @@ export default function ContactModal({ isOpen, onClose }) {
 
                 <button
                   onClick={handleSubmit}
-                  className="w-full bg-white text-black py-4 rounded-sm font-medium mt-4 hover:bg-gray-200 transition-colors"
+                  className="w-full btn-gradient text-white py-[16px] rounded-[10px] font-space font-medium mt-6 transition-all hover:scale-[1.02] hover:shadow-[0_0_24px_rgba(108,99,255,0.4)]"
                 >
                   🚀 Start Free Trial — 15 Days Free
                 </button>
 
-                <p className="text-center text-gray-dark text-[11px] mt-4">
+                <p className="text-center text-[#555] text-[12px] font-space mt-4">
                   We respond within 2 hours · No spam ever
                 </p>
               </div>

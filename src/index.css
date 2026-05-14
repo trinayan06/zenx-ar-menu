@@ -1,80 +1,164 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600&family=Bebas+Neue&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-black: #080808;
-  --color-black-2: #111111;
-  --color-black-3: #1A1A1A;
-  --color-gray-dark: #2A2A2A;
-  --color-gray-mid: #555555;
-  --color-gray-light: #9A9A9A;
+  --color-bg: #050508;
+  --color-bg2: #0C0C12;
+  --color-bg3: #12121A;
+  --color-border-subtle: rgba(255,255,255,0.07);
+  --color-border-hover: rgba(255,255,255,0.2);
   --color-white: #FFFFFF;
-  --color-off-white: #F2F1EE;
-  --color-accent: #FFFFFF;
+  --color-gray-main: #888899;
+  --color-gray-light: #BBBBCC;
+  --color-accent: #6C63FF;
+  --color-accent2: #A78BFA;
+  --color-gold: #F5C842;
+  --color-glow: rgba(108,99,255,0.15);
 
-  --font-heading: 'Bebas Neue', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
+  --font-syne: 'Syne', sans-serif;
+  --font-space: 'Space Grotesk', sans-serif;
+  --font-bebas: 'Bebas Neue', sans-serif;
 }
 
 :root {
-  --black: #080808;
-  --black-2: #111111;
-  --black-3: #1A1A1A;
-  --gray-dark: #2A2A2A;
-  --gray-mid: #555555;
-  --gray-light: #9A9A9A;
+  --bg: #050508;
+  --bg2: #0C0C12;
+  --bg3: #12121A;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,255,255,0.2);
   --white: #FFFFFF;
-  --off-white: #F2F1EE;
-  --accent: #FFFFFF;
+  --gray: #888899;
+  --gray-light: #BBBBCC;
+  --accent: #6C63FF;
+  --accent2: #A78BFA;
+  --gold: #F5C842;
+  --glow: rgba(108,99,255,0.15);
 }
 
 @layer base {
   body {
-    @apply bg-black text-white font-body antialiased;
+    @apply bg-bg text-white font-space antialiased;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    @apply font-syne;
   }
 
   html {
     scroll-behavior: smooth;
   }
+
+  /* No custom cursors allowed */
+  * {
+    cursor: auto !important;
+  }
+  a, button, [role="button"], input[type="submit"], select, .cursor-pointer {
+    cursor: pointer !important;
+  }
 }
 
-/* Ticker Animation */
+/* Animations */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
 .animate-marquee {
-  animation: marquee 25s linear infinite;
+  animation: marquee 30s linear infinite;
 }
 
 .animate-marquee:hover {
   animation-play-state: paused;
 }
 
-/* Background Utility Classes */
-.bg-overlay {
-  background: linear-gradient(to bottom, rgba(0,0,0,0.75), rgba(0,0,0,0.90));
-}
-
-.bg-dot-pattern {
-  background-image: radial-gradient(circle, #2A2A2A 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-/* Pulse for WhatsApp Button */
 @keyframes pulse-scale {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
+  50% { transform: scale(1.1); }
 }
 
 .animate-pulse-scale {
-  animation: pulse-scale 2s infinite;
+  animation: pulse-scale 2.5s infinite ease-in-out;
+}
+
+@keyframes mesh-blob-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(10%, 15%) scale(1.1); }
+  66% { transform: translate(-5%, 5%) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes mesh-blob-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-10%, -15%) scale(1.05); }
+  66% { transform: translate(10%, -5%) scale(0.95); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+/* Background Utility Classes */
+.mesh-bg {
+  background: #050508;
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.mesh-bg::before,
+.mesh-bg::after {
+  content: '';
+  position: absolute;
+  width: 80vw;
+  height: 80vh;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.mesh-bg::before {
+  background: rgba(108, 99, 255, 0.15);
+  top: -20%;
+  left: -10%;
+  animation: mesh-blob-1 15s infinite alternate ease-in-out;
+}
+
+.mesh-bg::after {
+  background: rgba(167, 139, 250, 0.1);
+  bottom: -20%;
+  right: -10%;
+  animation: mesh-blob-2 18s infinite alternate ease-in-out;
+}
+
+.bg-dot-pattern {
+  background-color: #050508;
+  background-image: radial-gradient(circle, rgba(108,99,255,0.15) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Glass Morphism Base */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  transition: all 0.4s ease;
+}
+
+.glass-card:hover {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(108, 99, 255, 0.08);
+}
+
+/* Buttons */
+.btn-gradient {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

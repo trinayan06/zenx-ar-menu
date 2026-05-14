@@ -14,6 +14,7 @@ import About from './components/About';
 import Footer from './components/Footer';
 import ContactModal from './components/ContactModal';
 import WhatsAppButton from './components/WhatsAppButton';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -22,7 +23,7 @@ function App() {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-bg text-white min-h-screen selection:bg-accent selection:text-white relative">
       <Navbar openModal={openModal} />
       <Hero openModal={openModal} />
       <Ticker />
@@ -39,6 +40,7 @@ function App() {
       
       <ContactModal isOpen={isModalOpen} onClose={closeModal} />
       <WhatsAppButton />
+      <ScrollToTop />
     </div>
   );
 }
