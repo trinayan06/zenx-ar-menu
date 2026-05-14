@@ -35,23 +35,23 @@ export default function Navbar({ openModal }) {
         className="fixed top-0 left-0 right-0 z-[100] w-full"
         style={{ background: 'rgba(8,8,8,0.92)', backdropFilter: 'blur(12px)' }}
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div style={{ maxWidth: '980px' }} className="mx-auto px-6 h-[44px] flex items-center justify-between">
           <a href="#" className="flex-shrink-0 relative z-[200]">
-            <img src="/logo.png" className="h-[64px] md:h-[80px] w-auto" alt="ZEN_X" />
+            <img src="/logo.png" className="h-[22px] w-auto" alt="ZEN_X" />
           </a>
 
           <motion.div
             variants={containerVars}
             initial="hidden"
             animate="show"
-            className="hidden md:flex items-center space-x-8"
+            className="hidden md:flex items-center space-x-7"
           >
             {links.map((link) => (
               <motion.a
                 variants={itemVars}
                 key={link.name}
                 href={link.href}
-                className="text-[12px] text-gray-light font-dm uppercase tracking-[0.1em] hover:text-white transition-colors"
+                className="text-[13px] text-gray-light font-dm tracking-[0.02em] hover:text-white transition-colors"
               >
                 {link.name}
               </motion.a>
@@ -61,7 +61,7 @@ export default function Navbar({ openModal }) {
           <div className="hidden md:block">
             <button
               onClick={openModal}
-              className="bg-white text-black font-dm font-medium text-[14px] px-6 py-2.5 rounded-full transition-all hover:bg-gray-200"
+              className="bg-white text-black font-dm font-medium text-[11px] px-4 py-1.5 rounded-full transition-all hover:bg-gray-200"
             >
               Start Free Trial
             </button>
