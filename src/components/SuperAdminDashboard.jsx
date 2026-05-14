@@ -295,11 +295,111 @@ const SuperAdminDashboard = () => {
                 </div>
               )}
 
-              {['analytics', 'settings'].includes(activeTab) && (
-                <div className="flex flex-col items-center justify-center py-20 text-center">
-                  <div className="w-20 h-20 bg-white/5 rounded-full border border-white/10 flex items-center justify-center mb-6"><Settings className="w-10 h-10 text-white/50" /></div>
-                  <h3 className="text-2xl font-bebas tracking-widest text-gray-300">{activeTab} MODULE</h3>
-                  <p className="text-gray-500 max-w-md mt-4 text-sm">Additional configurations and analytics are fully connected to the database backend.</p>
+              {activeTab === 'analytics' && (() => {
+                const svcCount = {};
+                allProjects.forEach(p => { const s = p.service_type || 'Other'; svcCount[s] = (svcCount[s]||0) + 1; });
+                const svcData = Object.entries(svcCount).map(([l,v]) => ({l: l.replace('_',' '), v})).sort((a,b) => b.v - a.v);
+                const maxSvc = Math.max(...svcData.map(d=>d.v), 1);
+
+                const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+                const dayCounts = new Array(7).fill(0);
+                allClients.forEach(c => { if(c.created_at){ dayCounts[new Date(c.created_at).getDay()]++; } });
+                const maxDay = Math.max(...dayCounts, 1);
+
+                const revByService = {};
+                allProjects.forEach(p => { const s = p.service_type || 'Other'; revByService[s] = (revByService[s]||0) + (p.monthly_fee||0); });
+                const revData = Object.entries(revByService).map(([l,v]) => ({l: l.replace('_',' '), v})).sort((a,b) => b.v - a.v);
+                const maxRev = Math.max(...revData.map(d=>d.v), 1);
+
+                const cityCount = {};
+                allClients.forEach(c => { const city = c.city || 'Unknown'; cityCount[city] = (cityCount[city]||0) + 1; });
+                const cityData = Object.entries(cityCount).map(([l,v]) => ({l,v})).sort((a,b) => b.v - a.v).slice(0,6);
+                const maxCity = Math.max(...cityData.map(d=>d.v), 1);
+
+                const renderChart = (data, max, colorFrom, colorTo) => (
+                  <div className="flex items-end gap-3 h-48 py-4">
+                    {data.length === 0 ? <div className="w-full text-center text-gray-500">No data</div> : data.map((d, i) => {
+                      const h = Math.max((d.v/max)*160, 8);
+                      return (
+                        <div key={i} className="flex-1 flex flex-col items-center gap-2 group relative">
+                          <div className="w-full rounded-t-md transition-all duration-500 relative" style={{ height: `${h}px`, background: `linear-gradient(to top, ${colorFrom}, ${colorTo})` }}>
+                            <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">{d.v > 1000 ? `₹${d.v}` : d.v}</span>
+                          </div>
+                          <span className="text-[10px] text-gray-400 font-medium truncate w-full text-center capitalize">{d.l}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+
+                return (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                        <h4 className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">Projects by Service</h4>
+                        {renderChart(svcData, maxSvc, '#3b82f6', '#60a5fa')}
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                        <h4 className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">Client Signups by Day</h4>
+                        {renderChart(days.map((l,i)=>({l,v:dayCounts[i]})), maxDay, '#10b981', '#34d399')}
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                        <h4 className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">Revenue by Service</h4>
+                        {renderChart(revData, maxRev, '#8b5cf6', '#a78bfa')}
+                      </div>
+                      <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
+                        <h4 className="text-sm font-medium text-gray-400 mb-4 uppercase tracking-wider">Top Cities</h4>
+                        {renderChart(cityData, maxCity, '#f59e0b', '#fbbf24')}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {activeTab === 'settings' && (
+                <div className="space-y-8">
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
+                    <h4 className="text-lg font-medium mb-6 text-white flex items-center gap-2">👑 Executive Founders</h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {[
+                        { emoji: '👑', name: 'Trinayan Mahanta', role: 'CEO' },
+                        { emoji: '💡', name: 'Snehangshu Das', role: 'Tech Lead' },
+                        { emoji: '✨', name: 'Mannat Sahu', role: 'Design Lead' },
+                        { emoji: '🚀', name: 'Aditya Pargyan', role: 'Marketing Lead' }
+                      ].map((f, i) => (
+                        <div key={i} className="bg-black/40 border border-white/10 rounded-xl p-6 text-center hover:border-white/30 transition-colors">
+                          <div className="text-4xl mb-4">{f.emoji}</div>
+                          <h5 className="font-bold text-gray-200">{f.name}</h5>
+                          <p className="text-xs text-gray-500 mt-1">{f.role}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
+                    <h4 className="text-lg font-medium mb-6 text-white flex items-center gap-2">⚙️ General Configuration</h4>
+                    <div className="space-y-6 max-w-2xl">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">Platform Name</label>
+                        <input type="text" defaultValue="ZEN_X Digital Solutions" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-white/50" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-400 mb-2">Tagline</label>
+                        <input type="text" defaultValue="Instagram · AR Menu · Websites · Digital Growth" readOnly className="w-full bg-black/30 border border-white/5 rounded-xl px-4 py-3 text-gray-500 cursor-not-allowed" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-400 mb-2">Instagram Link</label>
+                          <input type="text" defaultValue="https://www.instagram.com/zen_x_2026" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-white/50" />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-400 mb-2">Support Email</label>
+                          <input type="text" defaultValue="support@zenx.in" className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-white/50" />
+                        </div>
+                      </div>
+                      <button className="bg-white text-black hover:bg-gray-200 px-6 py-3 rounded-full text-sm font-bold transition-all mt-4" onClick={() => showToast('Settings Saved Successfully!')}>💾 Save Settings</button>
+                    </div>
+                  </div>
                 </div>
               )}
 
