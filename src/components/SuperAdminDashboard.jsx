@@ -91,6 +91,22 @@ const SuperAdminDashboard = () => {
     return 'bg-white/10 text-white border-white/20';
   };
 
+  const handleDeleteClient = async (id) => {
+    if(!window.confirm('Delete this client? This cannot be undone.')) return;
+    const { error } = await supabase.from('clients').delete().eq('id', id);
+    if(error){ showToast('Error deleting client', 'error'); return; }
+    showToast('Client deleted successfully');
+    loadAllData();
+  };
+
+  const handleToggleClientStatus = async (id, currentStatus) => {
+    const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+    const { error } = await supabase.from('clients').update({ status: newStatus }).eq('id', id);
+    if(error){ showToast('Error updating status', 'error'); return; }
+    showToast(`Status updated to ${newStatus}`);
+    loadAllData();
+  };
+
   if (loading) return <div className="min-h-screen bg-[#000000] flex items-center justify-center"><div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div></div>;
 
   if (!session) {
@@ -214,7 +230,7 @@ const SuperAdminDashboard = () => {
                   <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl overflow-hidden">
                     <div className="overflow-x-auto">
                       <table className="w-full text-left border-collapse">
-                        <thead><tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider"><th className="p-4 font-medium">Client Info</th><th className="p-4 font-medium">Type</th><th className="p-4 font-medium">Contact</th><th className="p-4 font-medium">Status</th></tr></thead>
+                        <thead><tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider"><th className="p-4 font-medium">Client Info</th><th className="p-4 font-medium">Type</th><th className="p-4 font-medium">Contact</th><th className="p-4 font-medium">Status</th><th className="p-4 font-medium text-right">Actions</th></tr></thead>
                         <tbody>
                           {allClients.filter(c => c.name?.toLowerCase().includes(searchQuery.toLowerCase())).map((c, i) => (
                             <tr key={i} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors">
@@ -222,6 +238,12 @@ const SuperAdminDashboard = () => {
                               <td className="p-4 text-sm text-gray-400 capitalize">{c.business_type}</td>
                               <td className="p-4"><div className="text-sm">{c.phone || '—'}</div><div className="text-xs text-gray-500 mt-0.5">{c.email || '—'}</div></td>
                               <td className="p-4"><span className={`text-[10px] uppercase font-bold px-2.5 py-1 rounded-full border ${getBadgeColor(c.status)}`}>{c.status}</span></td>
+                              <td className="p-4 text-right">
+                                <div className="flex items-center justify-end gap-2">
+                                  <button onClick={() => handleToggleClientStatus(c.id, c.status)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors" title="Toggle Status"><Edit2 className="w-4 h-4"/></button>
+                                  <button onClick={() => handleDeleteClient(c.id)} className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-colors" title="Delete Client"><Trash2 className="w-4 h-4"/></button>
+                                </div>
+                              </td>
                             </tr>
                           ))}
                         </tbody>
