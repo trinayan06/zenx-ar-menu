@@ -155,7 +155,7 @@ const SuperAdminDashboard = () => {
   const tabs = [
     { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { id: 'clients', icon: Users, label: 'Clients' },
-    { id: 'instagram', icon: Instagram, label: 'Instagram' },
+    { id: 'instagram', icon: Camera, label: 'Instagram' },
     { id: 'armenu', icon: Cuboid, label: 'AR Menu' },
     { id: 'websites', icon: Monitor, label: 'Websites' },
     { id: 'subscriptions', icon: CreditCard, label: 'Subscriptions' },
@@ -306,7 +306,7 @@ const SuperAdminDashboard = () => {
                         </button>
                         <button className="w-full bg-white/5 hover:bg-white/10 text-gray-300 border border-white/5 rounded-xl py-3 px-4 flex items-center justify-between transition-all group">
                           <span className="font-medium text-sm">Instagram Project</span>
-                          <Instagram className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                          <Camera className="w-4 h-4 group-hover:scale-110 transition-transform" />
                         </button>
                         <button className="w-full bg-white/5 hover:bg-white/10 text-gray-300 border border-white/5 rounded-xl py-3 px-4 flex items-center justify-between transition-all group">
                           <span className="font-medium text-sm">AR Menu Project</span>
