@@ -92,26 +92,26 @@ const SuperAdminDashboard = () => {
   // UI Helpers
   const getBadgeColor = (status) => {
     const s = (status || '').toLowerCase();
-    if (s === 'active' || s === 'completed' || s === 'paid') return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+    if (s === 'active' || s === 'completed' || s === 'paid') return 'bg-white/ text-white border-white/20';
     if (s === 'in_progress' || s === 'pending') return 'bg-orange-500/10 text-orange-400 border-orange-500/20';
     if (s === 'inactive' || s === 'paused') return 'bg-gray-500/10 text-gray-400 border-gray-500/20';
-    return 'bg-blue-500/10 text-blue-400 border-blue-500/20'; // Default to accent
+    return 'bg-white/ text-white border-white/20'; // Default to accent
   };
 
-  if (loading) return <div className="min-h-screen bg-[#000000] flex items-center justify-center"><div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>;
+  if (loading) return <div className="min-h-screen bg-[#000000] flex items-center justify-center"><div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div></div>;
 
   if (!session) {
     return (
       <div className="min-h-screen bg-[#000000] flex flex-col items-center justify-center p-4 relative overflow-hidden font-dm">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.1)_0%,transparent_60%)] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_0%,transparent_60%)] pointer-events-none" />
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 relative z-10"
         >
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/20">
-              <ShieldAlert className="w-8 h-8 text-blue-500" />
+            <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/20">
+              <ShieldAlert className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl font-bebas tracking-wider text-white">SYSTEM ACCESS</h1>
             <p className="text-gray-400 text-sm mt-2">Authorized Personnel Only</p>
@@ -124,7 +124,7 @@ const SuperAdminDashboard = () => {
                 placeholder="Admin Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-black/50 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-gray-600"
+                className="w-full bg-black/50 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/50 transition-all placeholder:text-gray-600"
                 required
               />
             </div>
@@ -134,7 +134,7 @@ const SuperAdminDashboard = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-black/50 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder:text-gray-600"
+                className="w-full bg-black/50 border border-white/10 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/50 transition-all placeholder:text-gray-600"
                 required
               />
             </div>
@@ -142,7 +142,7 @@ const SuperAdminDashboard = () => {
             <button 
               type="submit" 
               disabled={isLoggingIn}
-              className="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-full py-4 transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-white text-black hover:bg-white hover:text-black font-medium rounded-full py-4 transition-all hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {isLoggingIn ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"/> : <><Lock className="w-5 h-5"/> INITIALIZE_</>}
             </button>
@@ -167,17 +167,17 @@ const SuperAdminDashboard = () => {
   const activeProjectsCount = allProjects.filter(p => p.status !== 'completed').length;
 
   return (
-    <div className="min-h-screen bg-[#000000] text-white font-dm selection:bg-blue-500/30">
+    <div className="min-h-screen bg-[#000000] text-white font-dm selection:bg-white/">
       {/* Dynamic Background */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[120px] mix-blend-screen transform translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[100px] mix-blend-screen transform -translate-x-1/2 translate-y-1/2"></div>
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-white/10 rounded-full blur-[120px] mix-blend-screen transform translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-white/10 rounded-full blur-[100px] mix-blend-screen transform -translate-x-1/2 translate-y-1/2"></div>
       </div>
 
       {/* Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-[#0b0b0b]/90 backdrop-blur-xl border-r border-white/5 transform transition-transform duration-300 ease-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`}>
         <div className="h-20 flex items-center px-8 border-b border-white/5">
-          <span className="font-bebas text-3xl tracking-widest text-white"><span className="text-blue-500">ZEN</span>_X</span>
+          <span className="font-bebas text-3xl tracking-widest text-white"><span className="text-white">ZEN</span>_X</span>
         </div>
         
         <nav className="flex-1 overflow-y-auto p-4 space-y-2">
@@ -190,7 +190,7 @@ const SuperAdminDashboard = () => {
                 onClick={() => { setActiveTab(tab.id); setIsSidebarOpen(false); }}
                 className={`w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all ${
                   isActive 
-                    ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' 
+                    ? 'bg-white/ text-white border border-white/20' 
                     : 'text-gray-400 hover:text-white hover:bg-white/5 border border-transparent'
                 }`}
               >
@@ -228,10 +228,10 @@ const SuperAdminDashboard = () => {
               <input 
                 type="text" 
                 placeholder="Command menu..." 
-                className="bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-blue-500/50 w-64 text-white"
+                className="bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-white/50 w-64 text-white"
               />
             </div>
-            <div className="w-10 h-10 rounded-full bg-blue-500/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold">
+            <div className="w-10 h-10 rounded-full bg-white/ border border-white/30 flex items-center justify-center text-white font-bold">
               TX
             </div>
           </div>
@@ -253,12 +253,12 @@ const SuperAdminDashboard = () => {
                   {/* Stats Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {[
-                      { label: 'Total MRR', value: `₹${totalRevenue.toLocaleString()}`, color: 'text-blue-400' },
+                      { label: 'Total MRR', value: `₹${totalRevenue.toLocaleString()}`, color: 'text-white' },
                       { label: 'Active Projects', value: activeProjectsCount, color: 'text-white' },
                       { label: 'Total Clients', value: allClients.length, color: 'text-white' },
                       { label: 'New Signups', value: '+3 This Week', color: 'text-green-400' }
                     ].map((stat, i) => (
-                      <div key={i} className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:border-blue-500/30 transition-colors group">
+                      <div key={i} className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-6 hover:border-white/30 transition-colors group">
                         <p className="text-gray-400 text-xs font-medium tracking-wider uppercase mb-2">{stat.label}</p>
                         <h3 className={`text-3xl font-bebas tracking-wider ${stat.color} group-hover:scale-105 transition-transform origin-left`}>{stat.value}</h3>
                       </div>
@@ -270,7 +270,7 @@ const SuperAdminDashboard = () => {
                     <div className="lg:col-span-2 bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-6">
                       <div className="flex justify-between items-center mb-6">
                         <h3 className="font-medium text-lg">Active Projects</h3>
-                        <button className="text-sm text-blue-400 hover:text-blue-300">View All</button>
+                        <button className="text-sm text-white hover:text-white">View All</button>
                       </div>
                       <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
@@ -300,7 +300,7 @@ const SuperAdminDashboard = () => {
                     <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl p-6">
                       <h3 className="font-medium text-lg mb-6">Command Center</h3>
                       <div className="space-y-3">
-                        <button className="w-full bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 border border-blue-500/20 rounded-xl py-3 px-4 flex items-center justify-between transition-all group">
+                        <button className="w-full bg-white/ hover:bg-white/ text-white border border-white/20 rounded-xl py-3 px-4 flex items-center justify-between transition-all group">
                           <span className="font-medium text-sm">New Client</span>
                           <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
                         </button>
@@ -329,10 +329,10 @@ const SuperAdminDashboard = () => {
                         placeholder="Search clients..." 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-blue-500/50 text-white"
+                        className="w-full bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-white/50 text-white"
                       />
                     </div>
-                    <button className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] whitespace-nowrap flex items-center justify-center gap-2 text-sm">
+                    <button className="bg-white text-black hover:bg-white hover:text-black px-6 py-2.5 rounded-full font-medium transition-all hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] whitespace-nowrap flex items-center justify-center gap-2 text-sm">
                       <Plus className="w-4 h-4"/> Add Client
                     </button>
                   </div>
@@ -366,7 +366,7 @@ const SuperAdminDashboard = () => {
                               </td>
                               <td className="p-4 text-right">
                                 <div className="flex items-center justify-end gap-2">
-                                  <button className="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-xl transition-colors"><Edit2 className="w-4 h-4"/></button>
+                                  <button className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors"><Edit2 className="w-4 h-4"/></button>
                                   <button className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-colors"><Trash2 className="w-4 h-4"/></button>
                                 </div>
                               </td>
@@ -382,8 +382,8 @@ const SuperAdminDashboard = () => {
               {/* Placeholder for other tabs to keep component size manageable */}
               {['instagram', 'armenu', 'websites', 'subscriptions', 'analytics', 'settings'].includes(activeTab) && (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
-                  <div className="w-20 h-20 bg-blue-500/5 rounded-full border border-blue-500/10 flex items-center justify-center mb-6">
-                    <Cuboid className="w-10 h-10 text-blue-500/50" />
+                  <div className="w-20 h-20 bg-white/10 rounded-full border border-white/10 flex items-center justify-center mb-6">
+                    <Cuboid className="w-10 h-10 text-white/50" />
                   </div>
                   <h3 className="text-2xl font-bebas tracking-widest text-gray-300">{activeTab} MODULE</h3>
                   <p className="text-gray-500 max-w-md mt-4 text-sm">
@@ -409,10 +409,10 @@ const SuperAdminDashboard = () => {
             className={`fixed bottom-6 right-6 z-50 px-6 py-3 rounded-full border backdrop-blur-xl font-medium text-sm shadow-2xl flex items-center gap-3 ${
               toast.type === 'error' 
                 ? 'bg-red-500/10 border-red-500/20 text-red-400 shadow-[0_0_20px_rgba(239,68,68,0.2)]'
-                : 'bg-blue-500/10 border-blue-500/20 text-blue-400 shadow-[0_0_20px_rgba(59,130,246,0.2)]'
+                : 'bg-white/ border-white/20 text-white shadow-[0_0_20px_rgba(255,255,255,0.2)]'
             }`}
           >
-            <div className={`w-2 h-2 rounded-full ${toast.type === 'error' ? 'bg-red-500' : 'bg-blue-500'}`} />
+            <div className={`w-2 h-2 rounded-full ${toast.type === 'error' ? 'bg-red-500' : 'bg-white text-black'}`} />
             {toast.msg}
           </motion.div>
         )}
