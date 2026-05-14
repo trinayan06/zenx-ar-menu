@@ -33,11 +33,11 @@ export default function Navbar({ openModal }) {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
         className="fixed top-0 left-0 right-0 z-[100] w-full"
-        style={{ background: 'rgba(8,8,8,0.92)', backdropFilter: 'blur(12px)', height: '44px' }}
+        style={{ background: 'rgba(8,8,8,0.92)', backdropFilter: 'blur(12px)', height: '44px', display: 'flex', alignItems: 'center', padding: '0 24px' }}
       >
-        <div style={{ maxWidth: '980px' }} className="mx-auto px-6 h-[44px] flex items-center justify-between">
-          <a href="#" className="flex-shrink-0 relative z-[200]">
-            <img src="/logo.png" style={{ height: '22px' }} className="w-auto" alt="ZEN_X" />
+        <div style={{ maxWidth: '980px' }} className="mx-auto w-full flex items-center justify-between">
+          <a href="#" style={{ background: 'none', border: 'none', padding: 0 }} className="flex-shrink-0 relative z-[200]">
+            <img src="/logo.png" style={{ height: '32px', background: 'none', border: 'none', padding: 0 }} alt="ZEN_X" />
           </a>
 
           <motion.div
