@@ -30,7 +30,7 @@ export default function CTA({ openModal }) {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
           onClick={openModal}
-          className="bg-black text-white px-10 py-4 rounded-[2px] font-dm font-medium text-[16px] hover:bg-gray-dark transition-colors mb-6 shadow-xl"
+          className="bg-black text-white px-10 py-4 rounded-full font-dm font-medium text-[16px] hover:bg-gray-dark transition-colors mb-6 shadow-xl"
         >
           Start Free Trial
         </motion.button>

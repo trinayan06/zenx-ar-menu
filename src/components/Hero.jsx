@@ -53,13 +53,13 @@ export default function Hero({ openModal }) {
           <motion.div variants={itemVars} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 w-full">
             <button
               onClick={openModal}
-              className="w-full sm:w-auto bg-white text-black px-8 py-3 rounded-[2px] font-dm font-medium text-[15px] hover:bg-gray-200 transition-colors"
+              className="w-full sm:w-auto bg-white text-black px-8 py-3 rounded-full font-dm font-medium text-[15px] hover:bg-gray-200 transition-colors"
             >
               🚀 Start Free Trial
             </button>
             <a
               href="#services"
-              className="w-full sm:w-auto border border-white bg-transparent text-white px-8 py-3 rounded-[2px] font-dm font-medium text-[15px] hover:bg-white/10 transition-colors text-center"
+              className="w-full sm:w-auto border border-white bg-transparent text-white px-8 py-3 rounded-full font-dm font-medium text-[15px] hover:bg-white/10 transition-colors text-center"
             >
               ⚡ View Services
             </a>

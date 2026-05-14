@@ -61,7 +61,7 @@ export default function Navbar({ openModal }) {
           <div className="hidden md:block">
             <button
               onClick={openModal}
-              className="bg-white text-black font-dm font-medium text-[14px] px-6 py-2.5 rounded-[2px] transition-all hover:bg-gray-200"
+              className="bg-white text-black font-dm font-medium text-[14px] px-6 py-2.5 rounded-full transition-all hover:bg-gray-200"
             >
               Start Free Trial
             </button>
@@ -101,7 +101,7 @@ export default function Navbar({ openModal }) {
                   setMobileMenuOpen(false);
                   openModal();
                 }}
-                className="bg-white text-black px-8 py-4 rounded-[2px] font-dm font-medium mt-8 text-[16px]"
+                className="bg-white text-black px-8 py-4 rounded-full font-dm font-medium mt-8 text-[16px]"
               >
                 Start Free Trial
               </button>

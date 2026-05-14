@@ -52,7 +52,7 @@ export default function Pricing({ openModal }) {
       <div className="max-w-7xl mx-auto px-6">
         
         <div className="text-center mb-16">
-          <div className="inline-block border border-[#2A2A2A] rounded-[4px] px-6 py-2 bg-transparent mb-12">
+          <div className="inline-block border border-[#2A2A2A] rounded-[16px] px-6 py-2 bg-transparent mb-12">
             <span className="text-gray-light text-[13px] font-dm">
               🎁 15-Day Free Trial — No payment required · Cancel anytime
             </span>
@@ -68,7 +68,7 @@ export default function Pricing({ openModal }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
-              className={`flex flex-col rounded-[4px] overflow-hidden group transition-all duration-300 ${
+              className={`flex flex-col rounded-[16px] overflow-hidden group transition-all duration-300 ${
                 plan.bestValue 
                   ? 'bg-white border-none text-black relative z-10 md:scale-[1.04] shadow-2xl' 
                   : 'bg-[#111111] border border-[#2A2A2A] text-white hover:border-gray-mid'
@@ -117,7 +117,7 @@ export default function Pricing({ openModal }) {
                 
                 <button
                   onClick={openModal}
-                  className={`w-full py-3 px-6 rounded-[2px] font-dm font-medium text-[14px] transition-colors mt-auto ${
+                  className={`w-full py-3 px-6 rounded-full font-dm font-medium text-[14px] transition-colors mt-auto ${
                     plan.bestValue 
                       ? 'bg-black text-white hover:bg-gray-dark' 
                       : 'bg-white text-black hover:bg-gray-200'
@@ -138,7 +138,7 @@ export default function Pricing({ openModal }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="flex flex-col group overflow-hidden bg-[#111111] border border-[#2A2A2A] rounded-[4px] hover:border-gray-mid transition-colors"
+            className="flex flex-col group overflow-hidden bg-[#111111] border border-[#2A2A2A] rounded-[16px] hover:border-gray-mid transition-colors"
           >
             <div className="relative h-[160px] w-full overflow-hidden shrink-0">
               <img 
@@ -167,7 +167,7 @@ export default function Pricing({ openModal }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex flex-col group overflow-hidden bg-[#111111] border border-[#2A2A2A] rounded-[4px] hover:border-gray-mid transition-colors"
+            className="flex flex-col group overflow-hidden bg-[#111111] border border-[#2A2A2A] rounded-[16px] hover:border-gray-mid transition-colors"
           >
             <div className="relative h-[160px] w-full overflow-hidden shrink-0">
               <img 

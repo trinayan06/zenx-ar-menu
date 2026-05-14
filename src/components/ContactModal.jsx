@@ -49,7 +49,7 @@ export default function ContactModal({ isOpen, onClose }) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="relative bg-[#111111] border border-[#2A2A2A] rounded-[4px] w-full max-w-[480px] p-10 z-10"
+            className="relative bg-[#111111] border border-[#2A2A2A] rounded-[24px] w-full max-w-[480px] p-10 z-10"
           >
             <button
               onClick={onClose}
@@ -131,7 +131,7 @@ export default function ContactModal({ isOpen, onClose }) {
               <div className="pt-4">
                 <button
                   type="submit"
-                  className="w-full bg-white text-black py-[14px] rounded-[2px] font-dm font-medium text-[15px] hover:bg-gray-200 transition-colors"
+                  className="w-full bg-white text-black py-[14px] rounded-full font-dm font-medium text-[15px] hover:bg-gray-200 transition-colors"
                 >
                   Start Free Trial
                 </button>

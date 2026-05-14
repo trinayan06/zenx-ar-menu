@@ -65,7 +65,7 @@ export default function WhyUs() {
                 style={{ 
                   background: 'rgba(0,0,0,0.5)', 
                   border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '4px',
+                  borderRadius: '16px',
                   backdropFilter: 'blur(10px)'
                 }}
                 onMouseEnter={(e) => {

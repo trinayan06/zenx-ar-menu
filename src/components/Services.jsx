@@ -95,7 +95,7 @@ export default function Services({ openModal }) {
                 style={{ 
                   background: 'rgba(255,255,255,0.04)', 
                   border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '4px',
+                  borderRadius: '16px',
                   backdropFilter: 'blur(10px)'
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'}

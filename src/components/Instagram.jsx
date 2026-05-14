@@ -56,7 +56,7 @@ export default function Instagram() {
           href="https://www.instagram.com/zen_x_2026"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center px-8 py-3 border border-white text-white rounded-[2px] font-dm font-medium text-[14px] hover:bg-white hover:text-black transition-all"
+          className="inline-flex items-center px-8 py-3 border border-white text-white rounded-full font-dm font-medium text-[14px] hover:bg-white hover:text-black transition-all"
         >
           Follow @zen_x_2026 →
         </motion.a>

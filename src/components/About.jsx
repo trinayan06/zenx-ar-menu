@@ -30,7 +30,7 @@ export default function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
-              className="bg-[#111111] border border-[#2A2A2A] rounded-[4px] flex flex-col group overflow-hidden transition-colors duration-300 hover:border-white text-center"
+              className="bg-[#111111] border border-[#2A2A2A] rounded-[16px] flex flex-col group overflow-hidden transition-colors duration-300 hover:border-white text-center"
             >
               <div className="relative h-[240px] w-full overflow-hidden shrink-0">
                 <img 
@@ -68,7 +68,7 @@ export default function About() {
             href="https://www.instagram.com/zen_x_2026"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-8 py-3 border border-white text-white rounded-[2px] font-dm font-medium text-[14px] hover:bg-white hover:text-black transition-all"
+            className="inline-flex items-center px-8 py-3 border border-white text-white rounded-full font-dm font-medium text-[14px] hover:bg-white hover:text-black transition-all"
           >
             <Instagram size={18} className="mr-2" />
             Follow @zen_x_2026

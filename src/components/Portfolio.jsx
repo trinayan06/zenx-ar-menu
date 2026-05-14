@@ -84,7 +84,7 @@ export default function Portfolio({ openModal }) {
                   background: 'rgba(0,0,0,0.6)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   backdropFilter: 'blur(12px)',
-                  borderRadius: '4px'
+                  borderRadius: '16px'
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'}
                 onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
