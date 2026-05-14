@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  LayoutDashboard, Users, Instagram, Cuboid, Monitor, 
+  LayoutDashboard, Users, Camera, Cuboid, Monitor, 
   CreditCard, BarChart3, Settings, LogOut, Search, Plus, 
   MoreVertical, Edit2, Trash2, Eye, ShieldAlert,
   Menu, X, Lock
