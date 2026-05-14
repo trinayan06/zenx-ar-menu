@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZEN_X — Digital Solutions for Businesses</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <style>
+    /* DESIGN SYSTEM */
+    :root {
+      --black: #000000;
+      --black-1: #0a0a0a;
+      --black-2: #111111;
+      --black-3: #1a1a1a;
+      --red: #CC0000;
+      --red-hover: #e60000;
+      --white: #ffffff;
+      --white-60: rgba(255,255,255,0.6);
+      --white-30: rgba(255,255,255,0.3);
+      --white-10: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.08);
+      --border-red: rgba(204,0,0,0.3);
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius: 12px;
+      --radius-lg: 20px;
+      --transition: 0.3s ease;
+    }
+
+    /* GLOBAL RESET */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1,h2,h3,h4 { font-family: 'Syne', sans-serif; line-height: 1.1; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+    button { font-family: 'DM Sans', sans-serif; cursor: pointer; }
+    section { padding: 100px 6%; }
+    @media(max-width:768px) { section { padding: 60px 5%; } }
+
+    /* SCROLL REVEAL CSS */
+    .reveal-el {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal-el.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 1 - NAVBAR */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 6%;
+      height: 70px;
+      background: rgba(0,0,0,0);
+      border-bottom: 1px solid transparent;
+      transition: all 0.4s ease;
+    }
+    #navbar.scrolled {
+      background: rgba(0,0,0,0.95);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-logo img { height: 38px; width: auto; }
+    .nav-links {
+      display: flex; align-items: center; gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: rgba(255,255,255,0.65);
+      font-size: 14px; font-weight: 500;
+      transition: color 0.3s;
+      letter-spacing: 0.02em;
+    }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta {
+      background: #CC0000; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 10px 22px;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.03em;
+      transition: all 0.3s;
+    }
+    .nav-cta:hover { background: #e60000; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(204,0,0,0.35); }
+    .hamburger {
+      display: none; flex-direction: column;
+      gap: 5px; background: none; border: none; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 1.5px;
+      background: #fff; transition: all 0.3s;
+    }
+    .mobile-nav {
+      display: none; position: fixed; inset: 0;
+      background: #000; z-index: 9999;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 32px;
+    }
+    .mobile-nav.open { display: flex !important; }
+    .mobile-nav ul { list-style: none; text-align: center; display: flex; flex-direction: column; gap: 28px; }
+    .mobile-nav a { font-size: 28px; font-weight: 700; font-family: 'Syne', sans-serif; color: #fff; transition: color 0.3s; }
+    .mobile-nav a:hover { color: #CC0000; }
+    .mobile-nav-close {
+      position: absolute; top: 24px; right: 24px;
+      background: none; border: none; color: #fff;
+      font-size: 24px; cursor: pointer;
+    }
+    .mobile-cta {
+      background: #CC0000; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 14px 36px; font-size: 16px; font-weight: 700;
+      margin-top: 8px;
+    }
+    @media(max-width:768px) {
+      .nav-links, .nav-cta { display: none !important; }
+      .hamburger { display: flex !important; }
+      #navbar { padding: 0 5%; }
+    }
+
+    /* 2 - HERO SECTION */
+    #hero {
+      position: relative; overflow: hidden;
+      min-height: 100svh; padding: 0 6%;
+      display: flex; align-items: center;
+      background: #000;
+    }
+    .hero-video-wrap {
+      position: absolute; inset: 0; z-index: 0;
+    }
+    #hero-video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.4);
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.3) 100%);
+    }
+    .hero-content {
+      position: relative; z-index: 1;
+      max-width: 620px;
+      padding-top: 70px;
+    }
+    .hero-tag {
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.6);
+      font-size: 12px; font-weight: 500;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 7px 16px; border-radius: 4px;
+      margin-bottom: 24px;
+    }
+    #hero h1 {
+      font-size: clamp(42px, 6vw, 80px);
+      font-weight: 800; color: #fff;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+    .red-text { color: #CC0000; }
+    #hero p {
+      font-size: 17px; color: rgba(255,255,255,0.6);
+      max-width: 480px; margin-bottom: 36px;
+      line-height: 1.7;
+    }
+    .hero-btns {
+      display: flex; gap: 14px; flex-wrap: wrap;
+      margin-bottom: 52px;
+    }
+    .btn-red {
+      background: #CC0000; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 14px 28px; font-size: 15px; font-weight: 600;
+      transition: all 0.3s;
+    }
+    .btn-red:hover { background: #e60000; transform: translateY(-2px); box-shadow: 0 8px 30px rgba(204,0,0,0.4); }
+    .btn-ghost {
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.7);
+      border-radius: 8px; padding: 14px 28px;
+      font-size: 15px; font-weight: 500;
+      transition: all 0.3s; display: inline-flex; align-items: center;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.5); color: #fff; }
+    .hero-stats {
+      display: flex; align-items: center; gap: 28px;
+    }
+    .stat { display: flex; flex-direction: column; gap: 4px; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px; font-weight: 800; color: #fff;
+    }
+    .stat-label { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 0.5px; }
+    .stat-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.1); }
+    @media(max-width:768px) {
+      #hero-video { display: none; }
+      .hero-overlay { background: rgba(0,0,0,0.7); }
+      #hero { padding: 120px 5% 60px; min-height: 100svh; background: linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=800&q=60') center/cover; }
+      .hero-content { max-width: 100%; }
+      #hero h1 { font-size: clamp(36px, 9vw, 52px); }
+      #hero p { font-size: 15px; }
+      .hero-btns { flex-direction: column; }
+      .btn-red, .btn-ghost { width: 100%; text-align: center; justify-content: center; }
+      .hero-stats { gap: 20px; }
+      .stat-num { font-size: 22px; }
+    }
+
+    /* 3 - TICKER */
+    .ticker-wrap {
+      background: #CC0000; overflow: hidden;
+      padding: 13px 0; white-space: nowrap;
+    }
+    .ticker-track {
+      display: inline-block;
+      animation: ticker 30s linear infinite;
+    }
+    .ticker-track span {
+      color: #fff; font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; margin: 0 18px;
+    }
+    .ticker-track .dot { color: rgba(255,255,255,0.5); margin: 0 4px; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .ticker-wrap:hover .ticker-track { animation-play-state: paused; }
+
+    /* 4 - SERVICES SECTION */
+    #services { background: #0a0a0a; }
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-tag {
+      display: inline-block; color: #CC0000;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .section-header h2 { font-size: clamp(32px, 4vw, 48px); color: #fff; margin-bottom: 14px; }
+    .section-header p { color: rgba(255,255,255,0.5); font-size: 16px; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 1000px; margin: 0 auto;
+    }
+    .service-card {
+      background: #111; border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+      display: flex; flex-direction: column;
+    }
+    .service-card:hover { border-color: rgba(204,0,0,0.4); transform: translateY(-6px); }
+    .service-img { height: 200px; overflow: hidden; }
+    .service-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; filter: brightness(0.85); }
+    .service-card:hover .service-img img { transform: scale(1.05); filter: brightness(1); }
+    .service-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .service-badge {
+      display: inline-block; background: #CC0000; color: #fff;
+      font-size: 10px; font-weight: 700; letter-spacing: 1px;
+      padding: 3px 10px; border-radius: 4px; margin-bottom: 12px;
+    }
+    .service-body h3 { color: #fff; font-size: 20px; margin-bottom: 16px; transition: color 0.3s; }
+    .service-card:hover h3 { color: #CC0000; }
+    .service-body ul { list-style: none; flex: 1; margin-bottom: 20px; }
+    .service-body li {
+      color: rgba(255,255,255,0.5); font-size: 14px;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .service-body li::before { content: '✓'; color: #CC0000; font-weight: 700; flex-shrink: 0; }
+    .service-btn {
+      background: transparent; border: 1px solid rgba(204,0,0,0.4);
+      color: #CC0000; border-radius: 8px;
+      padding: 10px 20px; font-size: 14px; font-weight: 600;
+      transition: all 0.3s; align-self: flex-start;
+    }
+    .service-btn:hover { background: #CC0000; color: #fff; border-color: #CC0000; }
+    @media(max-width:768px) {
+      .services-grid { grid-template-columns: 1fr; gap: 16px; }
+      .service-img { height: 180px; }
+    }
+
+    /* 5 - HOW IT WORKS */
+    #how-it-works { background: #000; }
+    .process-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 2px; max-width: 1100px; margin: 0 auto;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; overflow: hidden;
+    }
+    .process-card {
+      background: #0a0a0a; padding: 36px 28px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.3s;
+    }
+    .process-card:last-child { border-right: none; }
+    .process-card:hover { background: #111; }
+    .process-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 42px; font-weight: 800;
+      color: rgba(204,0,0,0.2);
+      margin-bottom: 20px;
+      line-height: 1;
+      transition: color 0.3s;
+    }
+    .process-card:hover .process-num { color: rgba(204,0,0,0.5); }
+    .process-card h3 { color: #fff; font-size: 17px; margin-bottom: 12px; }
+    .process-card p { color: rgba(255,255,255,0.45); font-size: 14px; line-height: 1.6; }
+    @media(max-width:768px) {
+      .process-grid { grid-template-columns: 1fr 1fr; }
+      .process-card { padding: 24px 20px; border-right: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); }
+      .process-num { font-size: 32px; }
+    }
+    @media(max-width:480px) {
+      .process-grid { grid-template-columns: 1fr; }
+    }
+
+    /* 6 - PRICING */
+    #pricing { background: #0a0a0a; }
+    .pricing-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 20px; max-width: 960px; margin: 0 auto 40px;
+    }
+    .pricing-card {
+      background: #111; border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; padding: 32px 28px;
+      display: flex; flex-direction: column;
+      position: relative; transition: all 0.3s;
+    }
+    .pricing-card:hover { border-color: rgba(204,0,0,0.3); transform: translateY(-4px); }
+    .pricing-card.featured { border-color: rgba(204,0,0,0.4); box-shadow: 0 0 40px rgba(204,0,0,0.1); }
+    .featured-label {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: #CC0000; color: #fff;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      padding: 4px 16px; border-radius: 20px;
+    }
+    .pricing-top { margin-bottom: 24px; }
+    .pricing-card h3 { color: #fff; font-size: 20px; margin-bottom: 10px; }
+    .price { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: #CC0000; }
+    .price span { font-size: 14px; color: rgba(255,255,255,0.35); font-family: 'DM Sans', sans-serif; font-weight: 400; }
+    .pricing-card ul { list-style: none; flex: 1; margin-bottom: 24px; }
+    .pricing-card li {
+      color: rgba(255,255,255,0.55); font-size: 14px;
+      padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .pricing-card li::before { content: '✓'; color: #CC0000; font-weight: 700; flex-shrink: 0; }
+    .pricing-btn {
+      width: 100%; padding: 13px;
+      background: transparent; border: 1px solid rgba(204,0,0,0.4);
+      color: #CC0000; border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      transition: all 0.3s;
+    }
+    .pricing-btn:hover, .featured-btn {
+      background: #CC0000; color: #fff; border-color: #CC0000;
+    }
+    .ar-pricing {
+      max-width: 700px; margin: 0 auto;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; overflow: hidden;
+      background: #111;
+    }
+    .ar-price-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 28px;
+    }
+    .ar-price-item h4 { color: #fff; font-size: 16px; margin-bottom: 4px; }
+    .ar-price-item p { color: rgba(255,255,255,0.4); font-size: 13px; }
+    .ar-price-num { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: #CC0000; white-space: nowrap; }
+    .ar-price-num span { font-size: 13px; color: rgba(255,255,255,0.35); font-family: 'DM Sans'; font-weight: 400; }
+    .ar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 0 28px; }
+    @media(max-width:768px) {
+      .pricing-grid { grid-template-columns: 1fr; gap: 16px; }
+      .ar-price-item { flex-direction: column; align-items: flex-start; gap: 10px; padding: 20px; }
+    }
+
+    /* 7 - WHY CHOOSE US */
+    #why-us { background: #000; }
+    .why-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; overflow: hidden;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .why-card {
+      background: #0a0a0a; padding: 36px 28px;
+      transition: background 0.3s;
+    }
+    .why-card:hover { background: #111; }
+    .why-icon { font-size: 32px; margin-bottom: 20px; display: block; }
+    .why-card h3 { color: #fff; font-size: 18px; margin-bottom: 12px; }
+    .why-card p { color: rgba(255,255,255,0.45); font-size: 14px; line-height: 1.6; }
+    @media(max-width:768px) {
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .why-card { padding: 24px 20px; }
+    }
+    @media(max-width:480px) {
+      .why-grid { grid-template-columns: 1fr; }
+    }
+
+    /* 8 - ABOUT / FOUNDERS */
+    #about-us { background: #0a0a0a; }
+    .founders-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 16px; max-width: 960px; margin: 0 auto;
+    }
+    .founder-card {
+      background: #111; border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px; padding: 32px 20px;
+      text-align: center; transition: all 0.3s;
+    }
+    .founder-card:hover { border-color: rgba(204,0,0,0.3); transform: translateY(-4px); }
+    .founder-emoji { font-size: 40px; margin-bottom: 16px; display: block; }
+    .founder-card h3 { color: #fff; font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .founder-role { color: #CC0000; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    @media(max-width:768px) {
+      .founders-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .founder-card { padding: 24px 16px; }
+      .founder-emoji { font-size: 32px; }
+    }
+
+    /* 9 - FAQ */
+    #faq { background: #000; }
+    .faq-item { border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .faq-q {
+      width: 100%; background: none; border: none; color: #fff;
+      font-size: 16px; font-weight: 500;
+      padding: 22px 0; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; text-align: left;
+      transition: color 0.3s;
+    }
+    .faq-q:hover { color: #CC0000; }
+    .faq-icon {
+      color: #CC0000; font-size: 22px; font-weight: 300;
+      flex-shrink: 0; transition: transform 0.3s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-item.open .faq-q { color: #CC0000; }
+    .faq-a {
+      display: none; color: rgba(255,255,255,0.5);
+      font-size: 15px; line-height: 1.7;
+      padding-bottom: 22px;
+    }
+    .faq-item.open .faq-a { display: block; }
+
+    /* 10 - CONTACT CTA */
+    #contact { background: #0a0a0a; text-align: center; }
+    .cta-box { max-width: 600px; margin: 0 auto; }
+    .cta-box h2 { font-size: clamp(32px,5vw,52px); color: #fff; margin-bottom: 16px; }
+    .cta-box p { color: rgba(255,255,255,0.5); font-size: 16px; margin-bottom: 36px; }
+    .contact-links {
+      display: flex; justify-content: center; gap: 24px;
+      margin-top: 28px; flex-wrap: wrap;
+    }
+    .contact-links a {
+      color: rgba(255,255,255,0.4); font-size: 14px;
+      transition: color 0.3s;
+    }
+    .contact-links a:hover { color: #fff; }
+
+    /* 11 - FOOTER */
+    footer { background: #000; border-top: 1px solid rgba(255,255,255,0.06); padding: 48px 6% 28px; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; margin-bottom: 40px; flex-wrap: wrap; }
+    .footer-links { display: flex; gap: 28px; flex-wrap: wrap; align-items: center; }
+    .footer-links a { color: rgba(255,255,255,0.4); font-size: 14px; transition: color 0.3s; }
+    .footer-links a:hover { color: #fff; }
+    .footer-bottom { display: flex; justify-content: space-between; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; gap: 8px; }
+    .footer-bottom span { color: rgba(255,255,255,0.25); font-size: 12px; }
+    @media(max-width:768px) { .footer-inner { flex-direction: column; } .footer-bottom { flex-direction: column; } }
+
+    /* 14 - FLOATING BUTTONS */
+    #whatsapp-btn {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      background: #25D366; color: #fff;
+      padding: 12px 20px; border-radius: 50px;
+      font-weight: 600; font-size: 14px;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+      transition: all 0.3s;
+    }
+    #whatsapp-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,211,102,0.4); }
+    #scroll-top {
+      position: fixed; bottom: 80px; left: 24px; z-index: 999;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: #CC0000; color: #fff; border: none;
+      font-size: 18px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 16px rgba(204,0,0,0.3);
+      transition: all 0.3s;
+    }
+    #scroll-top:hover { transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+
+  <!-- 1 — NAVBAR -->
+  <nav id="navbar">
+    <a href="/" class="nav-logo">
+      <img src="./logo.png" alt="ZEN_X" height="38"/>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#how-it-works">Process</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#about-us">About</a></li>
+    </ul>
+    <button class="nav-cta" onclick="openLeadModal()">Start Free Trial</button>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-nav" id="mobile-nav">
+    <button class="mobile-nav-close" id="mobile-close">✕</button>
+    <ul>
+      <li><a href="#services" class="mobile-link">Services</a></li>
+      <li><a href="#how-it-works" class="mobile-link">Process</a></li>
+      <li><a href="#pricing" class="mobile-link">Pricing</a></li>
+      <li><a href="#about-us" class="mobile-link">About</a></li>
+    </ul>
+    <button class="mobile-cta" onclick="openLeadModal();closeMobileNav()">🚀 Start Free Trial</button>
+  </div>
+
+  <!-- 2 — HERO SECTION -->
+  <section id="hero">
+    <div class="hero-video-wrap">
+      <video autoplay muted loop playsinline id="hero-video">
+        <source src="./bg-vid.mp4" type="video/mp4"/>
+      </video>
+      <div class="hero-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-tag">Digital Growth Partner</div>
+      <h1>We Build Your<br/><span class="red-text">Digital Future.</span></h1>
+      <p>Instagram management, websites, AR menus and smart automation — for businesses ready to grow.</p>
+      <div class="hero-btns">
+        <button class="btn-red" onclick="openLeadModal()">Start Free Trial →</button>
+        <a href="#services" class="btn-ghost">See Services</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num" data-target="10" data-suffix="+">0+</span><span class="stat-label">Businesses Served</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" data-target="15" data-suffix="+">0+</span><span class="stat-label">Days Free Trial</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" data-target="24" data-suffix="h">0h</span><span class="stat-label">Response Time</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 — TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <span>INSTAGRAM GROWTH</span><span class="dot">•</span>
+      <span>AR MENU SYSTEM</span><span class="dot">•</span>
+      <span>WEBSITE DEVELOPMENT</span><span class="dot">•</span>
+      <span>DIGITAL GROWTH</span><span class="dot">•</span>
+      <span>AI AUTOMATION</span><span class="dot">•</span>
+      <span>SOCIAL MEDIA</span><span class="dot">•</span>
+      <span>INSTAGRAM GROWTH</span><span class="dot">•</span>
+      <span>AR MENU SYSTEM</span><span class="dot">•</span>
+      <span>WEBSITE DEVELOPMENT</span><span class="dot">•</span>
+      <span>DIGITAL GROWTH</span><span class="dot">•</span>
+      <span>AI AUTOMATION</span><span class="dot">•</span>
+      <span>SOCIAL MEDIA</span><span class="dot">•</span>
+    </div>
+  </div>
+
+  <!-- 4 — SERVICES SECTION -->
+  <section id="services">
+    <div class="section-header">
+      <span class="section-tag">OUR EXPERTISE</span>
+      <h2>What We <span class="red-text">Provide</span></h2>
+      <p>End-to-end digital solutions tailored for growing businesses.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-img"><img src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=600&q=80" alt="Instagram" loading="lazy"/></div>
+        <div class="service-body">
+          <div class="service-badge">🔥 Most Popular</div>
+          <h3>Instagram Handling</h3>
+          <ul><li>Content creation & scheduling</li><li>Reels & posts production</li><li>Growth strategy & hashtag research</li><li>Community management</li></ul>
+          <button class="service-btn" onclick="openLeadModal('Instagram Handling')">Get Quote →</button>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-img"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80" alt="AR Menu" loading="lazy"/></div>
+        <div class="service-body">
+          <h3>AR Menu System</h3>
+          <ul><li>3D food experience for restaurants</li><li>QR-based interactive menu</li><li>Realistic dish visualization</li><li>Boost orders by 35%</li></ul>
+          <button class="service-btn" onclick="openLeadModal('AR Menu System')">Get Quote →</button>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-img"><img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80" alt="Website" loading="lazy"/></div>
+        <div class="service-body">
+          <h3>Website Development</h3>
+          <ul><li>Business websites & portfolios</li><li>Landing pages & funnels</li><li>Mobile responsive design</li><li>SEO optimized</li></ul>
+          <button class="service-btn" onclick="openLeadModal('Website Development')">Get Quote →</button>
+        </div>
+      </div>
+      <div class="service-card">
+        <div class="service-img"><img src="https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=600&q=80" alt="Growth" loading="lazy"/></div>
+        <div class="service-body">
+          <h3>Digital Growth</h3>
+          <ul><li>Brand identity & strategy</li><li>Online presence management</li><li>Competitor analysis</li><li>Performance tracking</li></ul>
+          <button class="service-btn" onclick="openLeadModal('Digital Growth')">Get Quote →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 — HOW IT WORKS -->
+  <section id="how-it-works">
+    <div class="section-header">
+      <span class="section-tag">THE PROCESS</span>
+      <h2>How It <span class="red-text">Works</span></h2>
+      <p>Simple steps to accelerate your business growth.</p>
+    </div>
+    <div class="process-grid">
+      <div class="process-card">
+        <div class="process-num">01</div>
+        <h3>We Understand Your Business</h3>
+        <p>Deep dive into your goals, audience, and competition to craft a custom strategy.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-num">02</div>
+        <h3>We Plan Your Strategy</h3>
+        <p>Build a content calendar, design templates, and map out your growth roadmap.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-num">03</div>
+        <h3>We Execute & Manage</h3>
+        <p>We handle everything — posting, engagement, analytics, and optimization.</p>
+      </div>
+      <div class="process-card">
+        <div class="process-num">04</div>
+        <h3>You Get Growth</h3>
+        <p>Watch your followers, reach, and revenue grow while you focus on your business.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 — PRICING -->
+  <section id="pricing">
+    <div class="section-header">
+      <span class="section-tag">PRICING</span>
+      <h2>Simple <span class="red-text">Pricing</span></h2>
+      <p>Transparent pricing — no hidden charges. First 15 days free.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-top">
+          <h3>Basic</h3>
+          <div class="price">₹3,000<span>/mo</span></div>
+        </div>
+        <ul>
+          <li>12 posts per month</li>
+          <li>Basic photo editing</li>
+          <li>Captions & hashtags</li>
+          <li>Stories 3x per week</li>
+          <li>Comment replies</li>
+        </ul>
+        <button class="pricing-btn" onclick="openLeadModal('Instagram Basic')">Start Free Trial</button>
+      </div>
+      <div class="pricing-card featured">
+        <div class="featured-label">BEST VALUE</div>
+        <div class="pricing-top">
+          <h3>Standard</h3>
+          <div class="price">₹5,000<span>/mo</span></div>
+        </div>
+        <ul>
+          <li>20 posts per month</li>
+          <li>Professional editing</li>
+          <li>4 reels per month</li>
+          <li>Daily stories</li>
+          <li>Hashtag research</li>
+          <li>Monthly report</li>
+        </ul>
+        <button class="pricing-btn featured-btn" onclick="openLeadModal('Instagram Standard')">Start Free Trial</button>
+      </div>
+      <div class="pricing-card">
+        <div class="pricing-top">
+          <h3>Premium</h3>
+          <div class="price">₹8,000<span>/mo</span></div>
+        </div>
+        <ul>
+          <li>Daily posts</li>
+          <li>8 reels per month</li>
+          <li>Ad management</li>
+          <li>Competitor analysis</li>
+          <li>Weekly reports</li>
+          <li>FREE AR Menu included</li>
+        </ul>
+        <button class="pricing-btn" onclick="openLeadModal('Instagram Premium')">Start Free Trial</button>
+      </div>
+    </div>
+    <div class="ar-pricing">
+      <div class="ar-price-item">
+        <div>
+          <h4>AR Menu — Monthly</h4>
+          <p>Full AR system, QR codes, unlimited dishes</p>
+        </div>
+        <div class="ar-price-num">₹1,200<span>/mo</span></div>
+      </div>
+      <div class="ar-divider"></div>
+      <div class="ar-price-item">
+        <div>
+          <h4>Per 3D Dish Model</h4>
+          <p>One-time setup per dish</p>
+        </div>
+        <div class="ar-price-num">₹100<span>/dish</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 — WHY CHOOSE US -->
+  <section id="why-us">
+    <div class="section-header">
+      <span class="section-tag">THE ZEN_X DIFFERENCE</span>
+      <h2>Why Choose <span class="red-text">Us</span></h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">💰</div>
+        <h3>Affordable for All</h3>
+        <p>Premium quality at prices small businesses can actually afford. Plans from ₹999.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">📈</div>
+        <h3>Real Growth Focus</h3>
+        <p>We don't just post — we strategize, analyze, and optimize for actual results.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">⚡</div>
+        <h3>Fast Execution</h3>
+        <p>Get started within 24 hours. No long onboarding — results from day one.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🤝</div>
+        <h3>Founder Direct</h3>
+        <p>You work directly with the founders — not interns or junior employees.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 — ABOUT / FOUNDERS -->
+  <section id="about-us">
+    <div class="section-header">
+      <span class="section-tag">WHO WE ARE</span>
+      <h2>Built by <span class="red-text">Innovators</span></h2>
+      <p>ZEN_X is a team of young innovators from India — helping businesses grow digitally at prices they can afford.</p>
+    </div>
+    <div class="founders-grid">
+      <div class="founder-card">
+        <div class="founder-emoji">👑</div>
+        <h3>Trinayan Mahanta</h3>
+        <div class="founder-role">CEO & Co-Founder</div>
+      </div>
+      <div class="founder-card">
+        <div class="founder-emoji">💻</div>
+        <h3>Snehangshu Das</h3>
+        <div class="founder-role">Tech Lead & Co-Founder</div>
+      </div>
+      <div class="founder-card">
+        <div class="founder-emoji">🎨</div>
+        <h3>Mannat Sahu</h3>
+        <div class="founder-role">Design Lead & Co-Founder</div>
+      </div>
+      <div class="founder-card">
+        <div class="founder-emoji">📈</div>
+        <h3>Aditya Pragyan</h3>
+        <div class="founder-role">Marketing Lead & Co-Founder</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 — FAQ -->
+  <section id="faq">
+    <div class="section-header">
+      <span class="section-tag">FAQ</span>
+      <h2>Common <span class="red-text">Questions</span></h2>
+    </div>
+    <div class="faq-list" style="max-width:720px;margin:0 auto">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>Why choose ZEN_X over agencies?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a">We give personal attention, faster delivery, and better prices. You work directly with the founders — not junior staff.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>How long does it take to start?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a">Instagram setup in 24 hours. Websites in 3–7 days. AR Menu in 2–3 days. We move fast.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>Is the 15-day trial really free?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a">100% free. No credit card required. No contracts. Cancel anytime before the trial ends.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>Do you provide support after delivery?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a">Yes — all monthly plans include ongoing support and updates. One-time projects get 30 days free support.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>What if I don't have content ready?</span><span class="faq-icon">+</span></button>
+        <div class="faq-a">No problem — we create everything for you. Just tell us about your business and we handle the rest.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 — CONTACT CTA -->
+  <section id="contact">
+    <div class="cta-box">
+      <span class="section-tag">GET STARTED</span>
+      <h2>Ready to <span class="red-text">Grow?</span></h2>
+      <p>Join businesses already scaling with ZEN_X. First 15 days completely free.</p>
+      <button class="btn-red" onclick="openLeadModal()" style="font-size:16px;padding:16px 36px">🚀 Start Free Trial</button>
+      <div class="contact-links">
+        <a href="https://wa.me/919864119506" target="_blank">💬 WhatsApp Us</a>
+        <a href="https://www.instagram.com/zen_x_2026" target="_blank">📸 @zen_x_2026</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 — FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <img src="./logo.png" alt="ZEN_X" height="32" style="margin-bottom:12px"/>
+        <p style="color:rgba(255,255,255,0.3);font-size:13px;max-width:260px">Digital solutions for businesses ready to grow.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#services">Services</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#about-us">About</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://www.instagram.com/zen_x_2026" target="_blank">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 ZEN_X. All rights reserved.</span>
+      <span>Built by Team ZEN_X — Hyderabad, India</span>
+    </div>
+  </footer>
+
+  <!-- 14 — FLOATING BUTTONS -->
+  <a href="https://wa.me/919864119506" target="_blank" id="whatsapp-btn">💬 WhatsApp</a>
+  <button id="scroll-top" style="display:none">↑</button>
+
+  <!-- LEAD CAPTURE MODAL -->
+  <div id="leadModal" style="display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;padding:20px">
+    <!-- Backdrop -->
+    <div onclick="closeLeadModal()" style="position:absolute;inset:0;background:rgba(0,0,0,0.92);backdrop-filter:blur(8px)"></div>
+
+    <!-- Modal Box -->
+    <div class="premium-modal-box" style="position:relative;z-index:1;width:100%;max-width:460px;background:#0a0a0a;border:1px solid rgba(204,0,0,0.3);border-radius:20px;overflow:hidden;box-shadow:0 0 80px rgba(204,0,0,0.15),0 40px 80px rgba(0,0,0,0.8);transform:translateY(20px);opacity:0;transition:all 0.35s cubic-bezier(0.16,1,0.3,1)">
+
+      <!-- Red top line -->
+      <div style="height:2px;background:linear-gradient(to right,transparent,#CC0000,transparent)"></div>
+
+      <!-- Header -->
+      <div style="padding:36px 36px 0;text-align:center;position:relative">
+        <!-- Close button -->
+        <button onclick="closeLeadModal()" style="position:absolute;top:20px;right:20px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s" onmouseover="this.style.borderColor='rgba(204,0,0,0.5)';this.style.color='#CC0000'" onmouseout="this.style.borderColor='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.5)'">✕</button>
+
+        <!-- Logo -->
+        <div style="width:56px;height:56px;border-radius:12px;background:#111;border:1px solid rgba(204,0,0,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;overflow:hidden">
+          <img src="./logo.png" alt="ZEN_X" style="width:40px;height:40px;object-fit:contain"/>
+        </div>
+
+        <!-- Title -->
+        <h2 style="color:white;font-size:24px;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em;font-family:'Syne',sans-serif">Get Started with <span style="color:#CC0000">ZEN_X</span></h2>
+        <p style="color:rgba(255,255,255,0.4);font-size:13px;line-height:1.6;margin-bottom:4px">Enter your details and we'll get your digital growth started within 24 hours.</p>
+
+        <!-- Trust badges -->
+        <div style="display:flex;justify-content:center;gap:16px;margin-top:14px;margin-bottom:4px;flex-wrap:wrap">
+          <span style="color:rgba(255,255,255,0.3);font-size:11px;display:flex;align-items:center;gap:4px"><span style="color:#CC0000">✓</span> 15-day free trial</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:11px;display:flex;align-items:center;gap:4px"><span style="color:#CC0000">✓</span> No credit card</span>
+          <span style="color:rgba(255,255,255,0.3);font-size:11px;display:flex;align-items:center;gap:4px"><span style="color:#CC0000">✓</span> Cancel anytime</span>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div style="height:1px;background:rgba(255,255,255,0.04);margin:24px 0 0"></div>
+
+      <!-- Form -->
+      <form id="lead-form" onsubmit="return handleLeadSubmit(event)" style="padding:28px 36px 36px">
+        <div style="display:flex;flex-direction:column;gap:16px">
+
+          <!-- Business Name -->
+          <div>
+            <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Business Name</label>
+            <input type="text" id="lead-name" placeholder="e.g. My Restaurant" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
+          </div>
+
+          <!-- Owner Name -->
+          <div>
+            <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Your Name</label>
+            <input type="text" id="lead-owner" placeholder="e.g. Rahul Sharma" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
+          </div>
+
+          <!-- Phone -->
+          <div>
+            <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Phone Number</label>
+            <input type="tel" id="lead-phone" placeholder="+91 98765 43210" required style="width:100%;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:14px 16px;color:white;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:all 0.3s;caret-color:#CC0000" onfocus="this.style.borderColor='rgba(204,0,0,0.5)';this.style.boxShadow='0 0 0 3px rgba(204,0,0,0.08)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)';this.style.boxShadow='none'"/>
+          </div>
+
+          <!-- Service selector -->
+          <div>
+            <label style="color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px">Interested In</label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="service-selector">
+              <button type="button" onclick="selectService(this)" data-service="instagram" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">📸 Instagram</button>
+              <button type="button" onclick="selectService(this)" data-service="ar-menu" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">🥽 AR Menu</button>
+              <button type="button" onclick="selectService(this)" data-service="website" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">💻 Website</button>
+              <button type="button" onclick="selectService(this)" data-service="digital-growth" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">📈 Growth</button>
+              <button type="button" onclick="selectService(this)" data-service="ai-bots" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">🤖 AI Bots</button>
+              <button type="button" onclick="selectService(this)" data-service="all" style="background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;text-align:left">⚡ Full Bundle</button>
+            </div>
+            <input type="hidden" id="lead-service" value=""/>
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" id="lead-submit-btn" style="width:100%;background:#CC0000;color:white;border:none;border-radius:10px;padding:16px;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.3s;margin-top:4px;position:relative;overflow:hidden" onmouseover="this.style.background='#FF0000';this.style.boxShadow='0 8px 30px rgba(204,0,0,0.4)';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='#CC0000';this.style.boxShadow='none';this.style.transform='translateY(0)'">
+            🚀 Start Free Trial — 15 Days Free
+          </button>
+
+          <!-- Bottom note -->
+          <p style="text-align:center;color:rgba(255,255,255,0.25);font-size:11px;margin:0">We respond within 2 hours · No spam ever</p>
+        </div>
+      </form>
+
+      <!-- Success state -->
+      <div id="lead-success" style="display:none;text-align:center;padding:48px 36px">
+        <div style="width:72px;height:72px;border-radius:50%;background:rgba(0,200,83,0.1);border:1px solid rgba(0,200,83,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:32px">✓</div>
+        <h3 style="font-family:'Syne',sans-serif;font-size:22px;color:white;margin-bottom:8px">Thank You!</h3>
+        <p style="color:rgba(255,255,255,0.5);font-size:14px;line-height:1.6">Our team will reach out within 24 hours to kickstart your growth journey.</p>
+      </div>
+
+      <!-- Bottom red line -->
+      <div style="height:1px;background:linear-gradient(to right,transparent,rgba(204,0,0,0.3),transparent)"></div>
+    </div>
+  </div>
+
+  <script>
+    // 12 — JAVASCRIPT — clean and minimal
+    
+    // Navbar scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar?.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Mobile nav
+    document.getElementById('hamburger')?.addEventListener('click', () => {
+      document.getElementById('mobile-nav').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    function closeMobileNav() {
+      document.getElementById('mobile-nav')?.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('mobile-close')?.addEventListener('click', closeMobileNav);
+    document.querySelectorAll('.mobile-link').forEach(a => a.addEventListener('click', closeMobileNav));
+
+    // FAQ toggle
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if(!isOpen) item.classList.add('open');
+    }
+
+    // Stat counter
+    function countUp(el) {
+      const target = parseFloat(el.dataset.target);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1800;
+      const start = performance.now();
+      function update(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.floor(ease * target) + suffix;
+        if(p < 1) requestAnimationFrame(update);
+        else el.textContent = target + suffix;
+      }
+      requestAnimationFrame(update);
+    }
+    const statsObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting) { countUp(e.target); statsObserver.unobserve(e.target); } });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('[data-target]').forEach(el => statsObserver.observe(el));
+
+    // Video on desktop only
+    const isMobile = window.innerWidth <= 768;
+    const vid = document.getElementById('hero-video');
+    if(vid && isMobile) { vid.pause(); vid.style.display = 'none'; }
+
+    // Lazy images
+    document.querySelectorAll('img').forEach(img => { img.loading = 'lazy'; img.decoding = 'async'; });
+
+    // Scroll to top
+    const scrollBtn = document.getElementById('scroll-top');
+    if(scrollBtn) {
+      window.addEventListener('scroll', () => { scrollBtn.style.display = window.scrollY > 500 ? 'flex' : 'none'; });
+      scrollBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+    }
+
+    // Scroll reveal — simple
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting) { e.target.classList.add('revealed'); revealObserver.unobserve(e.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.service-card,.founder-card,.pricing-card,.why-card,.process-card,.faq-item').forEach(el => {
+      el.classList.add('reveal-el');
+      revealObserver.observe(el);
+    });
+
+    // --- Service Selector ---
+    function selectService(btn) {
+      document.querySelectorAll('#service-selector button').forEach(b => {
+        b.style.background = '#111';
+        b.style.borderColor = 'rgba(255,255,255,0.08)';
+        b.style.color = 'rgba(255,255,255,0.5)';
+      });
+      btn.style.background = 'rgba(204,0,0,0.12)';
+      btn.style.borderColor = 'rgba(204,0,0,0.5)';
+      btn.style.color = 'white';
+      document.getElementById('lead-service').value = btn.dataset.service;
+    }
+
+    // --- Lead Modal ---
+    function openLeadModal(preselectService = null) {
+      const modal = document.getElementById('leadModal');
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+
+      // Animate in
+      setTimeout(() => {
+        const box = modal.querySelector('.premium-modal-box');
+        if (box) {
+          box.style.transform = 'translateY(0)';
+          box.style.opacity = '1';
+        }
+      }, 10);
+
+      // Pre-select service if provided
+      if (preselectService && typeof preselectService === 'string') {
+        document.getElementById('lead-service').value = preselectService;
+        const mapToDataset = {
+          'Instagram Handling': 'instagram',
+          'AR Menu System': 'ar-menu',
+          'Website Development': 'website',
+          'Digital Growth': 'digital-growth',
+          'Instagram Basic': 'instagram',
+          'Instagram Standard': 'instagram',
+          'Instagram Premium': 'instagram'
+        };
+        const ds = mapToDataset[preselectService] || preselectService;
+        const btn = document.querySelector(`#service-selector button[data-service="${ds}"]`);
+        if (btn) selectService(btn);
+      }
+    }
+
+    function closeLeadModal() {
+      const modal = document.getElementById('leadModal');
+      const box = modal.querySelector('.premium-modal-box');
+      if (box) {
+        box.style.transform = 'translateY(20px)';
+        box.style.opacity = '0';
+      }
+      setTimeout(() => {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }, 300);
+    }
+
+    async function handleLeadSubmit(e) {
+      e.preventDefault();
+
+      const business = document.getElementById('lead-name').value.trim();
+      const name = document.getElementById('lead-owner').value.trim();
+      const phone = document.getElementById('lead-phone').value.trim();
+      const service = document.getElementById('lead-service').value || 'Not specified';
+
+      // Validate
+      if(!business || !name || !phone) {
+        const btn = document.getElementById('lead-submit-btn');
+        btn.style.animation = 'shake 0.4s ease';
+        setTimeout(() => btn.style.animation = '', 400);
+        alert('Please fill in all fields!');
+        return false;
+      }
+
+      const btn = document.getElementById('lead-submit-btn');
+      btn.textContent = '⏳ Sending...';
+      btn.style.opacity = '0.7';
+      btn.disabled = true;
+
+      // Map service names
+      const serviceMap = {
+        'instagram': 'instagram',
+        'ar-menu': 'ar_menu',
+        'website': 'website',
+        'digital-growth': 'digital_growth',
+        'ai-bots': 'ai_bots',
+        'all': 'bundle'
+      };
+      const serviceType = serviceMap[service] || 'other';
+
+      try {
+        // Try saving to Supabase via REST API
+        const SUPABASE_URL = 'https://qjykkdmujwlkpcdyzeqa.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_rUybvqyug25z0OIXaCs25Q_cTmKdC8h';
+        const headers = {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        };
+
+        // 1. Insert into clients table (get ID back)
+        const clientRes = await fetch(`${SUPABASE_URL}/rest/v1/clients`, {
+          method: 'POST',
+          headers: { ...headers, 'Prefer': 'return=representation' },
+          body: JSON.stringify({
+            name: business,
+            owner_name: name,
+            phone: phone,
+            business_type: 'other',
+            status: 'pending',
+            city: '',
+            email: ''
+          })
+        });
+
+        if(clientRes.ok || clientRes.status === 201) {
+          let clientId = null;
+          try {
+            const clientData = await clientRes.json();
+            clientId = Array.isArray(clientData) ? clientData[0]?.id : clientData?.id;
+          } catch(e) {}
+
+          // 2. Auto-create a project for this client
+          if(clientId) {
+            await fetch(`${SUPABASE_URL}/rest/v1/projects`, {
+              method: 'POST',
+              headers: { ...headers, 'Prefer': 'return=minimal' },
+              body: JSON.stringify({
+                client_id: clientId,
+                service_type: serviceType,
+                package: 'standard',
+                monthly_fee: 0,
+                status: 'pending',
+                start_date: new Date().toISOString().split('T')[0],
+                notes: `Auto-created from website signup. Interested in: ${service}`
+              })
+            }).catch(() => {});
+          }
+
+          // 3. Backup to restaurants table
+          await fetch(`${SUPABASE_URL}/rest/v1/restaurants`, {
+            method: 'POST',
+            headers: { ...headers, 'Prefer': 'return=minimal' },
+            body: JSON.stringify({
+              name: business,
+              owner_name: name,
+              phone: phone,
+              status: 'pending',
+              plan: service
+            })
+          }).catch(() => {});
+
+          // Success - show success state and redirect to WhatsApp
+          btn.textContent = 'Saved! Opening WhatsApp...';
+          btn.style.background = '#1a4a1a';
+          btn.style.opacity = '1';
+          document.getElementById('lead-form').style.display = 'none';
+          document.getElementById('lead-success').style.display = 'block';
+
+          const msg = `Hi ZEN_X!\n\nI want to start my free trial!\n\nBusiness: ${business}\nName: ${name}\nPhone: ${phone}\nInterested in: ${service}\n\nPlease contact me!`;
+          const waUrl = `https://wa.me/919864119506?text=${encodeURIComponent(msg)}`;
+
+          setTimeout(() => {
+            window.open(waUrl, '_blank');
+            setTimeout(() => {
+              btn.textContent = 'Start Free Trial - 15 Days Free';
+              btn.style.background = '#CC0000';
+              btn.style.opacity = '1';
+              btn.disabled = false;
+            }, 500);
+          }, 1200);
+
+        } else {
+          const errorText = await clientRes.text();
+          console.error('Supabase error:', clientRes.status, errorText);
+          throw new Error(`Status ${clientRes.status}`);
+        }
+
+      } catch(error) {
+        console.error('Submit error:', error);
+
+        // Even if Supabase fails - still open WhatsApp so customer is not lost
+        btn.textContent = 'Opening WhatsApp...';
+        btn.style.opacity = '1';
+        document.getElementById('lead-form').style.display = 'none';
+        document.getElementById('lead-success').style.display = 'block';
+
+        const msg = `Hi ZEN_X!\n\nI want to start my free trial!\n\nBusiness: ${business}\nName: ${name}\nPhone: ${phone}\nInterested in: ${service}\n\nPlease contact me!`;
+        const waUrl = `https://wa.me/919864119506?text=${encodeURIComponent(msg)}`;
+
+        setTimeout(() => {
+          window.open(waUrl, '_blank');
+          btn.textContent = 'Start Free Trial - 15 Days Free';
+          btn.style.background = '#CC0000';
+          btn.style.opacity = '1';
+          btn.disabled = false;
+        }, 800);
+      }
+
+      return false;
+    }
+
+    // --- Supabase Integration (for other uses) ---
+    const { createClient } = supabase;
+    const supabaseClient = createClient(
+      'https://qjykkdmujwlkpcdyzeqa.supabase.co',
+      'sb_publishable_rUybvqyug25z0OIXaCs25Q_cTmKdC8h'
+    );
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLeadModal(); });
+  </script>
+</body>
+</html>
