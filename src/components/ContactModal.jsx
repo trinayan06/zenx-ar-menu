@@ -42,7 +42,7 @@ export default function ContactModal({ isOpen, onClose }) {
         name: formData.businessName,
         owner_name: formData.name,
         phone: formData.phone,
-        service_type: formData.interests.join(', ') || 'Website',
+        plan: formData.interests.join(', ') || 'Website',
         status: 'pending',
         business_type: 'other'
       }]);
