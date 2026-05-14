@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 
 const faqs = [
   {
@@ -40,67 +40,59 @@ const faqs = [
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState(null);
 
-  const toggle = (index) => {
-    if (openIndex === index) {
-      setOpenIndex(null);
-    } else {
-      setOpenIndex(index);
-    }
+  const toggleFaq = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <section id="faq" className="py-32 bg-bg">
+    <section id="faq" className="py-24 bg-[#0A0A0A]">
       <div className="max-w-3xl mx-auto px-6">
-        <div className="text-center mb-20">
-          <span className="block text-accent font-bebas text-[13px] uppercase tracking-[0.3em] mb-4">FAQ</span>
-          <h2 className="text-[48px] md:text-[64px] text-white font-syne font-extrabold tracking-wide">
+        <div className="text-center mb-16">
+          <span className="block text-gray-light font-dm text-[11px] uppercase tracking-[0.2em] mb-2">Got Questions?</span>
+          <h2 className="text-[48px] md:text-[64px] text-white font-bebas tracking-wide">
             Frequently Asked Questions
           </h2>
         </div>
 
-        <div className="flex flex-col">
-          {faqs.map((faq, i) => {
-            const isOpen = openIndex === i;
+        <div className="space-y-2">
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
             return (
-              <motion.div 
-                key={i} 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="border-b border-white/[0.06]"
+              <div 
+                key={index} 
+                className="border-b border-[#1C1C1C] overflow-hidden"
               >
                 <button
-                  onClick={() => toggle(i)}
-                  className="w-full py-8 flex items-center justify-between text-left focus:outline-none group"
+                  className="w-full py-6 flex items-center justify-between text-left focus:outline-none"
+                  onClick={() => toggleFaq(index)}
                 >
-                  <span className="text-white text-[18px] font-syne font-semibold pr-8 group-hover:text-accent transition-colors">
+                  <span className={`font-dm text-[16px] font-medium transition-colors duration-300 ${isOpen ? 'text-white' : 'text-gray-light hover:text-white'}`}>
                     {faq.q}
                   </span>
                   <motion.div
-                    animate={{ rotate: isOpen ? 45 : 0 }}
+                    animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
-                    className="shrink-0 text-accent group-hover:text-accent2 transition-colors"
+                    className="ml-4 shrink-0"
                   >
-                    <Plus size={24} />
+                    {isOpen ? <X size={20} className="text-white" /> : <Plus size={20} className="text-white" />}
                   </motion.div>
                 </button>
-                <AnimatePresence>
+                
+                <AnimatePresence initial={false}>
                   {isOpen && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="overflow-hidden"
+                      transition={{ duration: 0.3 }}
                     >
-                      <p className="pb-8 text-gray text-[16px] font-space leading-[1.8]">
+                      <div className="pb-6 pr-12 text-[#9A9A9A] font-dm text-[15px] leading-[1.7]">
                         {faq.a}
-                      </p>
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
             );
           })}
         </div>

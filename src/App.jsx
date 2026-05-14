@@ -23,19 +23,23 @@ function App() {
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <div className="bg-bg text-white min-h-screen selection:bg-accent selection:text-white relative">
+    <div className="bg-black text-white min-h-screen selection:bg-white selection:text-black font-dm">
       <Navbar openModal={openModal} />
-      <Hero openModal={openModal} />
-      <Ticker />
-      <Services openModal={openModal} />
-      <HowItWorks />
-      <Portfolio openModal={openModal} />
-      <Instagram />
-      <Pricing openModal={openModal} />
-      <WhyUs />
-      <About />
-      <FAQ />
-      <CTA openModal={openModal} />
+      
+      <main>
+        <Hero openModal={openModal} />
+        <Ticker />
+        <Services openModal={openModal} />
+        <HowItWorks />
+        <Portfolio openModal={openModal} />
+        <Instagram />
+        <Pricing openModal={openModal} />
+        <WhyUs />
+        <FAQ />
+        <CTA openModal={openModal} />
+        <About />
+      </main>
+
       <Footer />
       
       <ContactModal isOpen={isModalOpen} onClose={closeModal} />

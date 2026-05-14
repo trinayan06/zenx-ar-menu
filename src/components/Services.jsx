@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
-import { Camera, ScanLine, Globe, TrendingUp, Check } from 'lucide-react';
-import TiltCard from './TiltCard';
+import { Camera, Scan, Globe, TrendingUp, Check } from 'lucide-react';
 
 const servicesData = [
   {
@@ -18,7 +17,7 @@ const servicesData = [
   {
     id: 2,
     title: 'AR Menu System',
-    icon: ScanLine,
+    icon: Scan,
     popular: false,
     features: [
       '3D food experience for restaurants',
@@ -55,43 +54,67 @@ const servicesData = [
 
 export default function Services({ openModal }) {
   return (
-    <section id="services" className="relative py-32 w-full bg-dot-pattern">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-20">
-          <span className="block text-accent font-bebas text-[13px] uppercase tracking-[0.3em] mb-4">OUR EXPERTISE</span>
-          <h2 className="text-[48px] md:text-[64px] text-white font-syne font-extrabold tracking-wide mb-4">
+    <section id="services" className="relative py-24 w-full">
+      {/* Background Image */}
+      <div 
+        className="absolute top-0 left-0 w-full h-full bg-cover bg-center bg-fixed-desktop z-0"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920&q=90')" }}
+      ></div>
+
+      {/* Dark overlay */}
+      <div 
+        className="absolute inset-0 z-[1]"
+        style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.75), rgba(0,0,0,0.90))' }}
+      ></div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
+        <div className="text-center mb-16">
+          <span className="block text-gray-light font-dm text-[11px] uppercase tracking-[0.2em] mb-2">OUR EXPERTISE</span>
+          <h2 className="text-[48px] md:text-[64px] text-white font-bebas tracking-wide mb-2">
             What We Provide
           </h2>
+          <p className="text-gray-light text-[15px] font-dm">
+            End-to-end digital solutions tailored for growing businesses.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {servicesData.map((service, index) => (
             <motion.div
               key={service.id}
-              initial={{ opacity: 0, y: 60 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: index * 0.1 }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.1 }}
             >
-              <TiltCard className="p-8 md:p-10 flex flex-col h-full relative group">
+              <div className="p-8 h-full relative group transition-all duration-300 hover:-translate-y-1.5"
+                style={{ 
+                  background: 'rgba(255,255,255,0.04)', 
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '4px',
+                  backdropFilter: 'blur(10px)'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'}
+              >
                 {service.popular && (
-                  <div className="absolute top-6 right-6 bg-gradient-to-r from-accent to-accent2 text-white text-[11px] font-space uppercase font-bold tracking-wider px-4 py-1.5 rounded-full z-10 shadow-[0_0_15px_rgba(108,99,255,0.4)]">
+                  <div className="absolute top-6 right-6 bg-transparent text-white border border-white text-[10px] font-dm uppercase font-bold tracking-wider px-3 py-1 rounded-full">
                     🔥 MOST POPULAR
                   </div>
                 )}
                 
-                <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-br from-accent to-accent2 flex items-center justify-center mb-8 shadow-[0_0_20px_rgba(108,99,255,0.3)]">
-                  <service.icon className="text-white" size={28} />
+                <div className="mb-6">
+                  <service.icon className="text-white" size={32} />
                 </div>
                 
-                <h3 className="text-[22px] font-syne font-bold text-white mb-6">
+                <h3 className="text-[20px] font-dm font-medium text-white mb-6">
                   {service.title}
                 </h3>
                 
-                <ul className="flex-1 space-y-4 mb-10">
+                <ul className="flex-1 space-y-3 mb-10">
                   {service.features.map((feature, i) => (
-                    <li key={i} className="flex items-start text-gray text-[15px] font-space">
-                      <Check size={18} className="text-accent mr-3 mt-0.5 shrink-0" />
+                    <li key={i} className="flex items-start text-gray-light text-[14px] font-dm">
+                      <Check size={16} className="text-white mr-3 mt-0.5 shrink-0" />
                       <span>{feature}</span>
                     </li>
                   ))}
@@ -99,12 +122,11 @@ export default function Services({ openModal }) {
                 
                 <button
                   onClick={openModal}
-                  className="text-accent font-space font-medium text-left inline-flex items-center hover:underline self-start mt-auto relative"
+                  className="text-white font-dm text-[14px] font-medium inline-flex items-center hover:underline decoration-white underline-offset-4"
                 >
-                  Get Quote <span className="ml-2">→</span>
-                  <div className="absolute -bottom-2 left-0 w-0 h-[1px] bg-gradient-to-r from-accent to-accent2 transition-all duration-300 group-hover:w-full"></div>
+                  Get Quote →
                 </button>
-              </TiltCard>
+              </div>
             </motion.div>
           ))}
         </div>

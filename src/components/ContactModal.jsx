@@ -1,154 +1,147 @@
-import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-
-const servicesList = [
-  'Instagram',
-  'AR Menu',
-  'Website',
-  'Growth',
-  'AI Bots',
-  'Full Bundle'
-];
+import { useState } from 'react';
 
 export default function ContactModal({ isOpen, onClose }) {
   const [formData, setFormData] = useState({
     businessName: '',
     name: '',
     phone: '',
-    service: ''
+    interests: []
   });
 
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
+  const handleInterestToggle = (interest) => {
+    setFormData(prev => ({
+      ...prev,
+      interests: prev.interests.includes(interest)
+        ? prev.interests.filter(i => i !== interest)
+        : [...prev.interests, interest]
+    }));
+  };
 
-  const handleSubmit = () => {
-    if (!formData.businessName || !formData.name || !formData.phone) {
-      alert("Please fill in all required fields.");
-      return;
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-    const message = `Hi ZEN_X!\n\nI want to start my free trial!\n\nBusiness: ${formData.businessName}\nName: ${formData.name}\nPhone: ${formData.phone}\nInterested in: ${formData.service || 'Not specified'}\n\nPlease contact me!`;
-    const waUrl = `https://wa.me/919864119506?text=${encodeURIComponent(message)}`;
-    
-    window.open(waUrl, '_blank');
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Simulate submission or Supabase logic
+    alert('Thank you! We will contact you shortly.');
     onClose();
   };
 
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0 bg-[rgba(0,0,0,0.96)]"
             onClick={onClose}
-            className="fixed inset-0 bg-[#050508]/92 z-[9999] backdrop-blur-sm"
-          />
-          
-          <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 pointer-events-none">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full max-w-[500px] bg-[#0C0C12] border border-accent/30 rounded-[24px] p-8 sm:p-12 relative pointer-events-auto shadow-[0_0_50px_rgba(108,99,255,0.15)]"
+          ></motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="relative bg-[#111111] border border-[#2A2A2A] rounded-[4px] w-full max-w-[480px] p-10 z-10"
+          >
+            <button
+              onClick={onClose}
+              className="absolute top-6 right-6 text-white hover:text-gray-light transition-colors"
             >
-              <button
-                onClick={onClose}
-                className="absolute top-6 right-6 text-white hover:text-accent transition-colors"
-              >
-                <X size={24} />
-              </button>
+              <X size={24} />
+            </button>
 
-              <h2 className="text-[36px] text-white font-syne font-bold mb-2 leading-tight">
-                Get Started
-              </h2>
-              
-              <p className="text-gray text-[14px] font-space mb-8">
-                Enter your details and we'll get your digital growth started within 24 hours.
+            <div className="mb-8">
+              <h2 className="text-[36px] text-white font-bebas leading-none mb-2">Get Started with ZEN_X</h2>
+              <p className="text-gray-light text-[14px] font-dm">
+                Fill out this quick form and we'll reach out to set up your free trial.
               </p>
+            </div>
 
-              <div className="flex flex-wrap items-center gap-4 mb-8 text-[13px] font-space text-gray-light">
-                <span><span className="text-accent mr-1">✓</span> 15-day free trial</span>
-                <span><span className="text-accent mr-1">✓</span> No credit card</span>
-                <span><span className="text-accent mr-1">✓</span> Cancel anytime</span>
+            <div className="flex flex-wrap gap-x-4 gap-y-2 mb-8 text-[11px] font-dm text-gray-mid uppercase tracking-wide">
+              <span>✓ 15-day free trial</span>
+              <span>✓ No credit card</span>
+              <span>✓ Cancel anytime</span>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <input
+                  type="text"
+                  name="businessName"
+                  value={formData.businessName}
+                  onChange={handleChange}
+                  placeholder="Business Name"
+                  required
+                  className="w-full bg-transparent border-b border-[#2A2A2A] text-white py-3 outline-none font-dm text-[15px] focus:border-white transition-colors"
+                />
               </div>
 
-              <div className="space-y-6">
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Business Name"
-                    value={formData.businessName}
-                    onChange={(e) => setFormData({...formData, businessName: e.target.value})}
-                    className="w-full bg-transparent border-b border-white/15 text-white py-3 font-space text-[15px] outline-none focus:border-accent transition-colors"
-                  />
-                </div>
-                
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Your Name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="w-full bg-transparent border-b border-white/15 text-white py-3 font-space text-[15px] outline-none focus:border-accent transition-colors"
-                  />
-                </div>
-                
-                <div>
-                  <input
-                    type="tel"
-                    placeholder="Phone Number"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    className="w-full bg-transparent border-b border-white/15 text-white py-3 font-space text-[15px] outline-none focus:border-accent transition-colors"
-                  />
-                </div>
+              <div>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Your Name"
+                  required
+                  className="w-full bg-transparent border-b border-[#2A2A2A] text-white py-3 outline-none font-dm text-[15px] focus:border-white transition-colors"
+                />
+              </div>
 
-                <div className="pt-4">
-                  <label className="text-gray text-[12px] font-space uppercase tracking-wider mb-4 block">Interested In</label>
-                  <div className="flex flex-wrap gap-3">
-                    {servicesList.map((service) => (
-                      <button
-                        key={service}
-                        onClick={() => setFormData({...formData, service})}
-                        className={`text-[13px] font-space py-2.5 px-4 rounded-full border transition-all ${
-                          formData.service === service 
-                            ? 'bg-accent/20 border-accent text-white shadow-[0_0_15px_rgba(108,99,255,0.3)]' 
-                            : 'bg-transparent border-white/10 text-gray hover:border-white/30 hover:text-white'
-                        }`}
-                      >
-                        {service}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+              <div>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="Phone Number"
+                  required
+                  className="w-full bg-transparent border-b border-[#2A2A2A] text-white py-3 outline-none font-dm text-[15px] focus:border-white transition-colors"
+                />
+              </div>
 
+              <div className="pt-2">
+                <label className="block text-white font-dm text-[14px] mb-3">I'm interested in:</label>
+                <div className="flex flex-wrap gap-2">
+                  {['Instagram', 'AR Menu', 'Website', 'Growth', 'AI Bots', 'Full Bundle'].map(interest => (
+                    <button
+                      key={interest}
+                      type="button"
+                      onClick={() => handleInterestToggle(interest)}
+                      className={`px-4 py-2 rounded-full border text-[13px] font-dm transition-colors ${
+                        formData.interests.includes(interest)
+                          ? 'border-white bg-white text-black'
+                          : 'border-[#2A2A2A] text-gray-light hover:border-gray-mid'
+                      }`}
+                    >
+                      {interest}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="pt-4">
                 <button
-                  onClick={handleSubmit}
-                  className="w-full btn-gradient text-white py-[16px] rounded-[10px] font-space font-medium mt-6 transition-all hover:scale-[1.02] hover:shadow-[0_0_24px_rgba(108,99,255,0.4)]"
+                  type="submit"
+                  className="w-full bg-white text-black py-[14px] rounded-[2px] font-dm font-medium text-[15px] hover:bg-gray-200 transition-colors"
                 >
-                  🚀 Start Free Trial — 15 Days Free
+                  Start Free Trial
                 </button>
-
-                <p className="text-center text-[#555] text-[12px] font-space mt-4">
+                <p className="text-center text-gray-mid text-[11px] font-dm mt-4">
                   We respond within 2 hours · No spam ever
                 </p>
               </div>
-            </motion.div>
-          </div>
-        </>
+            </form>
+          </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );

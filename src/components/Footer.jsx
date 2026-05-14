@@ -1,52 +1,35 @@
 import { Phone } from 'lucide-react';
 
-const links = [
-  { name: 'Services', href: '#services' },
-  { name: 'How It Works', href: '#how-it-works' },
-  { name: 'Pricing', href: '#pricing' },
-  { name: 'Why Us', href: '#why-us' },
-  { name: 'About Us', href: '#about-us' },
-  { name: 'FAQ', href: '#faq' },
-  { name: 'Instagram', href: 'https://www.instagram.com/zen_x_2026', external: true }
-];
-
 export default function Footer() {
   return (
-    <footer className="bg-[#030305] border-t border-white/[0.06] pt-16 pb-8">
+    <footer className="bg-[#050505] pt-16 pb-8 border-t border-[#1A1A1A]">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8">
-          <div>
-            <img src="/logo.png" height={36} className="h-[36px] mb-4" alt="ZEN_X" />
-            <p className="text-gray text-[13px] font-space max-w-[260px]">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16">
+          <div className="mb-8 md:mb-0">
+            <img src="/logo.png" alt="ZEN_X Logo" className="h-8 w-auto mb-4" />
+            <p className="text-gray-mid font-dm text-[13px]">
               Digital Solutions for Businesses
             </p>
           </div>
           
-          <div className="flex flex-wrap gap-x-8 gap-y-4">
-            {links.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                target={link.external ? "_blank" : "_self"}
-                rel={link.external ? "noopener noreferrer" : ""}
-                className="text-[#666] hover:text-white text-[14px] font-space transition-colors"
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
+          <nav className="flex flex-wrap gap-x-8 gap-y-4">
+            <a href="#services" className="text-gray-mid hover:text-gray-light font-dm text-[13px] transition-colors">Services</a>
+            <a href="#how-it-works" className="text-gray-mid hover:text-gray-light font-dm text-[13px] transition-colors">How It Works</a>
+            <a href="#pricing" className="text-gray-mid hover:text-gray-light font-dm text-[13px] transition-colors">Pricing</a>
+            <a href="#why-us" className="text-gray-mid hover:text-gray-light font-dm text-[13px] transition-colors">Why Us</a>
+            <a href="#about" className="text-gray-mid hover:text-gray-light font-dm text-[13px] transition-colors">About Us</a>
+            <a href="#portfolio" className="text-gray-mid hover:text-gray-light font-dm text-[13px] transition-colors">AR Demo</a>
+            <a href="https://www.instagram.com/zen_x_2026" target="_blank" rel="noopener noreferrer" className="text-gray-mid hover:text-gray-light font-dm text-[13px] transition-colors">Instagram</a>
+          </nav>
         </div>
-        
-        <div className="border-t border-[#111] pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-          <p className="text-[#666] text-[13px] font-space">
-            Built with ❤️ by Team ZEN_X — Trinayan Mahanta, Snehangshu Das, Mannat Sahu, Aditya Pragyan
+
+        <div className="border-t border-[#111111] pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-gray-mid font-dm text-[13px]">
+            © 2026 ZEN_X. Built with ❤️ by Team ZEN_X
           </p>
-          
-          <a
-            href="tel:+919864119506"
-            className="flex items-center text-[#666] hover:text-white text-[14px] font-space transition-colors"
-          >
-            <Phone size={14} className="mr-2" /> +91 9864119506
+          <a href="tel:+919864119506" className="flex items-center text-gray-mid hover:text-gray-light font-dm text-[13px] transition-colors">
+            <Phone size={14} className="mr-2" />
+            +91 9864119506
           </a>
         </div>
       </div>

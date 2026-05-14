@@ -25,41 +25,34 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-32 bg-bg2 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-24 relative z-10">
-          <span className="block text-accent font-bebas text-[13px] uppercase tracking-[0.3em] mb-4">THE PROCESS</span>
-          <h2 className="text-[48px] md:text-[64px] text-white font-syne font-extrabold tracking-wide">
+    <section id="how-it-works" className="py-24 bg-[#0A0A0A] bg-dot-pattern relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="text-center mb-20">
+          <h2 className="text-[48px] md:text-[64px] text-white font-bebas tracking-wide mb-2">
             How It Works
           </h2>
         </div>
 
-        <div className="relative flex flex-col md:flex-row md:justify-between gap-16 md:gap-6">
+        <div className="relative flex flex-col md:flex-row md:justify-between gap-12 md:gap-6">
           {/* Connecting Line (Desktop) */}
-          <div className="hidden md:block absolute top-[28px] left-[10%] right-[10%] h-[1px] border-t border-dashed border-accent/40 z-0"></div>
+          <div className="hidden md:block absolute top-[48px] left-[10%] right-[10%] h-[1px] bg-white/20 z-0"></div>
 
           {steps.map((step, index) => (
             <motion.div
               key={step.num}
-              initial={{ opacity: 0, y: 60 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: index * 0.15 }}
-              className="relative z-10 flex flex-col flex-1 items-center text-center"
+              transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.15 }}
+              className="relative z-10 flex flex-col flex-1 items-center text-center px-4"
             >
-              {/* Giant ghost number */}
-              <div className="absolute -top-10 md:-top-16 left-1/2 -translate-x-1/2 text-[120px] font-syne font-extrabold text-accent/5 pointer-events-none select-none">
+              <div className="font-bebas text-[96px] text-[#1A1A1A] leading-none mb-4 select-none">
                 {step.num}
               </div>
 
-              {/* Number circle */}
-              <div className="w-[56px] h-[56px] rounded-full border-2 border-accent bg-bg2 flex items-center justify-center font-bebas text-white text-[24px] mb-8 z-10 relative shadow-[0_0_20px_rgba(108,99,255,0.2)]">
-                {parseInt(step.num, 10)}
-              </div>
-
-              <div className="px-4">
-                <h3 className="text-[20px] font-syne font-bold text-white mb-4">{step.title}</h3>
-                <p className="text-gray text-[15px] font-space">{step.desc}</p>
+              <div className="absolute top-[32px] md:top-[38px] w-full">
+                <h3 className="text-[20px] font-dm font-medium text-white mb-3 max-w-[200px] mx-auto leading-tight">{step.title}</h3>
+                <p className="text-[#9A9A9A] text-[14px] font-dm max-w-[240px] mx-auto leading-relaxed">{step.desc}</p>
               </div>
             </motion.div>
           ))}
