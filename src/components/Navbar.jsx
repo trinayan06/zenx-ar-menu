@@ -37,7 +37,7 @@ export default function Navbar({ openModal }) {
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <a href="#" className="flex-shrink-0 relative z-[200]">
-            <img src="/logo.png" height={60} className="h-[36px] w-auto" alt="ZEN_X" />
+            <img src="/logo.png" className="h-[64px] md:h-[80px] w-auto" alt="ZEN_X" />
           </a>
 
           <motion.div

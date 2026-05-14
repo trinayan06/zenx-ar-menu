@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16">
           <div className="mb-8 md:mb-0">
-            <img src="/logo.png" alt="ZEN_X Logo" className="h-8 w-auto mb-4" />
+            <img src="/logo.png" alt="ZEN_X Logo" className="h-[64px] md:h-[80px] w-auto mb-4" />
             <p className="text-gray-mid font-dm text-[13px]">
               Digital Solutions for Businesses
             </p>
