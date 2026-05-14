@@ -19,14 +19,14 @@ export default function Hero({ openModal }) {
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div 
-        className="absolute top-0 left-0 w-full h-full bg-cover bg-center bg-fixed-desktop z-0"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=95')" }}
+        className="absolute top-0 left-0 w-full h-full bg-cover bg-center z-0 md:bg-fixed"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=100')" }}
       ></div>
 
       {/* Dark overlay */}
       <div 
         className="absolute inset-0 z-[1]"
-        style={{ background: 'linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.60) 100%)' }}
+        style={{ background: 'linear-gradient(135deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.65) 100%)' }}
       ></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 w-full h-full flex flex-col items-center justify-center pt-20">

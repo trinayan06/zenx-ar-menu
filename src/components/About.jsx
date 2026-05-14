@@ -30,16 +30,31 @@ export default function About() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
-              className="bg-[#111111] border border-[#2A2A2A] rounded-[4px] p-8 flex flex-col items-center text-center group transition-colors duration-300 hover:border-white"
+              className="bg-[#111111] border border-[#2A2A2A] rounded-[4px] flex flex-col group overflow-hidden transition-colors duration-300 hover:border-white text-center"
             >
-              <div className="w-16 h-16 bg-[#1A1A1A] rounded-full flex items-center justify-center text-[28px] mb-6 border border-transparent group-hover:border-white transition-colors duration-300">
-                {member.emoji}
+              <div className="relative h-[240px] w-full overflow-hidden shrink-0">
+                <img 
+                  src="https://images.unsplash.com/photo-1557683316-973673baf926?w=1200&q=100" 
+                  alt="Abstract Background" 
+                  loading="lazy" 
+                  decoding="async"
+                  className="w-full h-full object-cover transition-transform duration-[0.6s] ease-in-out group-hover:scale-110 group-hover:brightness-110"
+                />
+                <div className="absolute inset-0 bg-[rgba(0,0,0,0.55)] pointer-events-none"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent from-40% to-[rgba(0,0,0,0.7)] pointer-events-none"></div>
+                
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-[52px] filter drop-shadow-lg group-hover:scale-110 transition-transform duration-[0.6s] ease-in-out">{member.emoji}</span>
+                </div>
               </div>
-              <h3 className="text-white font-dm font-medium text-[16px] mb-1">{member.name}</h3>
-              <span className="text-gray-mid font-dm text-[11px] uppercase tracking-[0.1em] mb-4">{member.role}</span>
-              <p className="text-gray-light font-dm text-[14px] leading-relaxed">
-                {member.desc}
-              </p>
+
+              <div className="p-8 flex flex-col items-center flex-1">
+                <h3 className="text-white font-dm font-medium text-[16px] mb-1">{member.name}</h3>
+                <span className="text-gray-mid font-dm text-[11px] uppercase tracking-[0.1em] mb-4">{member.role}</span>
+                <p className="text-gray-light font-dm text-[14px] leading-relaxed">
+                  {member.desc}
+                </p>
+              </div>
             </motion.div>
           ))}
         </div>

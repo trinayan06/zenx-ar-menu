@@ -6,6 +6,7 @@ const servicesData = [
     id: 1,
     title: 'Instagram Handling',
     icon: Camera,
+    image: 'https://images.unsplash.com/photo-1616469829941-c7200edec809?w=1200&q=100',
     popular: true,
     features: [
       'Content creation & scheduling',
@@ -18,6 +19,7 @@ const servicesData = [
     id: 2,
     title: 'AR Menu System',
     icon: Scan,
+    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200&q=100',
     popular: false,
     features: [
       '3D food experience for restaurants',
@@ -30,6 +32,7 @@ const servicesData = [
     id: 3,
     title: 'Website Development',
     icon: Globe,
+    image: 'https://images.unsplash.com/photo-1547658719-da2b51169166?w=1200&q=100',
     popular: false,
     features: [
       'Business websites & portfolios',
@@ -42,6 +45,7 @@ const servicesData = [
     id: 4,
     title: 'Digital Growth',
     icon: TrendingUp,
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=100',
     popular: false,
     features: [
       'Brand identity & strategy',
@@ -87,7 +91,7 @@ export default function Services({ openModal }) {
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.1 }}
             >
-              <div className="p-8 h-full relative group transition-all duration-300 hover:-translate-y-1.5"
+              <div className="h-full relative group transition-all duration-300 hover:-translate-y-1.5 overflow-hidden flex flex-col"
                 style={{ 
                   background: 'rgba(255,255,255,0.04)', 
                   border: '1px solid rgba(255,255,255,0.08)',
@@ -98,34 +102,50 @@ export default function Services({ openModal }) {
                 onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'}
               >
                 {service.popular && (
-                  <div className="absolute top-6 right-6 bg-transparent text-white border border-white text-[10px] font-dm uppercase font-bold tracking-wider px-3 py-1 rounded-full">
+                  <div className="absolute top-4 right-4 z-20 bg-black/60 backdrop-blur-md text-white border border-white text-[10px] font-dm uppercase font-bold tracking-wider px-3 py-1 rounded-full">
                     🔥 MOST POPULAR
                   </div>
                 )}
                 
-                <div className="mb-6">
-                  <service.icon className="text-white" size={32} />
+                {/* Image Header */}
+                <div className="relative h-[240px] w-full overflow-hidden shrink-0">
+                  <img 
+                    src={service.image} 
+                    alt={service.title} 
+                    loading="lazy" 
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-[0.6s] ease-in-out group-hover:scale-110 group-hover:brightness-110"
+                  />
+                  {/* Subtle dark gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent from-40% to-[rgba(0,0,0,0.7)] pointer-events-none"></div>
+                  
+                  {/* Icon overlaid on image bottom-left */}
+                  <div className="absolute bottom-4 left-6 z-10">
+                    <service.icon className="text-white drop-shadow-md" size={32} />
+                  </div>
                 </div>
-                
-                <h3 className="text-[20px] font-dm font-medium text-white mb-6">
-                  {service.title}
-                </h3>
-                
-                <ul className="flex-1 space-y-3 mb-10">
-                  {service.features.map((feature, i) => (
-                    <li key={i} className="flex items-start text-gray-light text-[14px] font-dm">
-                      <Check size={16} className="text-white mr-3 mt-0.5 shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                
-                <button
-                  onClick={openModal}
-                  className="text-white font-dm text-[14px] font-medium inline-flex items-center hover:underline decoration-white underline-offset-4"
-                >
-                  Get Quote →
-                </button>
+
+                <div className="p-8 flex flex-col flex-1">
+                  <h3 className="text-[20px] font-dm font-medium text-white mb-6">
+                    {service.title}
+                  </h3>
+                  
+                  <ul className="flex-1 space-y-3 mb-10">
+                    {service.features.map((feature, i) => (
+                      <li key={i} className="flex items-start text-gray-light text-[14px] font-dm">
+                        <Check size={16} className="text-white mr-3 mt-0.5 shrink-0" />
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <button
+                    onClick={openModal}
+                    className="text-white font-dm text-[14px] font-medium inline-flex items-center hover:underline decoration-white underline-offset-4 mt-auto"
+                  >
+                    Get Quote →
+                  </button>
+                </div>
               </div>
             </motion.div>
           ))}

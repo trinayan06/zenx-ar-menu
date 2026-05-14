@@ -5,22 +5,26 @@ const features = [
   {
     icon: DollarSign,
     title: 'Affordable for Small Businesses',
-    desc: 'Premium quality at prices small businesses can actually afford.'
+    desc: 'Premium quality at prices small businesses can actually afford.',
+    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=100'
   },
   {
     icon: TrendingUp,
     title: 'Real Growth Focus',
-    desc: 'We don\'t just post — we strategize, analyze, and optimize for actual results.'
+    desc: 'We don\'t just post — we strategize, analyze, and optimize for actual results.',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=100'
   },
   {
     icon: Zap,
     title: 'Fast Execution',
-    desc: 'Get started within 24 hours. No long onboarding — results from day one.'
+    desc: 'Get started within 24 hours. No long onboarding — results from day one.',
+    image: 'https://images.unsplash.com/photo-1596003906949-67221c37965c?w=1200&q=100'
   },
   {
     icon: Users,
     title: 'Creative + Technical Team',
-    desc: 'You work directly with the founders — not interns or junior employees.'
+    desc: 'You work directly with the founders — not interns or junior employees.',
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=100'
   }
 ];
 
@@ -57,7 +61,7 @@ export default function WhyUs() {
               transition={{ duration: 0.6, delay: i * 0.1, ease: "easeOut" }}
             >
               <div 
-                className="p-8 h-full flex flex-col group transition-all duration-300 hover:-translate-y-1"
+                className="h-full flex flex-col group transition-all duration-300 hover:-translate-y-1 overflow-hidden"
                 style={{ 
                   background: 'rgba(0,0,0,0.5)', 
                   border: '1px solid rgba(255,255,255,0.1)',
@@ -66,24 +70,46 @@ export default function WhyUs() {
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = 'white';
-                  e.currentTarget.querySelector('.icon-wrap').style.background = 'white';
-                  e.currentTarget.querySelector('.icon-svg').style.color = 'black';
+                  const iconWrap = e.currentTarget.querySelector('.icon-wrap');
+                  if(iconWrap) iconWrap.style.background = 'white';
+                  const iconSvg = e.currentTarget.querySelector('.icon-svg');
+                  if(iconSvg) iconSvg.style.color = 'black';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
-                  e.currentTarget.querySelector('.icon-wrap').style.background = 'transparent';
-                  e.currentTarget.querySelector('.icon-svg').style.color = 'white';
+                  const iconWrap = e.currentTarget.querySelector('.icon-wrap');
+                  if(iconWrap) iconWrap.style.background = 'transparent';
+                  const iconSvg = e.currentTarget.querySelector('.icon-svg');
+                  if(iconSvg) iconSvg.style.color = 'white';
                 }}
               >
-                <div className="icon-wrap w-14 h-14 rounded-full flex items-center justify-center mb-6 transition-colors duration-300">
-                  <feature.icon size={28} className="icon-svg text-white transition-colors duration-300" />
+                {/* Image Header */}
+                <div className="relative h-[240px] w-full overflow-hidden shrink-0 border-b border-white/10">
+                  <img 
+                    src={feature.image} 
+                    alt={feature.title} 
+                    loading="lazy" 
+                    decoding="async"
+                    className="w-full h-full object-cover transition-transform duration-[0.6s] ease-in-out group-hover:scale-110 group-hover:brightness-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent from-40% to-[rgba(0,0,0,0.7)] pointer-events-none"></div>
+                  
+                  {/* Icon overlaid */}
+                  <div className="absolute bottom-4 left-6 z-10">
+                    <div className="icon-wrap w-14 h-14 rounded-full flex items-center justify-center transition-colors duration-300">
+                      <feature.icon size={28} className="icon-svg text-white transition-colors duration-300" />
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-[18px] font-dm font-medium text-white mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-light text-[14px] font-dm leading-relaxed">
-                  {feature.desc}
-                </p>
+
+                <div className="p-8 flex flex-col flex-1">
+                  <h3 className="text-[18px] font-dm font-medium text-white mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-light text-[14px] font-dm leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </div>
               </div>
             </motion.div>
           ))}
