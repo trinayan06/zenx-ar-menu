@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import Preloader from './components/Preloader';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Ticker from './components/Ticker';
 import Services from './components/Services';
 import HowItWorks from './components/HowItWorks';
 import Portfolio from './components/Portfolio';
-import Instagram from './components/Instagram';
+import Testimonials from './components/Testimonials';
 import Pricing from './components/Pricing';
+import About from './components/About';
 import WhyUs from './components/WhyUs';
 import FAQ from './components/FAQ';
 import CTA from './components/CTA';
-import About from './components/About';
 import Footer from './components/Footer';
 import ContactModal from './components/ContactModal';
 import WhatsAppButton from './components/WhatsAppButton';
@@ -20,11 +22,19 @@ import SuperAdminDashboard from './components/SuperAdminDashboard';
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAdminPath, setIsAdminPath] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Check if the current URL path is /admin or /superadmin or /superadmin.html
     const path = window.location.pathname.toLowerCase();
     setIsAdminPath(path === '/admin' || path === '/superadmin' || path === '/superadmin.html');
+
+    // Preloader timeout
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const openModal = () => setIsModalOpen(true);
@@ -37,16 +47,20 @@ function App() {
 
   // Otherwise, render the main ZenX Landing Page
   return (
-    <div className="bg-black text-white min-h-screen selection:bg-white selection:text-black font-dm">
+    <div className="bg-white text-[#1A1A1A] min-h-screen font-dm">
+      <AnimatePresence mode="wait">
+        {loading && <Preloader key="preloader" />}
+      </AnimatePresence>
+      
       <Navbar openModal={openModal} />
       
       <main>
         <Hero openModal={openModal} />
         <Ticker />
         <Services openModal={openModal} />
-        <HowItWorks />
         <Portfolio openModal={openModal} />
-        <Instagram />
+        <Testimonials />
+        <HowItWorks />
         <Pricing openModal={openModal} />
         <WhyUs />
         <FAQ />

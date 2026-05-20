@@ -1,143 +1,149 @@
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
+import { useCountUp } from 'react-countup';
+import { ArrowUpRight } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { fadeUp, stagger, viewport } from '../utils/animations';
+import TiltCard from './TiltCard';
 
 const projects = [
   { 
     title: 'VIP Cafe', 
     category: 'Instagram Management', 
-    status: 'Starting Soon', 
-    statusColor: 'text-gray-light',
     image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=100'
   },
   { 
     title: 'Restaurant AR Menu', 
     category: 'AR Experience', 
-    status: 'Live Demo Available', 
-    statusColor: 'text-gray-light',
     image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=100'
   },
   { 
     title: 'ZEN_X Website', 
     category: 'Website Development', 
-    status: 'Completed', 
-    statusColor: 'text-gray-light',
     image: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=1200&q=100'
   },
   { 
-    title: 'Client #4', 
-    category: 'Digital Growth Package', 
-    status: 'In Progress', 
-    statusColor: 'text-gray-light',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=100'
-  },
-  { 
-    title: 'Client #5', 
-    category: 'WhatsApp Automation Bot', 
-    status: 'Coming Soon', 
-    statusColor: 'text-gray-light',
+    title: 'Client Automation Bot', 
+    category: 'WhatsApp Automation', 
     image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=100'
-  },
-  { 
-    title: 'Your Business?', 
-    category: "Let's Work Together", 
-    status: 'Available Now', 
-    statusColor: 'text-white',
-    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=100'
   },
 ];
 
-export default function Portfolio({ openModal }) {
+const stats = [
+  { value: 10, suffix: '+', label: 'Happy Clients' },
+  { value: 4, suffix: '', label: 'Core Services' },
+  { value: 35, suffix: '%', label: 'Avg ROI Boost' },
+  { value: 24, suffix: '/7', label: 'Support' },
+];
+
+function AnimatedCounter({ end, suffix }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-20px" });
+  
+  const { start } = useCountUp({
+    ref,
+    start: 0,
+    end,
+    duration: 2.5,
+    suffix,
+    startOnMount: false,
+  });
+
+  useEffect(() => {
+    if (isInView) {
+      start();
+    }
+  }, [isInView, start]);
+
+  return <span ref={ref}>0</span>;
+}
+
+export default function Portfolio() {
   return (
-    <section className="relative py-24 w-full">
-      {/* Background Image */}
-      <div 
-        className="absolute top-0 left-0 w-full h-full bg-cover bg-center bg-fixed-desktop z-0"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1920&q=90')" }}
-      ></div>
+    <section id="work" className="relative w-full bg-[#0D0D0D]" style={{ borderRadius: '24px 24px 0 0', padding: 'clamp(80px, 10vw, 160px) clamp(24px, 6vw, 120px)' }}>
+      <div className="max-w-[1200px] mx-auto">
+        {/* Section header */}
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6"
+        >
+          <div>
+            <motion.h2
+              variants={fadeUp}
+              className="text-[36px] md:text-[48px] font-dm font-extrabold text-white leading-[1.1] tracking-tight mb-3"
+            >
+              Selected Work.
+            </motion.h2>
+            <motion.p variants={fadeUp} className="font-dm text-[#888888] text-[16px]">
+              A glimpse into what we've built for our partners.
+            </motion.p>
+          </div>
+          <motion.a
+            variants={fadeUp}
+            href="#"
+            className="inline-flex items-center justify-center font-dm font-bold text-[14px] text-white hover:bg-white hover:text-black transition-colors"
+            style={{ border: '1.5px solid #555555', borderRadius: '999px', padding: '12px 24px' }}
+          >
+            View All Projects →
+          </motion.a>
+        </motion.div>
 
-      {/* Dark overlay */}
-      <div 
-        className="absolute inset-0 z-[1]"
-        style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.75), rgba(0,0,0,0.90))' }}
-      ></div>
-
-      <div className="relative z-10 max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="block text-gray-light font-dm text-[11px] uppercase tracking-[0.2em] mb-2">See What We Build</span>
-          <h2 className="text-[48px] md:text-[64px] text-white font-bebas tracking-wide mb-4">
-            Our Work
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {projects.map((project, index) => {
-            const isCallToAction = index === 5;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.1 }}
-                onClick={isCallToAction ? openModal : undefined}
-                className={`h-full flex flex-col group overflow-hidden transition-all duration-300 hover:-translate-y-1.5 ${isCallToAction ? 'cursor-pointer' : ''}`}
-                style={{
-                  background: 'rgba(0,0,0,0.6)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  backdropFilter: 'blur(12px)',
-                  borderRadius: '16px'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'}
-                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
-              >
-                {/* Image Header */}
-                <div className="relative h-[240px] w-full overflow-hidden shrink-0">
+        {/* Project grid */}
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24"
+        >
+          {projects.map((project, index) => (
+            <motion.div
+              key={index}
+              variants={fadeUp}
+            >
+              <TiltCard className="group w-full">
+                <div className="w-full aspect-[4/3] bg-[#1A1A1A] overflow-hidden mb-5" style={{ borderRadius: '16px' }}>
                   <img 
                     src={project.image} 
                     alt={project.title} 
-                    loading="lazy" 
-                    decoding="async"
-                    className="w-full h-full object-cover transition-transform duration-[0.6s] ease-in-out group-hover:scale-110 group-hover:brightness-110"
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
-                  {/* Subtle dark gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-transparent from-40% to-[rgba(0,0,0,0.7)] pointer-events-none"></div>
-                  
-                  {isCallToAction && (
-                    <div className="absolute inset-0" style={{ background: 'rgba(196,0,0,0.55)' }}></div>
-                  )}
-
-                  {/* Top Accent Line */}
-                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-white opacity-50 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                  
-                  <div className="absolute top-4 left-6 z-10">
-                    <span className="text-[10px] font-dm uppercase tracking-wider text-black bg-gray-light px-2.5 py-1 rounded-full font-bold">
-                      {project.category}
-                    </span>
+                </div>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-dm font-bold text-white text-[20px] tracking-tight mb-1">{project.title}</h3>
+                    <span className="font-dm text-[#888888] text-[14px]">{project.category}</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center transition-colors group-hover:bg-[#C8F000]">
+                    <ArrowUpRight size={20} className="text-white group-hover:text-black transition-colors" />
                   </div>
                 </div>
+              </TiltCard>
+            </motion.div>
+          ))}
+        </motion.div>
 
-                <div className="p-8 flex flex-col flex-1 justify-between">
-                  <div className="mb-8">
-                    <h3 className="text-[18px] font-dm font-medium text-white transition-colors duration-300">
-                      {project.title}
-                    </h3>
-                    <p className="text-[13px] text-gray-light mt-1 font-dm">
-                      {project.category}
-                    </p>
-                  </div>
-                  
-                  <div className="flex justify-between items-end mt-auto">
-                    <span className={`text-[12px] font-dm uppercase tracking-wider ${project.statusColor}`}>
-                      {project.status}
-                    </span>
-                    <span className="text-white opacity-0 group-hover:opacity-100 transition-all duration-300 transform -translate-x-2 group-hover:translate-x-0">
-                      →
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+        {/* Stats row */}
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+          className="flex flex-col md:flex-row justify-between items-center py-10"
+          style={{ borderTop: '1px solid #333333', borderBottom: '1px solid #333333' }}
+        >
+          {stats.map((stat, index) => (
+            <motion.div key={index} variants={fadeUp} className="flex-1 text-center py-6 md:py-0 w-full md:w-auto border-b md:border-b-0 md:border-r border-[#333333] last:border-0">
+              <div className="font-dm font-extrabold text-[#C8F000] text-[48px] leading-none mb-2">
+                <AnimatedCounter end={stat.value} suffix={stat.suffix} />
+              </div>
+              <div className="font-dm text-[#888888] text-[14px]">{stat.label}</div>
+            </motion.div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
