@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, Users, Camera, Cuboid, Monitor, 
   CreditCard, BarChart3, Settings, LogOut, Search, Plus, 
-  Edit2, Trash2, ShieldAlert, Menu, Lock
+  Edit2, Trash2, ShieldAlert, Menu, Lock, X
 } from 'lucide-react';
 
 const supabase = createClient(
@@ -35,6 +35,12 @@ const SuperAdminDashboard = () => {
     setToast({ show: true, msg, type });
     setTimeout(() => setToast({ show: false, msg: '', type: 'success' }), 3000);
   };
+
+  // Modal State
+  const [modalType, setModalType] = useState(null); // 'client' | 'project' | 'instagram' | 'subscription'
+  const [modalMode, setModalMode] = useState('add'); // 'add' | 'edit'
+  const [formData, setFormData] = useState({});
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     checkSession();
@@ -91,11 +97,167 @@ const SuperAdminDashboard = () => {
     return 'bg-white/10 text-white border-white/20';
   };
 
+  // Modal Open Handlers
+  const handleOpenClientModal = (mode, client = null) => {
+    setModalMode(mode);
+    if (mode === 'add') {
+      setFormData({
+        name: '',
+        owner_name: '',
+        phone: '',
+        email: '',
+        city: '',
+        business_type: 'other',
+        status: 'active'
+      });
+    } else if (client) {
+      setFormData({
+        id: client.id,
+        name: client.name || '',
+        owner_name: client.owner_name || '',
+        phone: client.phone || '',
+        email: client.email || '',
+        city: client.city || '',
+        business_type: client.business_type || 'other',
+        status: client.status || 'active'
+      });
+    }
+    setModalType('client');
+  };
+
+  const handleOpenProjectModal = (mode, serviceType, project = null) => {
+    setModalMode(mode);
+    if (mode === 'add') {
+      setFormData({
+        client_id: allClients[0]?.id || '',
+        service_type: serviceType,
+        package: 'standard',
+        monthly_fee: 0,
+        status: 'in_progress',
+        start_date: new Date().toISOString().slice(0, 10),
+        notes: '',
+        tech_stack: 'HTML/CSS/JS',
+        website_type: 'Landing Page',
+        model_count: 5
+      });
+    } else if (project) {
+      setFormData({
+        id: project.id,
+        client_id: project.client_id || '',
+        service_type: project.service_type || serviceType,
+        package: project.package || 'standard',
+        monthly_fee: project.monthly_fee || 0,
+        status: project.status || 'in_progress',
+        start_date: project.start_date ? project.start_date.slice(0, 10) : '',
+        notes: project.notes || '',
+        tech_stack: project.tech_stack || 'HTML/CSS/JS',
+        website_type: project.website_type || 'Landing Page',
+        model_count: project.model_count || 5
+      });
+    }
+    setModalType('project');
+  };
+
+  const handleOpenInstaModal = (mode, ip = null) => {
+    setModalMode(mode);
+    if (mode === 'add') {
+      setFormData({
+        client_id: allClients[0]?.id || '',
+        instagram_handle: '',
+        package: 'standard',
+        posts_per_month: 20,
+        reels_per_month: 4,
+        monthly_fee: 5000,
+        status: 'in_progress',
+        start_date: new Date().toISOString().slice(0, 10),
+        next_post_due: '',
+        login_username: '',
+        login_password: '',
+        notes: ''
+      });
+    } else if (ip) {
+      setFormData({
+        id: ip.id,
+        project_id: ip.project_id || ip.projects?.id || '',
+        client_id: ip.client_id || '',
+        instagram_handle: ip.instagram_handle || '',
+        package: ip.projects?.package || ip.package || 'standard',
+        posts_per_month: ip.posts_per_month || 20,
+        reels_per_month: ip.reels_per_month || 4,
+        monthly_fee: ip.projects?.monthly_fee || ip.monthly_fee || 5000,
+        status: ip.projects?.status || ip.status || 'in_progress',
+        start_date: ip.start_date ? ip.start_date.slice(0, 10) : '',
+        next_post_due: ip.next_post_due ? ip.next_post_due.slice(0, 10) : '',
+        login_username: ip.login_username || '',
+        login_password: ip.login_password || '',
+        notes: ip.notes || ip.content_notes || ''
+      });
+    }
+    setModalType('instagram');
+  };
+
+  const handleOpenSubModal = (mode, s = null) => {
+    setModalMode(mode);
+    if (mode === 'add') {
+      setFormData({
+        client_id: allClients[0]?.id || '',
+        project_id: '',
+        service_type: 'instagram',
+        amount: 0,
+        status: 'pending',
+        start_date: new Date().toISOString().slice(0, 10),
+        due_date: ''
+      });
+    } else if (s) {
+      setFormData({
+        id: s.id,
+        client_id: s.client_id || '',
+        project_id: s.project_id || '',
+        service_type: s.service_type || 'instagram',
+        amount: s.amount || 0,
+        status: s.status || 'pending',
+        start_date: s.start_date ? s.start_date.slice(0, 10) : '',
+        due_date: s.due_date ? s.due_date.slice(0, 10) : ''
+      });
+    }
+    setModalType('subscription');
+  };
+
+  // CRUD Delete Operations
   const handleDeleteClient = async (id) => {
     if(!window.confirm('Delete this client? This cannot be undone.')) return;
     const { error } = await supabase.from('clients').delete().eq('id', id);
     if(error){ showToast('Error deleting client', 'error'); return; }
     showToast('Client deleted successfully');
+    loadAllData();
+  };
+
+  const handleDeleteProject = async (id) => {
+    if(!window.confirm('Delete this project? This will delete associated subscriptions and Instagram project data.')) return;
+    await supabase.from('instagram_projects').delete().eq('project_id', id);
+    await supabase.from('subscriptions').delete().eq('project_id', id);
+    const { error } = await supabase.from('projects').delete().eq('id', id);
+    if(error){ showToast('Error deleting project', 'error'); return; }
+    showToast('Project deleted successfully');
+    loadAllData();
+  };
+
+  const handleDeleteInsta = async (instaId, projectId) => {
+    if(!window.confirm('Delete this Instagram project?')) return;
+    await supabase.from('instagram_projects').delete().eq('id', instaId);
+    if (projectId) {
+      await supabase.from('subscriptions').delete().eq('project_id', projectId);
+      await supabase.from('projects').delete().eq('id', projectId);
+    }
+    showToast('Instagram project deleted successfully');
+    loadAllData();
+  };
+
+  const handleDeleteSub = async (id) => {
+    if(!window.confirm('Delete this subscription? This cannot be undone.')) return;
+    const { error } = await supabase.from('subscriptions').delete().eq('id', id);
+    if(error){ showToast('Error deleting subscription', 'error'); return; }
+    showToast('Subscription deleted successfully');
     loadAllData();
   };
 
@@ -105,6 +267,162 @@ const SuperAdminDashboard = () => {
     if(error){ showToast('Error updating status', 'error'); return; }
     showToast(`Status updated to ${newStatus}`);
     loadAllData();
+  };
+
+  // CRUD Form Submission Handling
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      if (modalType === 'client') {
+        if (modalMode === 'add') {
+          const { error } = await supabase.from('clients').insert([{
+            name: formData.name,
+            owner_name: formData.owner_name || null,
+            phone: formData.phone || null,
+            email: formData.email || null,
+            city: formData.city || null,
+            business_type: formData.business_type,
+            status: formData.status
+          }]);
+          if (error) throw error;
+          showToast('Client added successfully');
+        } else {
+          const { error } = await supabase.from('clients').update({
+            name: formData.name,
+            owner_name: formData.owner_name || null,
+            phone: formData.phone || null,
+            email: formData.email || null,
+            city: formData.city || null,
+            business_type: formData.business_type,
+            status: formData.status
+          }).eq('id', formData.id);
+          if (error) throw error;
+          showToast('Client updated successfully');
+        }
+      } else if (modalType === 'project') {
+        if (modalMode === 'add') {
+          const { error } = await supabase.from('projects').insert([{
+            client_id: formData.client_id,
+            service_type: formData.service_type,
+            package: formData.package,
+            monthly_fee: parseFloat(formData.monthly_fee) || 0,
+            status: formData.status,
+            start_date: formData.start_date || null,
+            notes: formData.notes || null,
+            tech_stack: formData.service_type === 'website' ? formData.tech_stack : null,
+            website_type: formData.service_type === 'website' ? formData.website_type : null,
+            model_count: formData.service_type === 'ar_menu' ? parseInt(formData.model_count) || null : null
+          }]);
+          if (error) throw error;
+          showToast('Project added successfully');
+        } else {
+          const { error } = await supabase.from('projects').update({
+            client_id: formData.client_id,
+            service_type: formData.service_type,
+            package: formData.package,
+            monthly_fee: parseFloat(formData.monthly_fee) || 0,
+            status: formData.status,
+            start_date: formData.start_date || null,
+            notes: formData.notes || null,
+            tech_stack: formData.service_type === 'website' ? formData.tech_stack : null,
+            website_type: formData.service_type === 'website' ? formData.website_type : null,
+            model_count: formData.service_type === 'ar_menu' ? parseInt(formData.model_count) || null : null
+          }).eq('id', formData.id);
+          if (error) throw error;
+          showToast('Project updated successfully');
+        }
+      } else if (modalType === 'instagram') {
+        if (modalMode === 'add') {
+          // Insert into projects table first
+          const { data: project, error: e1 } = await supabase.from('projects').insert([{
+            client_id: formData.client_id,
+            service_type: 'instagram',
+            package: formData.package,
+            monthly_fee: parseFloat(formData.monthly_fee) || 0,
+            status: formData.status,
+            start_date: formData.start_date || null
+          }]).select().single();
+          if (e1) throw e1;
+
+          // Insert into instagram_projects table
+          const { error: e2 } = await supabase.from('instagram_projects').insert([{
+            project_id: project.id,
+            client_id: formData.client_id,
+            instagram_handle: formData.instagram_handle,
+            posts_per_month: parseInt(formData.posts_per_month) || 0,
+            reels_per_month: parseInt(formData.reels_per_month) || 0,
+            next_post_due: formData.next_post_due || null,
+            login_username: formData.login_username || null,
+            login_password: formData.login_password || null,
+            content_notes: formData.notes || null
+          }]);
+          if (e2) {
+            // Clean up project record if instagram_project fails
+            await supabase.from('projects').delete().eq('id', project.id);
+            throw e2;
+          }
+          showToast('Instagram project added successfully');
+        } else {
+          // Update instagram_projects
+          const { error: e1 } = await supabase.from('instagram_projects').update({
+            instagram_handle: formData.instagram_handle,
+            posts_per_month: parseInt(formData.posts_per_month) || 0,
+            reels_per_month: parseInt(formData.reels_per_month) || 0,
+            next_post_due: formData.next_post_due || null,
+            login_username: formData.login_username || null,
+            login_password: formData.login_password || null,
+            content_notes: formData.notes || null
+          }).eq('id', formData.id);
+          if (e1) throw e1;
+
+          // Update projects
+          if (formData.project_id) {
+            const { error: e2 } = await supabase.from('projects').update({
+              package: formData.package,
+              monthly_fee: parseFloat(formData.monthly_fee) || 0,
+              status: formData.status,
+              start_date: formData.start_date || null
+            }).eq('id', formData.project_id);
+            if (e2) throw e2;
+          }
+          showToast('Instagram project updated successfully');
+        }
+      } else if (modalType === 'subscription') {
+        if (modalMode === 'add') {
+          const { error } = await supabase.from('subscriptions').insert([{
+            client_id: formData.client_id,
+            project_id: formData.project_id || null,
+            service_type: formData.service_type,
+            amount: parseFloat(formData.amount) || 0,
+            status: formData.status,
+            start_date: formData.start_date || null,
+            due_date: formData.due_date || null
+          }]);
+          if (error) throw error;
+          showToast('Subscription added successfully');
+        } else {
+          const { error } = await supabase.from('subscriptions').update({
+            client_id: formData.client_id,
+            project_id: formData.project_id || null,
+            service_type: formData.service_type,
+            amount: parseFloat(formData.amount) || 0,
+            status: formData.status,
+            start_date: formData.start_date || null,
+            due_date: formData.due_date || null
+          }).eq('id', formData.id);
+          if (error) throw error;
+          showToast('Subscription updated successfully');
+        }
+      }
+      setModalType(null);
+      loadAllData();
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      showToast(err.message || 'Error saving changes', 'error');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading) return <div className="min-h-screen bg-[#000000] flex items-center justify-center"><div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div></div>;
@@ -225,7 +543,7 @@ const SuperAdminDashboard = () => {
                 <div className="space-y-6">
                   <div className="flex flex-col sm:flex-row gap-4 justify-between">
                     <input type="text" placeholder="Search clients..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full sm:w-96 bg-white/5 border border-white/10 rounded-full px-5 py-2.5 text-sm focus:outline-none focus:border-white/50 text-white" />
-                    <button className="bg-white text-black hover:bg-gray-200 px-6 py-2.5 rounded-full font-medium transition-all whitespace-nowrap flex items-center justify-center gap-2 text-sm"><Plus className="w-4 h-4"/> Add Client</button>
+                    <button onClick={() => handleOpenClientModal('add')} className="bg-white text-black hover:bg-gray-200 px-6 py-2.5 rounded-full font-medium transition-all whitespace-nowrap flex items-center justify-center gap-2 text-sm"><Plus className="w-4 h-4"/> Add Client</button>
                   </div>
                   <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl overflow-hidden">
                     <div className="overflow-x-auto">
@@ -240,7 +558,8 @@ const SuperAdminDashboard = () => {
                               <td className="p-4"><span className={`text-[10px] uppercase font-bold px-2.5 py-1 rounded-full border ${getBadgeColor(c.status)}`}>{c.status}</span></td>
                               <td className="p-4 text-right">
                                 <div className="flex items-center justify-end gap-2">
-                                  <button onClick={() => handleToggleClientStatus(c.id, c.status)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors" title="Toggle Status"><Edit2 className="w-4 h-4"/></button>
+                                  <button onClick={() => handleToggleClientStatus(c.id, c.status)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors" title="Toggle Status (Active/Inactive)"><Edit2 className="w-4 h-4" style={{opacity: 0.5}} /></button>
+                                  <button onClick={() => handleOpenClientModal('edit', c)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors" title="Edit Client"><Edit2 className="w-4 h-4"/></button>
                                   <button onClick={() => handleDeleteClient(c.id)} className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-colors" title="Delete Client"><Trash2 className="w-4 h-4"/></button>
                                 </div>
                               </td>
@@ -255,13 +574,37 @@ const SuperAdminDashboard = () => {
 
               {activeTab === 'instagram' && (
                 <div className="space-y-6">
-                  <div className="flex justify-between"><h3 className="text-xl font-medium">Instagram Projects</h3><button className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-medium">New Insta Project</button></div>
+                  <div className="flex justify-between">
+                    <h3 className="text-xl font-medium">Instagram Projects</h3>
+                    <button onClick={() => handleOpenInstaModal('add')} className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-1"><Plus className="w-4 h-4"/> New Insta Project</button>
+                  </div>
                   <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden overflow-x-auto">
                     <table className="w-full text-left">
-                      <thead><tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider"><th className="p-4">Client</th><th className="p-4">Package</th><th className="p-4">Posts/Reels</th><th className="p-4">Fee</th><th className="p-4">Status</th></tr></thead>
+                      <thead>
+                        <tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider">
+                          <th className="p-4">Client</th>
+                          <th className="p-4">Package</th>
+                          <th className="p-4">Posts/Reels</th>
+                          <th className="p-4">Fee</th>
+                          <th className="p-4">Status</th>
+                          <th className="p-4 text-right">Actions</th>
+                        </tr>
+                      </thead>
                       <tbody>
                         {allInstaProjects.map((p, i) => (
-                          <tr key={i} className="border-b border-white/5 hover:bg-white/5"><td className="p-4 font-medium">{p.clients?.name}</td><td className="p-4 text-gray-400 capitalize">{p.projects?.package || 'Standard'}</td><td className="p-4 text-sm">{p.posts_per_month} / {p.reels_per_month}</td><td className="p-4">₹{p.projects?.monthly_fee}</td><td className="p-4"><span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full border ${getBadgeColor(p.projects?.status)}`}>{p.projects?.status}</span></td></tr>
+                          <tr key={i} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="p-4 font-medium">{p.clients?.name}</td>
+                            <td className="p-4 text-gray-400 capitalize">{p.projects?.package || p.package || 'Standard'}</td>
+                            <td className="p-4 text-sm">{p.posts_per_month} / {p.reels_per_month}</td>
+                            <td className="p-4">₹{(p.projects?.monthly_fee || p.monthly_fee || 0).toLocaleString()}</td>
+                            <td className="p-4"><span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full border ${getBadgeColor(p.projects?.status || p.status)}`}>{p.projects?.status || p.status}</span></td>
+                            <td className="p-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button onClick={() => handleOpenInstaModal('edit', p)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors" title="Edit Instagram Project"><Edit2 className="w-4 h-4"/></button>
+                                <button onClick={() => handleDeleteInsta(p.id, p.projects?.id || p.project_id)} className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-colors" title="Delete Instagram Project"><Trash2 className="w-4 h-4"/></button>
+                              </div>
+                            </td>
+                          </tr>
                         ))}
                       </tbody>
                     </table>
@@ -271,13 +614,35 @@ const SuperAdminDashboard = () => {
 
               {activeTab === 'armenu' && (
                 <div className="space-y-6">
-                  <div className="flex justify-between"><h3 className="text-xl font-medium">AR Menu Projects</h3><button className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-medium">New AR Project</button></div>
+                  <div className="flex justify-between">
+                    <h3 className="text-xl font-medium">AR Menu Projects</h3>
+                    <button onClick={() => handleOpenProjectModal('add', 'ar_menu')} className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-1"><Plus className="w-4 h-4"/> New AR Project</button>
+                  </div>
                   <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden overflow-x-auto">
                     <table className="w-full text-left">
-                      <thead><tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider"><th className="p-4">Client</th><th className="p-4">Package</th><th className="p-4">Status</th><th className="p-4">Fee</th></tr></thead>
+                      <thead>
+                        <tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider">
+                          <th className="p-4">Client</th>
+                          <th className="p-4">Package</th>
+                          <th className="p-4">Status</th>
+                          <th className="p-4">Fee</th>
+                          <th className="p-4 text-right">Actions</th>
+                        </tr>
+                      </thead>
                       <tbody>
                         {allProjects.filter(p=>p.service_type==='ar_menu').map((p, i) => (
-                          <tr key={i} className="border-b border-white/5 hover:bg-white/5"><td className="p-4 font-medium">{p.clients?.name}</td><td className="p-4 text-gray-400 capitalize">{p.package || 'Standard'}</td><td className="p-4"><span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full border ${getBadgeColor(p.status)}`}>{p.status}</span></td><td className="p-4">₹{p.monthly_fee}</td></tr>
+                          <tr key={i} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="p-4 font-medium">{p.clients?.name}</td>
+                            <td className="p-4 text-gray-400 capitalize">{p.package || 'Standard'}</td>
+                            <td className="p-4"><span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full border ${getBadgeColor(p.status)}`}>{p.status}</span></td>
+                            <td className="p-4">₹{(p.monthly_fee || 0).toLocaleString()}</td>
+                            <td className="p-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button onClick={() => handleOpenProjectModal('edit', 'ar_menu', p)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors" title="Edit AR Project"><Edit2 className="w-4 h-4"/></button>
+                                <button onClick={() => handleDeleteProject(p.id)} className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-colors" title="Delete AR Project"><Trash2 className="w-4 h-4"/></button>
+                              </div>
+                            </td>
+                          </tr>
                         ))}
                       </tbody>
                     </table>
@@ -287,13 +652,35 @@ const SuperAdminDashboard = () => {
 
               {activeTab === 'websites' && (
                 <div className="space-y-6">
-                  <div className="flex justify-between"><h3 className="text-xl font-medium">Website Projects</h3><button className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-medium">New Website</button></div>
+                  <div className="flex justify-between">
+                    <h3 className="text-xl font-medium">Website Projects</h3>
+                    <button onClick={() => handleOpenProjectModal('add', 'website')} className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-1"><Plus className="w-4 h-4"/> New Website</button>
+                  </div>
                   <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden overflow-x-auto">
                     <table className="w-full text-left">
-                      <thead><tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider"><th className="p-4">Client</th><th className="p-4">Tech Stack</th><th className="p-4">Status</th><th className="p-4">Fee</th></tr></thead>
+                      <thead>
+                        <tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider">
+                          <th className="p-4">Client</th>
+                          <th className="p-4">Tech Stack</th>
+                          <th className="p-4">Status</th>
+                          <th className="p-4">Fee</th>
+                          <th className="p-4 text-right">Actions</th>
+                        </tr>
+                      </thead>
                       <tbody>
                         {allProjects.filter(p=>p.service_type==='website').map((p, i) => (
-                          <tr key={i} className="border-b border-white/5 hover:bg-white/5"><td className="p-4 font-medium">{p.clients?.name}</td><td className="p-4 text-gray-400 capitalize">{p.tech_stack || 'React'}</td><td className="p-4"><span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full border ${getBadgeColor(p.status)}`}>{p.status}</span></td><td className="p-4">₹{p.monthly_fee}</td></tr>
+                          <tr key={i} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="p-4 font-medium">{p.clients?.name}</td>
+                            <td className="p-4 text-gray-400 capitalize">{p.tech_stack || 'React'}</td>
+                            <td className="p-4"><span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full border ${getBadgeColor(p.status)}`}>{p.status}</span></td>
+                            <td className="p-4">₹{(p.monthly_fee || 0).toLocaleString()}</td>
+                            <td className="p-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button onClick={() => handleOpenProjectModal('edit', 'website', p)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors" title="Edit Website Project"><Edit2 className="w-4 h-4"/></button>
+                                <button onClick={() => handleDeleteProject(p.id)} className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-colors" title="Delete Website Project"><Trash2 className="w-4 h-4"/></button>
+                              </div>
+                            </td>
+                          </tr>
                         ))}
                       </tbody>
                     </table>
@@ -303,13 +690,35 @@ const SuperAdminDashboard = () => {
 
               {activeTab === 'subscriptions' && (
                 <div className="space-y-6">
-                  <div className="flex justify-between"><h3 className="text-xl font-medium">Subscriptions</h3><button className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-medium">New Subscription</button></div>
+                  <div className="flex justify-between">
+                    <h3 className="text-xl font-medium">Subscriptions</h3>
+                    <button onClick={() => handleOpenSubModal('add')} className="bg-white text-black hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-1"><Plus className="w-4 h-4"/> New Subscription</button>
+                  </div>
                   <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden overflow-x-auto">
                     <table className="w-full text-left">
-                      <thead><tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider"><th className="p-4">Client</th><th className="p-4">Service</th><th className="p-4">Amount</th><th className="p-4">Status</th></tr></thead>
+                      <thead>
+                        <tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider">
+                          <th className="p-4">Client</th>
+                          <th className="p-4">Service</th>
+                          <th className="p-4">Amount</th>
+                          <th className="p-4">Status</th>
+                          <th className="p-4 text-right">Actions</th>
+                        </tr>
+                      </thead>
                       <tbody>
                         {allSubscriptions.map((s, i) => (
-                          <tr key={i} className="border-b border-white/5 hover:bg-white/5"><td className="p-4 font-medium">{s.clients?.name}</td><td className="p-4 text-gray-400 capitalize">{(s.service_type||'').replace('_',' ')}</td><td className="p-4">₹{s.amount}</td><td className="p-4"><span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full border ${getBadgeColor(s.status)}`}>{s.status}</span></td></tr>
+                          <tr key={i} className="border-b border-white/5 hover:bg-white/5">
+                            <td className="p-4 font-medium">{s.clients?.name}</td>
+                            <td className="p-4 text-gray-400 capitalize">{(s.service_type||'').replace('_',' ')}</td>
+                            <td className="p-4">₹{(s.amount||0).toLocaleString()}</td>
+                            <td className="p-4"><span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full border ${getBadgeColor(s.status)}`}>{s.status}</span></td>
+                            <td className="p-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button onClick={() => handleOpenSubModal('edit', s)} className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors" title="Edit Subscription"><Edit2 className="w-4 h-4"/></button>
+                                <button onClick={() => handleDeleteSub(s.id)} className="p-2 text-gray-400 hover:text-red-400 hover:bg-red-400/10 rounded-xl transition-colors" title="Delete Subscription"><Trash2 className="w-4 h-4"/></button>
+                              </div>
+                            </td>
+                          </tr>
                         ))}
                       </tbody>
                     </table>
@@ -429,6 +838,546 @@ const SuperAdminDashboard = () => {
           </AnimatePresence>
         </div>
       </main>
+      <AnimatePresence>
+        {modalType && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-[#0b0b0b] border border-white/10 rounded-3xl p-6 md:p-8 w-full max-w-lg shadow-2xl relative max-h-[90vh] overflow-y-auto text-left"
+            >
+              <button 
+                type="button"
+                onClick={() => setModalType(null)} 
+                className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <h3 className="text-2xl font-bebas tracking-wide text-white mb-6">
+                {modalMode === 'add' ? 'ADD' : 'EDIT'} {modalType.toUpperCase()}
+              </h3>
+
+              <form onSubmit={handleFormSubmit} className="space-y-4 text-left">
+                {modalType === 'client' && (
+                  <>
+                    <div>
+                      <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Client Name *</label>
+                      <input 
+                        type="text" 
+                        value={formData.name || ''} 
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })} 
+                        className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        required 
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Owner Name</label>
+                      <input 
+                        type="text" 
+                        value={formData.owner_name || ''} 
+                        onChange={(e) => setFormData({ ...formData, owner_name: e.target.value })} 
+                        className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Phone</label>
+                        <input 
+                          type="text" 
+                          value={formData.phone || ''} 
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Email</label>
+                        <input 
+                          type="email" 
+                          value={formData.email || ''} 
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">City</label>
+                      <input 
+                        type="text" 
+                        value={formData.city || ''} 
+                        onChange={(e) => setFormData({ ...formData, city: e.target.value })} 
+                        className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Business Type</label>
+                        <select 
+                          value={formData.business_type || 'other'} 
+                          onChange={(e) => setFormData({ ...formData, business_type: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        >
+                          <option value="cafe" className="bg-black text-white">Cafe</option>
+                          <option value="restaurant" className="bg-black text-white">Restaurant</option>
+                          <option value="shop" className="bg-black text-white">Shop</option>
+                          <option value="other" className="bg-black text-white">Other</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Status</label>
+                        <select 
+                          value={formData.status || 'active'} 
+                          onChange={(e) => setFormData({ ...formData, status: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        >
+                          <option value="active" className="bg-black text-white">Active</option>
+                          <option value="pending" className="bg-black text-white">Pending</option>
+                          <option value="inactive" className="bg-black text-white">Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {modalType === 'project' && (
+                  <>
+                    {modalMode === 'add' ? (
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Client *</label>
+                        <select 
+                          value={formData.client_id || ''} 
+                          onChange={(e) => setFormData({ ...formData, client_id: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                          required
+                        >
+                          {allClients.length === 0 ? (
+                            <option value="">No clients — add one first</option>
+                          ) : (
+                            allClients.map((c) => (
+                              <option key={c.id} value={c.id} className="bg-black text-white">{c.name}</option>
+                            ))
+                          )}
+                        </select>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Client</label>
+                        <input 
+                          type="text" 
+                          value={allClients.find(c => c.id === formData.client_id)?.name || 'Unknown'} 
+                          className="w-full bg-black/30 border border-white/5 rounded-xl px-4 py-3 text-sm text-gray-400 focus:outline-none cursor-not-allowed"
+                          readOnly
+                        />
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Service Type</label>
+                        <select 
+                          value={formData.service_type || 'ar_menu'} 
+                          onChange={(e) => setFormData({ ...formData, service_type: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        >
+                          <option value="ar_menu" className="bg-black text-white">AR Menu</option>
+                          <option value="website" className="bg-black text-white">Website</option>
+                          <option value="digital_growth" className="bg-black text-white">Digital Growth</option>
+                          <option value="bundle" className="bg-black text-white">Bundle</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Package</label>
+                        <select 
+                          value={formData.package || 'standard'} 
+                          onChange={(e) => setFormData({ ...formData, package: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        >
+                          <option value="basic" className="bg-black text-white">Basic</option>
+                          <option value="standard" className="bg-black text-white">Standard</option>
+                          <option value="premium" className="bg-black text-white">Premium</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Monthly Fee (₹)</label>
+                        <input 
+                          type="number" 
+                          value={formData.monthly_fee || 0} 
+                          onChange={(e) => setFormData({ ...formData, monthly_fee: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Status</label>
+                        <select 
+                          value={formData.status || 'in_progress'} 
+                          onChange={(e) => setFormData({ ...formData, status: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        >
+                          <option value="in_progress" className="bg-black text-white">In Progress</option>
+                          <option value="active" className="bg-black text-white">Active</option>
+                          <option value="completed" className="bg-black text-white">Completed</option>
+                          <option value="paused" className="bg-black text-white">Paused</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {formData.service_type === 'website' && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Tech Stack</label>
+                          <input 
+                            type="text" 
+                            value={formData.tech_stack || 'HTML/CSS/JS'} 
+                            onChange={(e) => setFormData({ ...formData, tech_stack: e.target.value })} 
+                            className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Website Type</label>
+                          <input 
+                            type="text" 
+                            value={formData.website_type || 'Landing Page'} 
+                            onChange={(e) => setFormData({ ...formData, website_type: e.target.value })} 
+                            className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {formData.service_type === 'ar_menu' && (
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Model Count</label>
+                        <input 
+                          type="number" 
+                          value={formData.model_count || 5} 
+                          onChange={(e) => setFormData({ ...formData, model_count: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Start Date</label>
+                      <input 
+                        type="date" 
+                        value={formData.start_date || ''} 
+                        onChange={(e) => setFormData({ ...formData, start_date: e.target.value })} 
+                        className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Notes</label>
+                      <textarea 
+                        value={formData.notes || ''} 
+                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })} 
+                        className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors h-20 resize-none"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {modalType === 'instagram' && (
+                  <>
+                    {modalMode === 'add' ? (
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Client *</label>
+                        <select 
+                          value={formData.client_id || ''} 
+                          onChange={(e) => setFormData({ ...formData, client_id: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                          required
+                        >
+                          {allClients.length === 0 ? (
+                            <option value="">No clients — add one first</option>
+                          ) : (
+                            allClients.map((c) => (
+                              <option key={c.id} value={c.id} className="bg-black text-white">{c.name}</option>
+                            ))
+                          )}
+                        </select>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Client</label>
+                        <input 
+                          type="text" 
+                          value={allClients.find(c => c.id === formData.client_id)?.name || 'Unknown'} 
+                          className="w-full bg-black/30 border border-white/5 rounded-xl px-4 py-3 text-sm text-gray-400 focus:outline-none cursor-not-allowed"
+                          readOnly
+                        />
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Instagram Handle</label>
+                        <input 
+                          type="text" 
+                          placeholder="@username"
+                          value={formData.instagram_handle || ''} 
+                          onChange={(e) => setFormData({ ...formData, instagram_handle: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Package</label>
+                        <select 
+                          value={formData.package || 'standard'} 
+                          onChange={(e) => setFormData({ ...formData, package: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        >
+                          <option value="basic" className="bg-black text-white">Basic</option>
+                          <option value="standard" className="bg-black text-white">Standard</option>
+                          <option value="premium" className="bg-black text-white">Premium</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Posts Per Month</label>
+                        <input 
+                          type="number" 
+                          value={formData.posts_per_month || 0} 
+                          onChange={(e) => setFormData({ ...formData, posts_per_month: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Reels Per Month</label>
+                        <input 
+                          type="number" 
+                          value={formData.reels_per_month || 0} 
+                          onChange={(e) => setFormData({ ...formData, reels_per_month: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Monthly Fee (₹)</label>
+                        <input 
+                          type="number" 
+                          value={formData.monthly_fee || 0} 
+                          onChange={(e) => setFormData({ ...formData, monthly_fee: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Status</label>
+                        <select 
+                          value={formData.status || 'in_progress'} 
+                          onChange={(e) => setFormData({ ...formData, status: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        >
+                          <option value="in_progress" className="bg-black text-white">In Progress</option>
+                          <option value="active" className="bg-black text-white">Active</option>
+                          <option value="completed" className="bg-black text-white">Completed</option>
+                          <option value="paused" className="bg-black text-white">Paused</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Login Username</label>
+                        <input 
+                          type="text" 
+                          value={formData.login_username || ''} 
+                          onChange={(e) => setFormData({ ...formData, login_username: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Login Password</label>
+                        <input 
+                          type="text" 
+                          value={formData.login_password || ''} 
+                          onChange={(e) => setFormData({ ...formData, login_password: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Start Date</label>
+                        <input 
+                          type="date" 
+                          value={formData.start_date || ''} 
+                          onChange={(e) => setFormData({ ...formData, start_date: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Next Post Due</label>
+                        <input 
+                          type="date" 
+                          value={formData.next_post_due || ''} 
+                          onChange={(e) => setFormData({ ...formData, next_post_due: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Notes</label>
+                      <textarea 
+                        value={formData.notes || ''} 
+                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })} 
+                        className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors h-20 resize-none"
+                      />
+                    </div>
+                  </>
+                )}
+
+                {modalType === 'subscription' && (
+                  <>
+                    {modalMode === 'add' ? (
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Client *</label>
+                        <select 
+                          value={formData.client_id || ''} 
+                          onChange={(e) => {
+                            const newClientId = e.target.value;
+                            setFormData({ ...formData, client_id: newClientId, project_id: '' });
+                          }} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                          required
+                        >
+                          {allClients.length === 0 ? (
+                            <option value="">No clients — add one first</option>
+                          ) : (
+                            allClients.map((c) => (
+                              <option key={c.id} value={c.id} className="bg-black text-white">{c.name}</option>
+                            ))
+                          )}
+                        </select>
+                      </div>
+                    ) : (
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Client</label>
+                        <input 
+                          type="text" 
+                          value={allClients.find(c => c.id === formData.client_id)?.name || 'Unknown'} 
+                          className="w-full bg-black/30 border border-white/5 rounded-xl px-4 py-3 text-sm text-gray-400 focus:outline-none cursor-not-allowed"
+                          readOnly
+                        />
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Tie to Project (Optional)</label>
+                      <select 
+                        value={formData.project_id || ''} 
+                        onChange={(e) => {
+                          const newProjId = e.target.value;
+                          const foundProj = allProjects.find(p => p.id === newProjId);
+                          setFormData({ 
+                            ...formData, 
+                            project_id: newProjId || null,
+                            service_type: foundProj ? foundProj.service_type : formData.service_type,
+                            amount: foundProj ? foundProj.monthly_fee : formData.amount
+                          });
+                        }} 
+                        className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                      >
+                        <option value="" className="bg-black text-white">None / General</option>
+                        {allProjects.filter(p => p.client_id === formData.client_id).map((p) => (
+                          <option key={p.id} value={p.id} className="bg-black text-white">
+                            {p.service_type.replace('_',' ')} - {p.package} (₹{p.monthly_fee})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Service Type</label>
+                        <input 
+                          type="text" 
+                          value={formData.service_type || ''} 
+                          onChange={(e) => setFormData({ ...formData, service_type: e.target.value })} 
+                          placeholder="e.g. instagram, website"
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Amount (₹)</label>
+                        <input 
+                          type="number" 
+                          value={formData.amount || 0} 
+                          onChange={(e) => setFormData({ ...formData, amount: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Status</label>
+                      <select 
+                        value={formData.status || 'pending'} 
+                        onChange={(e) => setFormData({ ...formData, status: e.target.value })} 
+                        className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                      >
+                        <option value="pending" className="bg-black text-white">Pending</option>
+                        <option value="paid" className="bg-black text-white">Paid</option>
+                        <option value="overdue" className="bg-black text-white">Overdue</option>
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Start Date</label>
+                        <input 
+                          type="date" 
+                          value={formData.start_date || ''} 
+                          onChange={(e) => setFormData({ ...formData, start_date: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Due Date</label>
+                        <input 
+                          type="date" 
+                          value={formData.due_date || ''} 
+                          onChange={(e) => setFormData({ ...formData, due_date: e.target.value })} 
+                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <div className="flex gap-4 pt-4 border-t border-white/5">
+                  <button 
+                    type="button" 
+                    onClick={() => setModalType(null)} 
+                    className="flex-1 px-6 py-3.5 rounded-xl text-sm font-medium border border-white/10 hover:bg-white/5 transition-all text-center text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    disabled={submitting} 
+                    className="flex-1 px-6 py-3.5 rounded-xl text-sm font-bold bg-white text-black hover:bg-gray-200 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {submitting ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {toast.show && (
           <motion.div initial={{ opacity: 0, y: 50, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className={`fixed bottom-6 right-6 z-50 px-6 py-3 rounded-full border backdrop-blur-xl font-medium text-sm shadow-2xl flex items-center gap-3 ${toast.type === 'error' ? 'bg-red-500/10 border-red-500/20 text-red-400' : 'bg-white/10 border-white/20 text-white'}`}>
