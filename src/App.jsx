@@ -7,6 +7,7 @@ import Ticker from './components/Ticker';
 import Services from './components/Services';
 import HowItWorks from './components/HowItWorks';
 import Portfolio from './components/Portfolio';
+import CaseStudySection from './components/CaseStudySection';
 import Testimonials from './components/Testimonials';
 import Pricing from './components/Pricing';
 import About from './components/About';
@@ -59,6 +60,7 @@ function App() {
         <Ticker />
         <Services openModal={openModal} />
         <Portfolio openModal={openModal} />
+        <CaseStudySection />
         <Testimonials />
         <HowItWorks />
         <Pricing openModal={openModal} />
