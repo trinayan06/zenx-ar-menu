@@ -548,13 +548,33 @@ const SuperAdminDashboard = () => {
                   <div className="bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl overflow-hidden">
                     <div className="overflow-x-auto">
                       <table className="w-full text-left border-collapse">
-                        <thead><tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider"><th className="p-4 font-medium">Client Info</th><th className="p-4 font-medium">Type</th><th className="p-4 font-medium">Contact</th><th className="p-4 font-medium">Status</th><th className="p-4 font-medium text-right">Actions</th></tr></thead>
+                        <thead><tr className="bg-black/40 border-b border-white/10 text-gray-400 text-xs uppercase tracking-wider"><th className="p-4 font-medium">Client Info</th><th className="p-4 font-medium">Booked Services</th><th className="p-4 font-medium">Contact</th><th className="p-4 font-medium">Booking Time</th><th className="p-4 font-medium">Status</th><th className="p-4 font-medium text-right">Actions</th></tr></thead>
                         <tbody>
                           {allClients.filter(c => c.name?.toLowerCase().includes(searchQuery.toLowerCase())).map((c, i) => (
                             <tr key={i} className="border-b border-white/5 last:border-0 hover:bg-white/[0.02] transition-colors">
                               <td className="p-4"><div className="font-medium">{c.name}</div><div className="text-xs text-gray-500 mt-0.5">{c.city || 'No City'}</div></td>
-                              <td className="p-4 text-sm text-gray-400 capitalize">{c.business_type}</td>
+                              <td className="p-4 text-sm text-gray-400">
+                                <div className="flex flex-wrap gap-1 max-w-[200px]">
+                                  {(c.business_type || 'Lead').split(',').map((item, idx) => {
+                                    const trimmed = item.trim();
+                                    if (!trimmed) return null;
+                                    return (
+                                      <span key={idx} className="text-[10px] bg-white/10 border border-white/20 text-gray-200 px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
+                                        {trimmed}
+                                      </span>
+                                    );
+                                  })}
+                                </div>
+                              </td>
                               <td className="p-4"><div className="text-sm">{c.phone || '—'}</div><div className="text-xs text-gray-500 mt-0.5">{c.email || '—'}</div></td>
+                              <td className="p-4">
+                                <div className="text-sm">
+                                  {c.created_at ? new Date(c.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '—'}
+                                </div>
+                                <div className="text-xs text-gray-500 mt-0.5">
+                                  {c.created_at ? new Date(c.created_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : ''}
+                                </div>
+                              </td>
                               <td className="p-4"><span className={`text-[10px] uppercase font-bold px-2.5 py-1 rounded-full border ${getBadgeColor(c.status)}`}>{c.status}</span></td>
                               <td className="p-4 text-right">
                                 <div className="flex items-center justify-end gap-2">
@@ -910,31 +930,63 @@ const SuperAdminDashboard = () => {
                         className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-4">
                       <div>
-                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Business Type</label>
-                        <select 
-                          value={formData.business_type || 'other'} 
-                          onChange={(e) => setFormData({ ...formData, business_type: e.target.value })} 
-                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
-                        >
-                          <option value="cafe" className="bg-black text-white">Cafe</option>
-                          <option value="restaurant" className="bg-black text-white">Restaurant</option>
-                          <option value="shop" className="bg-black text-white">Shop</option>
-                          <option value="other" className="bg-black text-white">Other</option>
-                        </select>
+                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-2 block font-medium">Booked Services / Interests</label>
+                        <div className="flex flex-wrap gap-2 p-3 bg-black/40 border border-white/10 rounded-xl">
+                          {['Instagram', 'AR Menu', 'Website', 'Growth', 'AI Bots', 'Full Bundle'].map((interest) => {
+                            const selected = (formData.business_type || '').split(',').map(s => s.trim().toLowerCase());
+                            const isChecked = selected.includes(interest.toLowerCase());
+                            return (
+                              <button
+                                key={interest}
+                                type="button"
+                                onClick={() => {
+                                  const current = (formData.business_type || '').split(',').map(s => s.trim()).filter(Boolean);
+                                  const index = current.findIndex(s => s.toLowerCase() === interest.toLowerCase());
+                                  let updated;
+                                  if (index > -1) {
+                                    updated = current.filter((_, idx) => idx !== index);
+                                  } else {
+                                    updated = [...current, interest];
+                                  }
+                                  setFormData({ ...formData, business_type: updated.join(', ') || 'Lead' });
+                                }}
+                                className={`px-3 py-1.5 rounded-full border text-xs font-dm transition-all ${
+                                  isChecked
+                                    ? 'border-white bg-white text-black font-bold'
+                                    : 'border-white/10 text-gray-400 hover:border-white/30 hover:text-white'
+                                }`}
+                              >
+                                {interest}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
-                      <div>
-                        <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Status</label>
-                        <select 
-                          value={formData.status || 'active'} 
-                          onChange={(e) => setFormData({ ...formData, status: e.target.value })} 
-                          className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
-                        >
-                          <option value="active" className="bg-black text-white">Active</option>
-                          <option value="pending" className="bg-black text-white">Pending</option>
-                          <option value="inactive" className="bg-black text-white">Inactive</option>
-                        </select>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Custom Business Type / Notes</label>
+                          <input 
+                            type="text" 
+                            placeholder="e.g. Restaurant, Cafe"
+                            value={formData.business_type || ''} 
+                            onChange={(e) => setFormData({ ...formData, business_type: e.target.value })} 
+                            className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs text-gray-400 uppercase tracking-wider mb-1 block">Status</label>
+                          <select 
+                            value={formData.status || 'active'} 
+                            onChange={(e) => setFormData({ ...formData, status: e.target.value })} 
+                            className="w-full bg-black/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-white/50 transition-colors"
+                          >
+                            <option value="active" className="bg-black text-white">Active</option>
+                            <option value="pending" className="bg-black text-white">Pending</option>
+                            <option value="inactive" className="bg-black text-white">Inactive</option>
+                          </select>
+                        </div>
                       </div>
                     </div>
                   </>
