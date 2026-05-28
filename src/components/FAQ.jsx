@@ -18,7 +18,7 @@ const faqs = [
   },
   {
     q: 'What is the AR Menu system?',
-    a: 'Customers scan QR code, see 3D dish models in AR on their table. Boosts order value by up to 35%.'
+    a: <span>Customers scan a QR code to see 3D dish models in AR right on their table. This boosts average order value by up to 35%. <a href="/menu.html" target="_blank" rel="noopener noreferrer" className="text-black font-bold underline hover:text-[#C8F000]">Try the live demo menu here →</a></span>
   },
   {
     q: 'Can I cancel anytime?',

@@ -95,6 +95,7 @@ export default function Services({ openModal }) {
             <TiltCard
               className="bg-[#0D0D0D] p-8 md:p-10 flex flex-col justify-between group w-full"
               style={{ borderRadius: '24px' }}
+              onClick={() => window.open('/menu.html', '_blank')}
             >
               <div className="flex justify-between items-start mb-12">
                 <div className="w-12 h-12 rounded-2xl bg-[#1A1A1A] flex items-center justify-center text-[#C8F000]">

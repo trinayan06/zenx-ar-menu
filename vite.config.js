@@ -8,5 +8,16 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  publicDir: 'public'
+  publicDir: 'public',
+  build: {
+    rollupOptions: {
+      input: {
+        main: 'index.html',
+        menu: 'menu.html',
+        viewer: 'viewer.html',
+        admin: 'admin.html',
+        qr: 'qr.html',
+      }
+    }
+  }
 })

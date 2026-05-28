@@ -9,22 +9,26 @@ const projects = [
   { 
     title: 'VIP Cafe', 
     category: 'Instagram Management', 
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=100'
+    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=100',
+    link: 'https://instagram.com/zen_x_2026'
   },
   { 
     title: 'Restaurant AR Menu', 
     category: 'AR Experience', 
-    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=100'
+    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=100',
+    link: '/menu.html'
   },
   { 
     title: 'ZEN_X Website', 
     category: 'Website Development', 
-    image: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=1200&q=100'
+    image: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=1200&q=100',
+    link: '/'
   },
   { 
     title: 'Client Automation Bot', 
     category: 'WhatsApp Automation', 
-    image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=100'
+    image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=100',
+    link: '#'
   },
 ];
 
@@ -103,7 +107,14 @@ export default function Portfolio() {
               key={index}
               variants={fadeUp}
             >
-              <TiltCard className="group w-full">
+              <TiltCard 
+                className="group w-full"
+                onClick={() => {
+                  if (project.link && project.link !== '#') {
+                    window.open(project.link, '_blank');
+                  }
+                }}
+              >
                 <div className="w-full aspect-[4/3] bg-[#1A1A1A] overflow-hidden mb-5" style={{ borderRadius: '16px' }}>
                   <img 
                     src={project.image} 
