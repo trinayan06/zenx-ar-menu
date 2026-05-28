@@ -19,10 +19,10 @@ const projects = [
     link: 'https://cafe-demo-liard.vercel.app'
   },
   { 
-    title: 'Salon Demo Website', 
+    title: 'Touch & Glow Beauty Parlour', 
     category: 'Website Development', 
     image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&q=100',
-    link: 'https://salon-demo-website.lovable.app'
+    link: 'https://touch-and-glow-beauty-palour.netlify.app/'
   },
   { 
     title: 'Restaurant AR Menu', 
