@@ -13,6 +13,18 @@ const projects = [
     link: 'https://instagram.com/zen_x_2026'
   },
   { 
+    title: 'Cafe Demo Website', 
+    category: 'Website Development', 
+    image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200&q=100',
+    link: 'https://cafe-demo-liard.vercel.app'
+  },
+  { 
+    title: 'Salon Demo Website', 
+    category: 'Website Development', 
+    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&q=100',
+    link: 'https://salon-demo-website.lovable.app'
+  },
+  { 
     title: 'Restaurant AR Menu', 
     category: 'AR Experience', 
     image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=100',
