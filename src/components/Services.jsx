@@ -21,16 +21,15 @@ export default function Services({ openModal }) {
               variants={fadeUp}
               className="text-[36px] md:text-[48px] font-dm font-extrabold text-[#1A1A1A] leading-[1.1] tracking-tight"
             >
-              Everything you need to dominate your market.
+              We don't sell services. We solve business problems.
             </motion.h2>
+            <motion.p
+              variants={fadeUp}
+              className="font-dm text-[#666666] text-[16px] mt-3"
+            >
+              Every business is different. We listen first, then build exactly what moves the needle for you.
+            </motion.p>
           </div>
-          <motion.a
-            variants={fadeUp}
-            href="#work"
-            className="inline-flex items-center gap-2 font-dm font-bold text-[14px] text-[#1A1A1A] hover:text-[#C8F000] transition-colors"
-          >
-            View All Services <ArrowUpRight size={18} />
-          </motion.a>
         </motion.div>
 
         {/* Bento Grid */}
@@ -49,7 +48,7 @@ export default function Services({ openModal }) {
             >
               <div className="flex justify-between items-start mb-16">
                 <span className="bg-[#0D0D0D] text-white font-dm font-bold text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-full">
-                  FEATURED SERVICE
+                  MOST POPULAR
                 </span>
                 <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
                   <ArrowUpRight size={20} className="text-[#1A1A1A] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -57,13 +56,13 @@ export default function Services({ openModal }) {
               </div>
               <div>
                 <h3 className="font-dm font-extrabold text-[#1A1A1A] text-[32px] md:text-[40px] leading-tight mb-4 tracking-tight">
-                  Instagram Management
+                  Social Media Growth
                 </h3>
                 <p className="font-dm font-medium text-[#1A1A1A] text-[16px] leading-[1.6] max-w-md opacity-80 mb-6">
-                  Complete end-to-end management of your Instagram presence. We handle content creation, strategy, and daily growth.
+                  We study your audience, your competitors, and your goals — then build a content engine that actually grows your brand.
                 </p>
                 <button onClick={openModal} className="font-dm font-bold text-[#1A1A1A] text-[15px] underline hover:no-underline">
-                  Explore this →
+                  See how it works →
                 </button>
               </div>
             </TiltCard>
@@ -84,7 +83,7 @@ export default function Services({ openModal }) {
               <div>
                 <h3 className="font-dm font-bold text-[#1A1A1A] text-[24px] mb-3">Website Development</h3>
                 <p className="font-dm text-[#666666] text-[15px] leading-[1.6]">
-                  High-converting landing pages and business websites built for speed and sales.
+                  Not just a pretty site — we build your digital storefront to convert visitors into paying customers.
                 </p>
               </div>
             </TiltCard>
@@ -106,7 +105,7 @@ export default function Services({ openModal }) {
               <div>
                 <h3 className="font-dm font-bold text-white text-[24px] mb-3">Restaurant AR Menu</h3>
                 <p className="font-dm text-[#888888] text-[15px] leading-[1.6]">
-                  Interactive 3D menus that increase order value and modernize the dining experience.
+                  A unique experience that makes your restaurant unforgettable and increases average order value.
                 </p>
               </div>
             </TiltCard>
@@ -125,11 +124,11 @@ export default function Services({ openModal }) {
                 <ArrowUpRight size={24} className="text-white/60 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-white" />
               </div>
               <div className="max-w-md">
-                <h3 className="font-dm font-bold text-white text-[24px] mb-3">WhatsApp Automation</h3>
+                <h3 className="font-dm font-bold text-white text-[24px] mb-3">AI-Powered Automation</h3>
                 <p className="font-dm text-white/80 text-[16px] leading-[1.6] mb-6">
-                  Never miss a lead again. AI-powered bots that handle inquiries, bookings, and customer support 24/7.
+                  From WhatsApp bots to AI calling agents — we automate the repetitive so your team focuses on growth.
                 </p>
-                <span className="font-dm font-bold text-white text-[20px] italic">"Game changer for our business."</span>
+                <span className="font-dm font-bold text-white text-[20px] italic">"This saved us 3 hours every single day."</span>
               </div>
             </TiltCard>
           </motion.div>

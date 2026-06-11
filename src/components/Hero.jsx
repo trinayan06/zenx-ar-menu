@@ -61,7 +61,7 @@ export default function Hero({ openModal }) {
         >
           <div className="w-2 h-2 rounded-full bg-[#C8F000]"></div>
           <span className="font-dm text-[13px] font-bold text-[#1A1A1A] tracking-wide uppercase">
-            BOOK A CALL › GROW YOUR BUSINESS › GET MORE CLIENTS
+            UNDERSTAND › DIAGNOSE › EXECUTE
           </span>
         </motion.div>
 
@@ -73,7 +73,8 @@ export default function Hero({ openModal }) {
           className="font-dm font-extrabold text-black leading-[1.1] mb-6 max-w-5xl mx-auto"
           style={{ fontSize: 'clamp(48px, 6vw, 88px)' }}
         >
-          We Build <br />
+          We Grow <br />
+          Your Business <br />
           <span 
             className="inline-block px-4 py-1 mx-2 shadow-sm"
             style={{ 
@@ -84,9 +85,8 @@ export default function Hero({ openModal }) {
               transform: 'rotate(-2deg)'
             }}
           >
-            Digital
-          </span> <br />
-          Experiences
+            Online
+          </span>
         </motion.h1>
 
         {/* Subtext */}
@@ -96,7 +96,7 @@ export default function Hero({ openModal }) {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="font-dm font-normal text-[#666666] text-[18px] leading-[1.6] max-w-[560px] mx-auto mb-10"
         >
-          We help businesses grow online with Instagram handling, websites, and smart automation solutions.
+          We first understand your business — then tell you exactly what you need to grow in the digital world.
         </motion.p>
 
         {/* Buttons */}
@@ -196,7 +196,7 @@ export default function Hero({ openModal }) {
             </div>
             <div className="w-full h-48 relative overflow-hidden">
                <img 
-                 src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80" 
+                 src="/hero-image.jpg" 
                  alt="Laptop Setup" 
                  className="w-full h-full object-cover"
                />

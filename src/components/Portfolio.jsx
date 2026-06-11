@@ -9,37 +9,37 @@ const projects = [
   { 
     title: 'VIP Cafe', 
     category: 'Instagram Management', 
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=100',
+    image: '/portfolio/vip-cafe.jpg',
     link: 'https://instagram.com/zen_x_2026'
   },
   { 
     title: 'Cafe Demo Website', 
     category: 'Website Development', 
-    image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200&q=100',
+    image: '/portfolio/cafe-demo.jpg',
     link: 'https://cafe-demo-liard.vercel.app'
   },
   { 
     title: 'Touch & Glow Beauty Parlour', 
     category: 'Website Development', 
-    image: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&q=100',
+    image: '/portfolio/touch-glow.jpg',
     link: 'https://touch-and-glow-beauty-palour.netlify.app/'
   },
   { 
     title: 'Restaurant AR Menu', 
     category: 'AR Experience', 
-    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=100',
+    image: '/portfolio/ar-menu.jpg',
     link: '/menu.html'
   },
   { 
     title: 'ZEN_X Website', 
     category: 'Website Development', 
-    image: 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=1200&q=100',
+    image: '/portfolio/zenx-website.jpg',
     link: '/'
   },
   { 
     title: 'Client Automation Bot', 
     category: 'WhatsApp Automation', 
-    image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1200&q=100',
+    image: '/portfolio/automation-bot.jpg',
     link: '#'
   },
 ];
@@ -107,47 +107,69 @@ export default function Portfolio() {
         </motion.div>
 
         {/* Project grid */}
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewport}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24"
-        >
-          {projects.map((project, index) => (
-            <motion.div
-              key={index}
-              variants={fadeUp}
-            >
-              <TiltCard 
-                className="group w-full"
-                onClick={() => {
-                  if (project.link && project.link !== '#') {
-                    window.open(project.link, '_blank');
-                  }
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+          {projects.map((project, index) => {
+            const isLeft = index % 2 === 0;
+            return (
+              <motion.div
+                key={index}
+                initial={{ 
+                  opacity: 0, 
+                  x: isLeft ? -120 : 120,
+                  rotateY: isLeft ? -25 : 25,
+                  z: -100
                 }}
+                whileInView={{ 
+                  opacity: 1, 
+                  x: 0, 
+                  rotateY: 0,
+                  z: 0
+                }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ 
+                  duration: 0.8, 
+                  delay: (index % 2) * 0.15,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
+                style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}
               >
-                <div className="w-full aspect-[4/3] bg-[#1A1A1A] overflow-hidden mb-5" style={{ borderRadius: '16px' }}>
-                  <img 
-                    src={project.image} 
-                    alt={project.title} 
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
-                </div>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-dm font-bold text-white text-[20px] tracking-tight mb-1">{project.title}</h3>
-                    <span className="font-dm text-[#888888] text-[14px]">{project.category}</span>
+                <TiltCard 
+                  className="group w-full"
+                  onClick={() => {
+                    if (project.link && project.link !== '#') {
+                      window.open(project.link, '_blank');
+                    }
+                  }}
+                >
+                  <div className="w-full aspect-[4/3] bg-[#1A1A1A] overflow-hidden mb-5" 
+                       style={{ borderRadius: '16px' }}>
+                    <img 
+                      src={project.image} 
+                      alt={project.title} 
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform 
+                                 duration-700 ease-out group-hover:scale-105"
+                    />
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center transition-colors group-hover:bg-[#C8F000]">
-                    <ArrowUpRight size={20} className="text-white group-hover:text-black transition-colors" />
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-dm font-bold text-white text-[20px] 
+                                     tracking-tight mb-1">{project.title}</h3>
+                      <span className="font-dm text-[#888888] text-[14px]">
+                        {project.category}
+                      </span>
+                    </div>
+                    <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center 
+                                    justify-center transition-colors group-hover:bg-[#C8F000]">
+                      <ArrowUpRight size={20} className="text-white group-hover:text-black 
+                                                         transition-colors" />
+                    </div>
                   </div>
-                </div>
-              </TiltCard>
-            </motion.div>
-          ))}
-        </motion.div>
+                </TiltCard>
+              </motion.div>
+            );
+          })}
+        </div>
 
         {/* Stats row */}
         <motion.div
